@@ -33,20 +33,16 @@ jobs:
 
       - name: Parse CV or use default profile
         run: |
-          CV_FILES=$(find cv/ -name "*.pdf" -o -name "*.docx" 2>/dev/null | head -1)
+          CV_FILE=$(find cv/ -name "*.pdf" -o -name "*.docx" 2>/dev/null | head -1)
 
-          if [ -n "$CV_FILES" ] && [ -n "$ANTHROPIC_API_KEY" ]; then
-            echo "CV file found and API key available, parsing..."
-            python scripts/parse_cv.py
-          elif [ -n "$CV_FILES" ] && [ -z "$ANTHROPIC_API_KEY" ]; then
-            echo "CV file found but no API key — using default profile"
-            cp src/data/profile.default.json src/data/profile.json
+          if [ -n "$CV_FILE" ]; then
+            echo "Found CV: $CV_FILE"
+            python scripts/parse_cv.py "$CV_FILE"
+            echo "CV parsed successfully"
           else
-            echo "No CV found — using default profile"
+            echo "No CV found in cv/ — using default profile"
             cp src/data/profile.default.json src/data/profile.json
           fi
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 
       - name: Install Node dependencies
         run: npm install
