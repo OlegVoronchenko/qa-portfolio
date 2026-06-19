@@ -3,8 +3,14 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
-echo "=== Installing dependencies ==="
-pip3 install -r requirements.txt --break-system-packages -q
+echo "=== Installing Node dependencies ==="
+npm install
+
+echo "=== Building Vite app ==="
+npm run build
+
+echo "=== Installing Python dependencies ==="
+pip3 install -r requirements.txt -q
 
 echo "=== Installing Chromium ==="
 playwright install chromium

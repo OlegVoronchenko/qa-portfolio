@@ -9,7 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 REPORTS_DIR = ROOT / "reports"
-SITE_DIR = ROOT / "site"
+DIST_DIR = ROOT / "dist"
 
 
 def run_tests():
@@ -66,7 +66,7 @@ def main():
     print("Generating report...")
     report = parse_report()
 
-    for dest in (REPORTS_DIR / "test_report.json", SITE_DIR / "test_report.json"):
+    for dest in (REPORTS_DIR / "test_report.json", DIST_DIR / "test_report.json"):
         dest.write_text(json.dumps(report, indent=2))
         print(f"  -> {dest}")
 

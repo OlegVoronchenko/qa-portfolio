@@ -1,0 +1,127 @@
+import { useState, useEffect } from 'react'
+import { ArrowRight, Mail, ChevronDown } from 'lucide-react'
+
+const roles = [
+  'QA Automation Engineer',
+  'Playwright Specialist',
+  'Python Test Developer',
+  'CI/CD Quality Guardian',
+]
+
+export default function Hero() {
+  const [text, setText] = useState('')
+  const [roleIdx, setRoleIdx] = useState(0)
+  const [charIdx, setCharIdx] = useState(0)
+  const [deleting, setDeleting] = useState(false)
+
+  useEffect(() => {
+    const current = roles[roleIdx]
+    const speed = deleting ? 35 : 70
+
+    if (!deleting && charIdx === current.length) {
+      const t = setTimeout(() => setDeleting(true), 1800)
+      return () => clearTimeout(t)
+    }
+    if (deleting && charIdx === 0) {
+      setDeleting(false)
+      setRoleIdx((i) => (i + 1) % roles.length)
+      return
+    }
+
+    const t = setTimeout(() => {
+      const next = deleting ? charIdx - 1 : charIdx + 1
+      setText(current.substring(0, next))
+      setCharIdx(next)
+    }, speed)
+    return () => clearTimeout(t)
+  }, [charIdx, deleting, roleIdx])
+
+  const stats = [
+    { value: '3+', label: 'Years Experience' },
+    { value: '500+', label: 'Tests Written' },
+    { value: '98%', label: 'Pass Rate' },
+  ]
+
+  return (
+    <section
+      id="hero"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+    >
+      {/* Circuit board background */}
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{
+          backgroundImage:
+            "url('https://images.unsplash.com/photo-1518770660439-4636190af475?w=1920&q=80')",
+        }}
+      />
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-dark-900/[0.93] via-dark-900/[0.88] to-dark-900" />
+      {/* Dot grid */}
+      <div className="absolute inset-0 dot-grid" />
+
+      <div className="relative z-10 text-center px-4 max-w-3xl mx-auto pt-16">
+        {/* Availability badge */}
+        <div className="inline-flex items-center gap-2 border border-accent/40 bg-accent-dim rounded-full px-4 py-1.5 mb-8 font-mono text-xs text-accent">
+          <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+          Available for hire
+        </div>
+
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mb-4">
+          Hi, I'm{' '}
+          <span className="bg-gradient-to-r from-accent to-accent-teal bg-clip-text text-transparent">
+            Oleg V.
+          </span>
+        </h1>
+
+        {/* Typewriter */}
+        <div className="font-mono text-lg sm:text-xl text-accent mb-4 h-8">
+          {text}
+          <span className="animate-typewriter-blink">|</span>
+        </div>
+
+        <p className="text-slate-400 text-base sm:text-lg max-w-xl mx-auto mb-8 leading-relaxed">
+          Building robust test automation frameworks that ensure software quality
+          at every stage of the development lifecycle.
+        </p>
+
+        {/* CTA */}
+        <div className="flex flex-wrap gap-3 justify-center mb-14">
+          <a
+            href="#projects"
+            className="flex items-center gap-2 bg-accent hover:bg-accent/90 text-dark-900 font-semibold px-6 py-3 rounded-lg transition-colors"
+          >
+            View Projects
+            <ArrowRight size={16} />
+          </a>
+          <a
+            href="#contact"
+            className="flex items-center gap-2 border border-accent/40 text-accent hover:bg-accent-dim font-semibold px-6 py-3 rounded-lg transition-colors"
+          >
+            <Mail size={16} />
+            Get in Touch
+          </a>
+        </div>
+
+        {/* Stats */}
+        <div className="flex justify-center gap-8 sm:gap-14">
+          {stats.map((s) => (
+            <div key={s.label} className="text-center">
+              <div className="text-2xl sm:text-3xl font-bold font-mono text-accent">
+                {s.value}
+              </div>
+              <div className="text-xs text-slate-500 uppercase tracking-wider mt-1">
+                {s.label}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Scroll indicator */}
+        <div className="mt-14 flex justify-center">
+          <ChevronDown size={24} className="text-accent/50 animate-bounce-slow" />
+        </div>
+      </div>
+    </section>
+  )
+}

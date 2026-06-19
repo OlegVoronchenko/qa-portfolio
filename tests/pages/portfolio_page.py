@@ -7,7 +7,7 @@ class PortfolioPage:
     def __init__(self, page: Page):
         self.page = page
         self.hero = page.locator("#hero")
-        self.hero_title = page.locator(".hero h1")
+        self.hero_title = page.locator("#hero h1")
         self.navbar = page.locator(".navbar")
         self.nav_links = page.locator(".nav-links")
         self.about_section = page.locator("#about")

@@ -3,7 +3,7 @@ import threading
 import pytest
 from playwright.sync_api import sync_playwright
 
-SITE_DIR = str(__import__("pathlib").Path(__file__).resolve().parent.parent / "site")
+SITE_DIR = str(__import__("pathlib").Path(__file__).resolve().parent.parent / "dist")
 PORT = 8080
 
 
