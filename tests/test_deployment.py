@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 
 import pytest
-from playwright.sync_api import sync_playwright, Page, expect
+from playwright.sync_api import Page, expect
 
 sys.path.insert(0, str(Path(__file__).parent))
 
@@ -23,24 +23,10 @@ pytestmark = pytest.mark.skipif(
 _PAGES_URL = CONFIG.github_pages_url
 
 
-@pytest.fixture(scope="module")
-def browser():
-    pw = sync_playwright().start()
-    b = pw.chromium.launch(headless=True)
-    yield b
-    b.close()
-    pw.stop()
-
-
 @pytest.fixture()
-def deploy_page(browser) -> Page:
-    ctx = browser.new_context(
-        viewport={"width": CONFIG.desktop_width, "height": CONFIG.desktop_height},
-    )
-    pg = ctx.new_page()
-    yield pg
-    pg.close()
-    ctx.close()
+def deploy_page(page: Page) -> Page:
+    """Page fixture pre-navigated to GitHub Pages URL."""
+    return page
 
 
 class TestDeployment:
@@ -48,21 +34,18 @@ class TestDeployment:
     @pytest.mark.deployment
     def test_assets_load_on_github_pages(self, deploy_page: Page):
         """Verify production site loads with no 404 asset errors."""
-        # Arrange — track failed network requests
         failed_requests: list[str] = []
         deploy_page.on(
             "response",
             lambda r: failed_requests.append(r.url) if r.status == 404 else None,
         )
 
-        # Act — navigate and wait for full load
         deploy_page.goto(
             _PAGES_URL,
             wait_until="networkidle",
             timeout=CONFIG.timeout_navigation,
         )
 
-        # Assert — no 404s on asset files (excludes expected missing files)
         asset_404s = [
             url for url in failed_requests
             if any(ext in url for ext in DEPLOYMENT.CHECKED_ASSET_EXTENSIONS)
@@ -70,7 +53,6 @@ class TestDeployment:
         ]
         assert not asset_404s, Msg.ASSET_404.format(urls=asset_404s)
 
-        # Assert — React rendered successfully
         expect(deploy_page.get_by_role("navigation")).to_be_visible(
             timeout=CONFIG.timeout_hydration,
         )
