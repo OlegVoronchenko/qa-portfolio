@@ -6,8 +6,9 @@ from typing import Tuple
 
 @dataclass(frozen=True)
 class PageTitle:
-    CONTAINS_ROLE: str = "QA"
-    CONTAINS_TYPE: str = "Engineer"
+      CONTAINS_NAME: str = 'Oleg'
+      CONTAINS_ROLE: str = 'Automation'
+      CONTAINS_TYPE: str = 'Engineer'
 
 
 @dataclass(frozen=True)
