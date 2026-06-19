@@ -47,7 +47,7 @@ class CoreSkills:
 @dataclass(frozen=True)
 class ExpectedCounts:
     PROJECT_CARDS: int = 3
-    CONTACT_LINKS: int = 4
+    CONTACT_LINKS: int = 3
     H1_HEADINGS: int = 1
 
 

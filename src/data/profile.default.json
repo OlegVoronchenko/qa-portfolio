@@ -1,15 +1,14 @@
 {
   "personal": {
-    "name": "Oleg V.",
-    "role": "Lead Test Automation Engineer",
-    "location": "Remote / Worldwide",
-    "email": "your.email@gmail.com",
-    "linkedin": "linkedin.com/in/your-profile",
-    "github": "github.com/your-username",
-    "telegram": "@your_telegram",
+    "name": "Oleg Voronchenko",
+    "role": "Lead Senior Test Automation Engineer",
+    "location": "Porto, Portugal - Hybrid / Remote",
+    "email": "o.vorono@gmail.com",
+    "linkedin": "www.linkedin.com/in/oleg-voronchenko",
+    "github": "https://olegvoronchenko.github.io/qa-portfolio",
     "availability": "Open to new opportunities"
   },
-  "summary": "Test Automation Engineer with 15+ years of experience designing, building, and scaling automation solutions across Web, Mobile, API, Desktop, Embedded, and cloud-based systems. Led and mentored cross-functional QA/AQA teams of 5–10 engineers. Drove suite stability to 98% and reduced test execution time by up to 50%.",
+  "summary": "Quality Test Automation Engineer with 15+ years of experience designing, building, and scaling automation solutions across Web, Mobile, API, Desktop, Embedded, and cloud-based systems. Led and mentored cross-functional QA/AQA teams of 5–10 engineers. Drove suite stability to 98% and reduced test execution time by up to 50%.",
   "stats": {
     "years_experience": "15+",
     "projects": "9+",
@@ -144,9 +143,8 @@
     { "language": "Russian", "level": "Native" }
   ],
   "contact": {
-    "email": "your.email@gmail.com",
-    "github": "https://github.com/your-username",
-    "linkedin": "https://linkedin.com/in/your-profile",
-    "telegram": "https://t.me/your_telegram"
+    "email": "o.vorono@gmail.com",
+    "github": "https://olegvoronchenko.github.io/qa-portfolio",
+    "linkedin": "www.linkedin.com/in/oleg-voronchenko"
   }
 }

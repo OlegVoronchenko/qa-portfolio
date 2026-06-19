@@ -58,12 +58,20 @@ export default function Footer() {
         &copy; {new Date().getFullYear()} {profile.personal.name} — Built with React, tested with Playwright.
       </div>
 
-      <div className="flex justify-center mt-4">
-        <img
-          src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Folegvoronchenko.github.io%2Fqa-portfolio%2F&count_bg=%2310b981&title_bg=%23111827&icon=github.svg&icon_color=%23FFFFFF&title=visitors&edge_flat=true"
-          alt="Visitor count"
-          className="opacity-70 hover:opacity-100 transition-opacity"
-        />
+      <div className="flex justify-center mt-4 pt-4 border-t border-white/5">
+        <a
+          href="https://hits.seeyoufarm.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="opacity-60 hover:opacity-100 transition-opacity duration-200"
+        >
+          <img
+            src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Folegvoronchenko.github.io%2Fqa-portfolio%2F&count_bg=%2310b981&title_bg=%23111827&icon=github.svg&icon_color=%23FFFFFF&title=visitors&edge_flat=true"
+            alt="Visitor count"
+            width="120"
+            height="20"
+          />
+        </a>
       </div>
     </footer>
   )
