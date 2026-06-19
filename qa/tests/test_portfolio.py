@@ -389,42 +389,38 @@ class TestPerformance:
 class TestAccessibility:
 
     @pytest.mark.accessibility
-    def test_images_have_alt_text(self, portfolio: PortfolioPage):
-        """Verify every <img> element has a non-empty alt attribute.
-
-        Uses JS evaluation to check all images at once — avoids
-        per-element timeouts on external images (e.g. Unsplash).
-
-        Failure means: an image was added without alt text —
-        this breaks screen readers and fails WCAG 2.1 Level A.
+    def test_images_have_alt_text(self, page: Page, base_url: str):
         """
-        with step("Find all images and check alt attributes via JS"):
-            violations = portfolio._page.evaluate("""
-                () => {
-                    const images = Array.from(
-                        document.querySelectorAll('img')
-                    );
-                    return images
-                        .filter(img => !img.alt || img.alt.trim() === '')
-                        .map(img => ({
-                            src: img.src || img.getAttribute('src') || 'unknown',
-                            index: Array.from(
-                                document.querySelectorAll('img')
-                            ).indexOf(img)
-                        }));
-                }
+        Every image on the page must have a non-empty
+        alt attribute for accessibility.
+        Uses JS evaluation to avoid per-element timeouts.
+        """
+        with step("Open the portfolio page"):
+            portfolio = PortfolioPage(page, base_url)
+            portfolio.navigate()
+
+        with step("Evaluate all images via JavaScript"):
+            violations: list[dict] = page.evaluate("""
+                () => Array.from(document.querySelectorAll('img'))
+                    .filter(img => !img.alt || img.alt.trim() === '')
+                    .map((img, i) => ({
+                        index: i,
+                        src: (img.src || '').slice(0, 80)
+                    }))
             """)
 
-        with step("Capture screenshot before assertion"):
-            portfolio.take_screenshot("assert_images_alt")
+        with step("Take screenshot at assertion point"):
+            from datetime import datetime
+            ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+            page.screenshot(
+                path=f"screenshots/assert_images_alt_{ts}.png",
+                full_page=False
+            )
 
-        with step(f"Assert no images missing alt ({len(violations)} violations)"):
+        with step("Verify no images are missing alt text"):
             assert violations == [], (
-                f"Found {len(violations)} image(s) missing alt text:\n"
-                + "\n".join(
-                    f"  index={v['index']}: src='{v['src'][:80]}'"
-                    for v in violations
-                )
+                f"Found {len(violations)} image(s) without alt text: "
+                + str(violations)
             )
 
     @pytest.mark.accessibility

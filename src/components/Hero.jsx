@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react'
 import { ArrowRight, Mail, ChevronDown } from 'lucide-react'
 import { useProfile } from '../hooks/useProfile'
 
-const roles = [
-  'Lead Senior Test Automation Engineer',
+const EXTRA_ROLES = [
   'Mobile & Web QA Architect',
   'Healthcare QA Specialist',
   'CI/CD Quality Guardian',
@@ -11,6 +10,7 @@ const roles = [
 
 export default function Hero() {
   const profile = useProfile()
+  const roles = [profile.personal.role, ...EXTRA_ROLES]
   const [text, setText] = useState('')
   const [roleIdx, setRoleIdx] = useState(0)
   const [charIdx, setCharIdx] = useState(0)
