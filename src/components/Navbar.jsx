@@ -27,11 +27,12 @@ export default function Navbar() {
         </a>
 
         {/* Desktop links */}
-        <div className="nav-links hidden md:flex items-center gap-6">
+        <div data-testid="navbar-links" className="nav-links hidden md:flex items-center gap-6">
           {links.map((l) => (
             <a
               key={l.href}
               href={l.href}
+              data-testid={`nav-link-${l.href.replace('#', '')}`}
               onClick={(e) => { e.preventDefault(); scrollTo(l.href) }}
               className="text-sm text-slate-400 hover:text-accent transition-colors"
             >

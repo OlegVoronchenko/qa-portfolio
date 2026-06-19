@@ -29,7 +29,7 @@ const items = [
 
 export default function Contact() {
   return (
-    <section id="contact" className="py-20 px-4 sm:px-6 max-w-6xl mx-auto">
+    <section id="contact" data-testid="contact-section" className="py-20 px-4 sm:px-6 max-w-6xl mx-auto">
       <h2 className="font-mono text-2xl sm:text-3xl font-bold mb-2">
         <span className="text-accent">#</span> Contact
       </h2>
@@ -44,6 +44,7 @@ export default function Contact() {
             href={item.href}
             target={item.href.startsWith('mailto') ? undefined : '_blank'}
             rel="noopener noreferrer"
+            data-testid="contact-item"
             className="contact-item group bg-dark-700 border border-dark-600 rounded-xl p-5 flex items-center gap-4 hover:border-accent/40 hover:-translate-y-0.5 transition-all duration-200"
           >
             <div className="w-11 h-11 rounded-lg bg-accent-dim flex items-center justify-center text-accent group-hover:bg-accent/20 transition-colors flex-shrink-0">

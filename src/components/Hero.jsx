@@ -45,6 +45,7 @@ export default function Hero() {
   return (
     <section
       id="hero"
+      data-testid="hero-section"
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
     >
       {/* Circuit board background */}
@@ -67,7 +68,7 @@ export default function Hero() {
           Available for hire
         </div>
 
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mb-4">
+        <h1 data-testid="hero-name" className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mb-4">
           Hi, I'm{' '}
           <span className="bg-gradient-to-r from-accent to-accent-teal bg-clip-text text-transparent">
             Oleg V.
@@ -75,7 +76,7 @@ export default function Hero() {
         </h1>
 
         {/* Typewriter */}
-        <div className="font-mono text-lg sm:text-xl text-accent mb-4 h-8">
+        <div data-testid="hero-typewriter" className="font-mono text-lg sm:text-xl text-accent mb-4 h-8">
           {text}
           <span className="animate-typewriter-blink">|</span>
         </div>

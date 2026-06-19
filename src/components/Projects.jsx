@@ -29,7 +29,7 @@ const projects = [
 
 export default function Projects() {
   return (
-    <section id="projects" className="py-20 px-4 sm:px-6 max-w-6xl mx-auto">
+    <section id="projects" data-testid="projects-section" className="py-20 px-4 sm:px-6 max-w-6xl mx-auto">
       <h2 className="font-mono text-2xl sm:text-3xl font-bold mb-2">
         <span className="text-accent">#</span> Projects
       </h2>
@@ -41,6 +41,7 @@ export default function Projects() {
         {projects.map((p) => (
           <div
             key={p.title}
+            role="article"
             className="project-card group bg-dark-700 border border-dark-600 rounded-2xl overflow-hidden hover:border-accent/40 hover:-translate-y-1 transition-all duration-300"
           >
             {/* Image + overlay */}

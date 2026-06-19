@@ -53,7 +53,7 @@ export default function Skills() {
   const [openIdx, setOpenIdx] = useState(null)
 
   return (
-    <section id="skills" className="py-20 px-4 sm:px-6 max-w-6xl mx-auto">
+    <section id="skills" data-testid="skills-section" className="py-20 px-4 sm:px-6 max-w-6xl mx-auto">
       <h2 className="font-mono text-2xl sm:text-3xl font-bold mb-2">
         <span className="text-accent">#</span> Skills
       </h2>
@@ -115,6 +115,7 @@ export default function Skills() {
         {tools.map((t) => (
           <div
             key={t.name}
+            data-testid="skill-tag"
             className="skill-tag bg-dark-700 border border-dark-600 rounded-xl p-4 flex items-center gap-3 hover:border-accent/40 transition-colors group"
           >
             <span className="text-accent group-hover:text-accent-teal transition-colors">
