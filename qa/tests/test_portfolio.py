@@ -41,6 +41,9 @@ class TestSmoke:
         title = portfolio.get_title()
         portfolio.take_screenshot("assert_page_title")
 
+        assert PAGE_TITLE.CONTAINS_NAME in title, Msg.TITLE_MISSING_NAME.format(
+            title=title,
+        )
         assert PAGE_TITLE.CONTAINS_ROLE in title, Msg.TITLE_MISSING_ROLE.format(
             expected=PAGE_TITLE.CONTAINS_ROLE, actual=title,
         )

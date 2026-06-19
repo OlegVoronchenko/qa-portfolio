@@ -3,6 +3,7 @@
 
 class Messages:
     # Smoke
+    TITLE_MISSING_NAME = "Page title should contain engineer name, got: '{title}'"
     TITLE_MISSING_ROLE = "Page title should contain '{expected}', got: '{actual}'"
     HERO_NAME_MISSING = "Hero heading should contain '{expected}', got: '{actual}'"
     NAV_NOT_VISIBLE = "Primary navigation should be visible on page load"
