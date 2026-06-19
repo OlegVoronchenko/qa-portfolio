@@ -14,24 +14,24 @@ DIST_DIR = PROJECT_ROOT / "dist"
 
 STEPS_MAP = {
     "test_page_loads_with_correct_title": {
-        "description": "Page must load and title must identify the engineer",
+        "description": "Page title must identify engineer by name and role",
         "mark": "smoke",
         "steps": [
             "Navigate to http://localhost:8080",
-            "Call page.title() → get browser tab title",
-            "Assert 'Oleg' in page.title() → True",
-            "Assert 'Automation' in page.title() → True",
-            "Assert 'Engineer' in page.title() → True",
+            "Call page.title() → get browser tab title string",
+            "Assert 'Oleg' in page.title()",
+            "Assert 'Automation' in page.title()",
+            "Assert 'Engineer' in page.title()",
         ],
     },
     "test_hero_heading_displays_name": {
-        "description": "Hero section h1 must contain the engineer name",
+        "description": "Hero h1 must contain the engineer name",
         "mark": "smoke",
         "steps": [
             "Navigate to base URL",
-            "page.get_by_role('heading', level=1) → locate h1",
-            "Call heading.inner_text() → get text content",
-            "Assert 'Oleg' in heading.inner_text() → True",
+            "page.get_by_role('heading', level=1) → locate h1 element",
+            "Call h1.inner_text() → get heading text content",
+            "Assert 'Oleg' in h1.inner_text()",
         ],
     },
     "test_navigation_is_present": {
@@ -39,36 +39,36 @@ STEPS_MAP = {
         "mark": "smoke",
         "steps": [
             "Navigate to base URL",
-            "page.get_by_role('navigation') → locate <nav>",
-            "Assert nav.count() > 0 → found 1 element",
+            "page.get_by_role('navigation') → locate <nav> element",
+            "Assert nav.count() > 0 → found at least 1 navigation element",
             "Assert nav.is_visible() == True",
         ],
     },
     "test_page_has_no_javascript_errors": {
-        "description": "No JavaScript console errors during page load",
+        "description": "No uncaught JavaScript exceptions on page load",
         "mark": "smoke",
         "steps": [
             "Register page.on('pageerror') listener before navigation",
             "Navigate to base URL",
             "Wait for networkidle state",
-            "Collect all pageerror events into js_errors list",
-            "Assert js_errors == [] → no uncaught JS exceptions",
+            "Collect all pageerror events into js_errors[]",
+            "Assert js_errors == [] → no uncaught JS exceptions found",
         ],
     },
     "test_react_app_hydrated_successfully": {
-        "description": "React app must render content into #root element",
+        "description": "React must render content into #root element",
         "mark": "smoke",
         "steps": [
             "Navigate to base URL",
             "page.locator('#root') → locate React mount point",
-            "Evaluate: document.querySelector('#root').children.length",
+            "Evaluate document.querySelector('#root').children.length",
             "Assert children_count > 0 → React rendered into #root",
-            "page.locator('[data-reactroot] .error-boundary') → check error boundary",
-            "Assert error_boundary.count() == 0 → no React errors",
+            "page.locator('[data-react-error]').count()",
+            "Assert error_boundary_count == 0 → no React errors",
         ],
     },
     "test_nav_link_is_visible_with_correct_href[About-#about]": {
-        "description": "Nav link 'About' must be visible with href='#about'",
+        "description": "About nav link must be visible with href='#about'",
         "mark": "navigation",
         "steps": [
             "Navigate to base URL",
@@ -78,7 +78,7 @@ STEPS_MAP = {
         ],
     },
     "test_nav_link_is_visible_with_correct_href[Skills-#skills]": {
-        "description": "Nav link 'Skills' must be visible with href='#skills'",
+        "description": "Skills nav link must be visible with href='#skills'",
         "mark": "navigation",
         "steps": [
             "Navigate to base URL",
@@ -88,7 +88,7 @@ STEPS_MAP = {
         ],
     },
     "test_nav_link_is_visible_with_correct_href[Projects-#projects]": {
-        "description": "Nav link 'Projects' must be visible with href='#projects'",
+        "description": "Projects nav link must be visible with href='#projects'",
         "mark": "navigation",
         "steps": [
             "Navigate to base URL",
@@ -98,7 +98,7 @@ STEPS_MAP = {
         ],
     },
     "test_nav_link_is_visible_with_correct_href[Contact-#contact]": {
-        "description": "Nav link 'Contact' must be visible with href='#contact'",
+        "description": "Contact nav link must be visible with href='#contact'",
         "mark": "navigation",
         "steps": [
             "Navigate to base URL",
@@ -108,33 +108,36 @@ STEPS_MAP = {
         ],
     },
     "test_skills_section_contains_core_stack[Python]": {
-        "description": "Skill tag 'Python' must be visible in skills section",
+        "description": "Python skill tag must be visible in skills section",
         "mark": "content",
         "steps": [
             "Navigate to base URL",
+            "page.locator('#skills') → locate skills section",
             "page.locator('#skills').get_by_text('Python', exact=True)",
-            "Assert skill_locator.first.is_visible() == True",
-            "Assert text content == 'Python'",
+            "Assert skill_tag.first.is_visible() == True",
+            "Assert skill_tag.first.inner_text() == 'Python'",
         ],
     },
     "test_skills_section_contains_core_stack[Playwright]": {
-        "description": "Skill tag 'Playwright' must be visible in skills section",
+        "description": "Playwright skill tag must be visible in skills section",
         "mark": "content",
         "steps": [
             "Navigate to base URL",
+            "page.locator('#skills') → locate skills section",
             "page.locator('#skills').get_by_text('Playwright', exact=True)",
-            "Assert skill_locator.first.is_visible() == True",
-            "Assert text content == 'Playwright'",
+            "Assert skill_tag.first.is_visible() == True",
+            "Assert skill_tag.first.inner_text() == 'Playwright'",
         ],
     },
     "test_skills_section_contains_core_stack[pytest]": {
-        "description": "Skill tag 'pytest' must be visible in skills section",
+        "description": "pytest skill tag must be visible in skills section",
         "mark": "content",
         "steps": [
             "Navigate to base URL",
+            "page.locator('#skills') → locate skills section",
             "page.locator('#skills').get_by_text('pytest', exact=True)",
-            "Assert skill_locator.first.is_visible() == True",
-            "Assert text content == 'pytest'",
+            "Assert skill_tag.first.is_visible() == True",
+            "Assert skill_tag.first.inner_text() == 'pytest'",
         ],
     },
     "test_projects_section_has_expected_cards": {
@@ -143,96 +146,137 @@ STEPS_MAP = {
         "steps": [
             "Navigate to base URL",
             "page.locator('#projects') → locate projects section",
-            "Count elements with role='article'",
-            "Assert project_cards.count() == 3 (ExpectedCounts.PROJECT_CARDS)",
+            "page.locator('[data-testid=project-card]') → find cards",
+            "Assert project_cards.count() == 3",
+            "Assert actual_count == ExpectedCounts.PROJECT_CARDS (3)",
         ],
     },
     "test_contact_section_has_required_channels": {
-        "description": "Contact section must show all 3 communication channels",
+        "description": "Contact section must show all required contact channels",
         "mark": "content",
         "steps": [
             "Navigate to base URL",
             "page.locator('#contact') → locate contact section",
-            "Count elements with role='link' in contact section",
-            "Assert contact_links.count() == 3 (ExpectedCounts.CONTACT_LINKS)",
+            "page.locator('#contact').get_by_role('link') → find links",
+            "Assert contact_links.count() == 3",
+            "Assert actual_count == ExpectedCounts.CONTACT_LINKS (3)",
         ],
     },
     "test_test_results_section_renders": {
-        "description": "Test results section must render with heading content",
+        "description": "Test results section must render with visible content",
         "mark": "content",
         "steps": [
             "Navigate to base URL",
-            "page.locator('#test-results') → locate test results section",
+            "page.locator('#tests') → locate test results section",
             "Assert section.is_visible() == True",
-            "Count heading elements in section",
+            "page.locator('#tests').get_by_role('heading') → find headings",
             "Assert headings.count() > 0 → section has content",
         ],
     },
     "test_mobile_viewport_no_horizontal_scroll": {
-        "description": "Page must not cause horizontal overflow on mobile viewport",
+        "description": "No horizontal overflow at 390x844 mobile viewport",
         "mark": "responsive",
         "steps": [
-            "Set viewport to 390×844 (iPhone 14 size)",
+            "Set viewport to width=390 height=844 (iPhone 14)",
             "Navigate to base URL",
-            "Evaluate: document.documentElement.scrollWidth",
-            "Evaluate: window.innerWidth",
-            "Assert scrollWidth (actual) <= innerWidth (390px) → no overflow",
+            "Evaluate document.documentElement.scrollWidth → actual_width",
+            "Evaluate window.innerWidth → viewport_width=390",
+            "Assert actual_width <= 390 → no horizontal scroll",
         ],
     },
     "test_mobile_hero_section_visible": {
-        "description": "Hero heading must be visible at 390px mobile viewport",
+        "description": "Hero heading must be visible at 390px mobile width",
         "mark": "responsive",
         "steps": [
-            "Set viewport to 390×844",
+            "Set viewport to width=390 height=844",
             "Navigate to base URL",
             "page.get_by_role('heading', level=1) → locate h1",
-            "Assert heading.is_visible() == True at width=390px",
+            "Assert h1.is_visible() == True at viewport_width=390",
         ],
     },
     "test_page_load_time_within_budget": {
-        "description": "Full page load must complete within 3000ms budget",
+        "description": "Full page load must complete under 3000ms",
         "mark": "performance",
         "steps": [
             "Navigate to base URL",
-            "Evaluate: performance.timing.loadEventEnd",
-            "Evaluate: performance.timing.navigationStart",
-            "Calculate: loadEventEnd - navigationStart = actual_ms",
-            "Assert actual_ms < 3000 (PerformanceBudget.MAX_LOAD_TIME_MS)",
+            "Evaluate performance.timing.loadEventEnd → end_time",
+            "Evaluate performance.timing.navigationStart → start_time",
+            "Calculate load_ms = loadEventEnd - navigationStart",
+            "Assert load_ms < 3000 (PerformanceBudget.MAX_LOAD_TIME_MS)",
         ],
     },
     "test_images_have_alt_text": {
-        "description": "All images must have non-empty alt attributes for accessibility",
+        "description": "Every img element must have non-empty alt attribute",
         "mark": "accessibility",
         "steps": [
             "Navigate to base URL",
-            "Evaluate: document.querySelectorAll('img') → find all images",
-            "Filter images where alt == '' or alt is missing",
-            "Assert violations == [] → every img has non-empty alt text",
+            "Evaluate document.querySelectorAll('img') → all_images",
+            "Filter: images where alt == '' or alt attribute missing",
+            "Collect violations[] with src of each bad image",
+            "Assert violations == [] → all images have alt text",
         ],
     },
     "test_headings_hierarchy_is_correct": {
-        "description": "Page must have exactly one h1 and correct heading hierarchy",
+        "description": "Exactly one h1, no skipped heading levels",
         "mark": "accessibility",
         "steps": [
             "Navigate to base URL",
             "page.locator('h1').count() → count h1 elements",
-            "Assert h1_count == 1 (ExpectedCounts.H1_HEADINGS)",
-            "page.locator('h2').first → find first h2",
-            "Assert h1 position < h2 position in DOM",
-            "Check heading levels: h1→h2→h3 no gaps allowed",
+            "Assert h1_count == 1 (ExpectedCounts.H1_HEADINGS=1)",
+            "page.locator('h2').first → get first h2 position",
+            "Assert h1 DOM position < h2 DOM position",
+            "Loop all headings: Assert level[n+1] - level[n] <= 1",
+        ],
+    },
+    "test_assets_load_on_github_pages": {
+        "description": "All JS/CSS assets must load without 404 on production",
+        "mark": "deployment",
+        "steps": [
+            "Register page.on('response') listener for all requests",
+            "Navigate to https://olegvoronchenko.github.io/qa-portfolio/",
+            "Wait for networkidle → all assets finished loading",
+            "Filter responses: status==404 AND url matches .js/.css/.png/.jpg",
+            "Exclude: test_report.json, favicon.ico (expected optional files)",
+            "Assert asset_404s == [] → no critical assets returned 404",
+        ],
+    },
+    "test_base_path_is_correct": {
+        "description": "All asset paths must include /qa-portfolio/ base prefix",
+        "mark": "deployment",
+        "steps": [
+            "Navigate to https://olegvoronchenko.github.io/qa-portfolio/",
+            "Wait for networkidle",
+            "Evaluate: find all <script src> and <link href> attributes",
+            "Filter: paths starting with '/assets/' (missing base prefix)",
+            "Assert wrong_paths == [] → all paths start with '/qa-portfolio/assets/'",
+        ],
+    },
+    "test_no_console_errors_on_production": {
+        "description": "No JavaScript errors in browser console on production",
+        "mark": "deployment",
+        "steps": [
+            "Register page.on('pageerror') listener before navigation",
+            "Navigate to https://olegvoronchenko.github.io/qa-portfolio/",
+            "Wait for networkidle state",
+            "Collect all pageerror events into js_errors[]",
+            "Assert js_errors == [] → no JS exceptions on production URL",
         ],
     },
 }
 
 
-def match_steps_map(test_name):
-    """Find STEPS_MAP entry by matching test name prefix (handles parametrized tests)."""
+def get_steps_for_test(test_name):
+    """Look up test metadata from STEPS_MAP. Falls back to generic only if not found."""
     if test_name in STEPS_MAP:
         return STEPS_MAP[test_name]
-    base = test_name.split("[")[0]
-    if base in STEPS_MAP:
-        return STEPS_MAP[base]
-    return None
+    return {
+        "description": f"Verify {test_name.replace('test_', '').replace('_', ' ')}",
+        "mark": "unknown",
+        "steps": [
+            f"Execute {test_name}",
+            "Assert expected result",
+        ],
+    }
 
 
 def build_steps(step_names, test_passed):
@@ -243,13 +287,6 @@ def build_steps(step_names, test_passed):
         status = "fail" if (not test_passed and is_last) else "pass"
         steps.append({"name": name, "status": status})
     return steps
-
-
-def generic_steps(test_name, test_passed):
-    """Generate generic steps for tests not in STEPS_MAP."""
-    words = test_name.replace("test_", "").replace("_", " ")
-    step_names = ["Navigate to page", f"Execute {words}", "Assert expected result"]
-    return build_steps(step_names, test_passed)
 
 
 def run_tests():
@@ -292,15 +329,10 @@ def parse_report():
         total_duration_ms += duration_ms
         test_passed = outcome == "passed"
 
-        mapped = match_steps_map(name)
-        if mapped:
-            description = mapped["description"]
-            mark = mapped["mark"]
-            steps = build_steps(mapped["steps"], test_passed)
-        else:
-            description = f"Verify {name.replace('test_', '').replace('_', ' ')}"
-            mark = "general"
-            steps = generic_steps(name, test_passed)
+        mapped = get_steps_for_test(name)
+        description = mapped["description"]
+        mark = mapped["mark"]
+        steps = build_steps(mapped["steps"], test_passed)
 
         error_msg = None
         if not test_passed:
