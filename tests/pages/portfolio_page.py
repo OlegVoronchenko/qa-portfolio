@@ -1,20 +1,31 @@
+"""Page Object Model for the QA portfolio SPA — locators, actions, queries."""
+
 from playwright.sync_api import Page, Locator
+
+from constants import SECTIONS
+from config import CONFIG
 
 
 class PortfolioPage:
-    """Page Object for the QA portfolio single-page application."""
+    """Page Object for the QA portfolio single-page application.
+
+    Locators are exposed as properties (no side-effects).
+    Actions perform navigation or interaction.
+    Queries return primitive values for test assertions.
+    """
 
     def __init__(self, page: Page, base_url: str) -> None:
         self._page = page
         self._base_url = base_url
 
-    # ── Navigation actions ──
+    # ── Actions ──
 
     def navigate(self) -> None:
         """Load the portfolio and wait for React to hydrate."""
         self._page.goto(self._base_url, wait_until="domcontentloaded")
         self._page.wait_for_function(
-            "document.querySelector('#root').children.length > 0"
+            "document.querySelector('#root').children.length > 0",
+            timeout=CONFIG.timeout_hydration,
         )
 
     # ── Section locators ──
@@ -22,11 +33,11 @@ class PortfolioPage:
     @property
     def hero_section(self) -> Locator:
         """The full-screen hero section."""
-        return self._page.locator("#hero")
+        return self._page.locator(SECTIONS.HERO)
 
     @property
     def hero_heading(self) -> Locator:
-        """The main h1 heading in the hero."""
+        """The main h1 heading."""
         return self._page.get_by_role("heading", level=1)
 
     @property
@@ -37,22 +48,22 @@ class PortfolioPage:
     @property
     def skills_section(self) -> Locator:
         """The skills section."""
-        return self._page.locator("#skills")
+        return self._page.locator(SECTIONS.SKILLS)
 
     @property
     def projects_section(self) -> Locator:
         """The projects section."""
-        return self._page.locator("#projects")
+        return self._page.locator(SECTIONS.PROJECTS)
 
     @property
     def contact_section(self) -> Locator:
         """The contact section."""
-        return self._page.locator("#contact")
+        return self._page.locator(SECTIONS.CONTACT)
 
     @property
     def test_results_section(self) -> Locator:
         """The test results section."""
-        return self._page.locator("#test-results")
+        return self._page.locator(SECTIONS.TEST_RESULTS)
 
     # ── Element locators ──
 
@@ -84,7 +95,7 @@ class PortfolioPage:
         """A specific skill by its visible text in the skills section."""
         return self.skills_section.get_by_text(name, exact=True)
 
-    # ── Query methods ──
+    # ── Queries ──
 
     def get_title(self) -> str:
         """Return the document title."""
@@ -110,7 +121,7 @@ class PortfolioPage:
         """Return the viewport width from page settings."""
         return self._page.viewport_size["width"]
 
-    def get_performance_load_time_ms(self) -> float:
+    def get_load_time_ms(self) -> float:
         """Return page load time in milliseconds via Performance API."""
         return self._page.evaluate(
             "performance.timing.loadEventEnd - performance.timing.navigationStart"

@@ -1,3 +1,5 @@
+"""Portfolio test suite — smoke, navigation, content, responsive, performance, a11y."""
+
 import sys
 from pathlib import Path
 
@@ -5,12 +7,14 @@ import pytest
 from playwright.sync_api import Page
 
 sys.path.insert(0, str(Path(__file__).parent))
+
+from config import CONFIG
+from constants import PAGE_TITLE, HERO, NAV, SKILLS, COUNTS, PERF
+from errors import Messages as Msg
 from pages.portfolio_page import PortfolioPage
 
 
-# ─────────────────────────────────────────────
-# Fixtures local to this module
-# ─────────────────────────────────────────────
+# ── Module fixtures ──
 
 @pytest.fixture()
 def portfolio(page: Page, base_url: str) -> PortfolioPage:
@@ -28,225 +32,183 @@ def mobile_portfolio(mobile_page: Page, base_url: str) -> PortfolioPage:
     return pom
 
 
-# ─────────────────────────────────────────────
-# Smoke tests — critical path
-# ─────────────────────────────────────────────
+# ── Smoke ──
 
 class TestSmoke:
 
     @pytest.mark.smoke
     def test_page_loads_with_correct_title(self, portfolio: PortfolioPage):
-        # Act
         title = portfolio.get_title()
 
-        # Assert
-        assert "QA" in title, f"Title should contain 'QA', got: '{title}'"
-        assert "Engineer" in title, f"Title should contain 'Engineer', got: '{title}'"
+        assert PAGE_TITLE.CONTAINS_ROLE in title, Msg.TITLE_MISSING_ROLE.format(
+            expected=PAGE_TITLE.CONTAINS_ROLE, actual=title,
+        )
+        assert PAGE_TITLE.CONTAINS_TYPE in title, Msg.TITLE_MISSING_ROLE.format(
+            expected=PAGE_TITLE.CONTAINS_TYPE, actual=title,
+        )
 
     @pytest.mark.smoke
     def test_hero_heading_displays_name(self, portfolio: PortfolioPage):
-        # Act
         text = portfolio.get_hero_heading_text()
 
-        # Assert
-        assert "Oleg" in text, f"Hero heading should contain 'Oleg', got: '{text}'"
+        assert HERO.CONTAINS_NAME in text, Msg.HERO_NAME_MISSING.format(
+            expected=HERO.CONTAINS_NAME, actual=text,
+        )
 
     @pytest.mark.smoke
     def test_navigation_is_present(self, portfolio: PortfolioPage):
-        # Assert
-        assert portfolio.navigation.is_visible(), "Primary navigation should be visible"
+        assert portfolio.navigation.is_visible(), Msg.NAV_NOT_VISIBLE
 
     @pytest.mark.smoke
     def test_page_has_no_javascript_errors(self, page: Page, base_url: str):
-        # Arrange — collect uncaught JS exceptions (not network 404s)
-        js_errors = []
+        js_errors: list[str] = []
         page.on("pageerror", lambda err: js_errors.append(str(err)))
 
-        # Act
         page.goto(base_url, wait_until="networkidle")
 
-        # Assert
-        assert js_errors == [], f"Uncaught JS errors: {js_errors}"
+        assert js_errors == [], Msg.JS_ERRORS_FOUND.format(errors=js_errors)
 
     @pytest.mark.smoke
     def test_react_app_hydrated_successfully(self, hydrated_page: Page):
-        # Assert
         child_count = hydrated_page.evaluate(
             "document.querySelector('#root').children.length"
         )
-        assert child_count > 0, "React root should have rendered child elements"
+        assert child_count > 0, Msg.HYDRATION_FAILED
 
-        error_boundary = hydrated_page.locator('[data-reactroot] .error-boundary, #root > [class*="error"]')
-        assert error_boundary.count() == 0, "No React error boundary should be rendered"
+        error_boundary = hydrated_page.locator(
+            '[data-reactroot] .error-boundary, #root > [class*="error"]'
+        )
+        assert error_boundary.count() == 0, Msg.ERROR_BOUNDARY_RENDERED
 
 
-# ─────────────────────────────────────────────
-# Navigation tests
-# ─────────────────────────────────────────────
+# ── Navigation ──
 
 class TestNavigation:
 
     @pytest.mark.navigation
-    @pytest.mark.parametrize("label, href", [
-        ("About", "#about"),
-        ("Skills", "#skills"),
-        ("Projects", "#projects"),
-        ("Contact", "#contact"),
-    ])
+    @pytest.mark.parametrize("label, href", NAV.ALL_WITH_HREFS)
     def test_nav_link_is_visible_with_correct_href(
-        self, portfolio: PortfolioPage, label: str, href: str
+        self, portfolio: PortfolioPage, label: str, href: str,
     ):
-        # Act
         link = portfolio.nav_link(label)
 
-        # Assert
-        assert link.is_visible(), f"Nav link '{label}' should be visible"
+        assert link.is_visible(), Msg.NAV_LINK_NOT_VISIBLE.format(name=label)
         actual_href = link.get_attribute("href")
-        assert actual_href == href, (
-            f"Nav link '{label}' href should be '{href}', got: '{actual_href}'"
+        assert actual_href == href, Msg.NAV_LINK_WRONG_HREF.format(
+            name=label, expected=href, actual=actual_href,
         )
 
 
-# ─────────────────────────────────────────────
-# Content tests
-# ─────────────────────────────────────────────
+# ── Content ──
 
 class TestContent:
 
     @pytest.mark.content
-    @pytest.mark.parametrize("skill", ["Python", "Playwright", "Pytest"])
+    @pytest.mark.parametrize("skill", SKILLS.ALL)
     def test_skills_section_contains_core_stack(
-        self, portfolio: PortfolioPage, skill: str
+        self, portfolio: PortfolioPage, skill: str,
     ):
-        # Act
         tag = portfolio.skill_text(skill)
 
-        # Assert
-        assert tag.first.is_visible(), (
-            f"Skill '{skill}' should be visible in the skills section"
-        )
+        assert tag.first.is_visible(), Msg.SKILL_NOT_VISIBLE.format(name=skill)
 
     @pytest.mark.content
-    def test_projects_section_has_three_cards(self, portfolio: PortfolioPage):
-        # Act
+    def test_projects_section_has_expected_cards(self, portfolio: PortfolioPage):
         count = portfolio.count_project_cards()
 
-        # Assert
-        assert count == 3, f"Expected 3 project cards, got: {count}"
+        assert count == COUNTS.PROJECT_CARDS, Msg.WRONG_PROJECT_COUNT.format(
+            expected=COUNTS.PROJECT_CARDS, actual=count,
+        )
 
     @pytest.mark.content
     def test_contact_section_has_required_channels(self, portfolio: PortfolioPage):
-        # Act
         count = portfolio.count_contact_links()
 
-        # Assert
-        assert count == 4, f"Expected 4 contact channels, got: {count}"
+        assert count == COUNTS.CONTACT_LINKS, Msg.WRONG_CONTACT_COUNT.format(
+            expected=COUNTS.CONTACT_LINKS, actual=count,
+        )
 
     @pytest.mark.content
     def test_test_results_section_renders(self, portfolio: PortfolioPage):
-        # Assert
         section = portfolio.test_results_section
-        assert section.is_visible(), "Test results section should be visible"
+
+        assert section.is_visible(), Msg.TEST_RESULTS_NOT_VISIBLE
 
         headings = section.get_by_role("heading")
-        assert headings.count() > 0, (
-            "Test results section should have at least one heading"
-        )
+        assert headings.count() > 0, Msg.TEST_RESULTS_NO_HEADINGS
 
 
-# ─────────────────────────────────────────────
-# Responsive tests
-# ─────────────────────────────────────────────
+# ── Responsive ──
 
 class TestResponsive:
 
     @pytest.mark.responsive
     def test_mobile_viewport_no_horizontal_scroll(
-        self, mobile_portfolio: PortfolioPage
+        self, mobile_portfolio: PortfolioPage,
     ):
-        # Act
         scroll_w = mobile_portfolio.get_scroll_width()
         viewport_w = mobile_portfolio.get_viewport_width()
 
-        # Assert
-        assert scroll_w <= viewport_w, (
-            f"Horizontal overflow on mobile: scrollWidth={scroll_w}, "
-            f"viewportWidth={viewport_w}"
+        assert scroll_w <= viewport_w, Msg.HORIZONTAL_OVERFLOW.format(
+            scroll_w=scroll_w, viewport_w=viewport_w,
         )
 
     @pytest.mark.responsive
     def test_mobile_hero_section_visible(self, mobile_portfolio: PortfolioPage):
-        # Assert
         assert mobile_portfolio.hero_heading.is_visible(), (
-            "Hero heading should be visible at 390px mobile viewport"
+            Msg.MOBILE_HERO_NOT_VISIBLE.format(width=CONFIG.mobile_width)
         )
 
 
-# ─────────────────────────────────────────────
-# Performance tests
-# ─────────────────────────────────────────────
+# ── Performance ──
 
 class TestPerformance:
 
     @pytest.mark.performance
-    def test_page_load_time_under_3_seconds(self, page: Page, base_url: str):
-        # Act
+    def test_page_load_time_within_budget(self, page: Page, base_url: str):
         page.goto(base_url, wait_until="load")
         load_ms = page.evaluate(
             "performance.timing.loadEventEnd - performance.timing.navigationStart"
         )
 
-        # Assert
-        assert load_ms < 3000, (
-            f"Page loaded in {load_ms:.0f}ms, expected under 3000ms"
+        assert load_ms < PERF.MAX_LOAD_TIME_MS, Msg.SLOW_PAGE_LOAD.format(
+            actual=load_ms, budget=PERF.MAX_LOAD_TIME_MS,
         )
 
 
-# ─────────────────────────────────────────────
-# Accessibility tests
-# ─────────────────────────────────────────────
+# ── Accessibility ──
 
 class TestAccessibility:
 
     @pytest.mark.accessibility
     def test_images_have_alt_text(self, portfolio: PortfolioPage):
-        # Act
         images = portfolio.all_images.all()
-        violations = []
-        for img in images:
-            alt = img.get_attribute("alt") or ""
-            if not alt.strip():
-                src = img.get_attribute("src") or "unknown"
-                violations.append(src)
+        violations = [
+            img.get_attribute("src") or "unknown"
+            for img in images
+            if not (img.get_attribute("alt") or "").strip()
+        ]
 
-        # Assert
-        assert violations == [], (
-            f"Images missing alt text: {violations}"
-        )
+        assert violations == [], Msg.IMAGES_MISSING_ALT.format(sources=violations)
 
     @pytest.mark.accessibility
     def test_headings_hierarchy_is_correct(self, portfolio: PortfolioPage):
-        # Act
         headings = portfolio.all_headings.all()
         tags = [h.evaluate("el => el.tagName.toLowerCase()") for h in headings]
 
-        # Assert — exactly one h1
         h1_count = tags.count("h1")
-        assert h1_count == 1, f"Expected exactly 1 h1, found: {h1_count}"
+        assert h1_count == COUNTS.H1_HEADINGS, Msg.WRONG_H1_COUNT.format(
+            expected=COUNTS.H1_HEADINGS, actual=h1_count,
+        )
 
-        # Assert — h1 comes before any h2
         h1_idx = tags.index("h1")
         h2_indices = [i for i, t in enumerate(tags) if t == "h2"]
         if h2_indices:
-            assert h1_idx < h2_indices[0], (
-                "h1 should appear before the first h2 in document order"
-            )
+            assert h1_idx < h2_indices[0], Msg.H1_NOT_FIRST
 
-        # Assert — no heading levels are skipped
         levels = [int(t[1]) for t in tags]
         for i in range(1, len(levels)):
             gap = levels[i] - levels[i - 1]
-            assert gap <= 1, (
-                f"Heading level skipped: h{levels[i-1]} followed by h{levels[i]} "
-                f"at position {i}"
+            assert gap <= 1, Msg.HEADING_LEVEL_SKIPPED.format(
+                prev=levels[i - 1], next=levels[i], pos=i,
             )

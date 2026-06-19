@@ -1,41 +1,45 @@
+"""Shared fixtures — HTTP server, browser, page contexts, hydration helpers."""
+
 import http.server
 import re
+import sys
 import threading
 from pathlib import Path
 
 import pytest
 from playwright.sync_api import sync_playwright, Page, BrowserContext
 
+sys.path.insert(0, str(Path(__file__).parent))
+
+from config import CONFIG
+
 DIST_DIR = str(Path(__file__).resolve().parent.parent / "dist")
-PORT = 8080
 
 
 def _detect_base_path() -> str:
-    """Read dist/index.html to find the actual Vite base path."""
+    """Read dist/index.html to find the Vite base path used at build time."""
     index = Path(DIST_DIR) / "index.html"
     if not index.exists():
         return "/"
     html = index.read_text()
-    m = re.search(r'src="(/[^"]*?)/assets/', html)
-    if m:
-        return m.group(1) + "/"
-    return "/"
+    match = re.search(r'src="(/[^"]*?)/assets/', html)
+    return match.group(1) + "/" if match else "/"
 
 
-BASE_PATH = _detect_base_path()
-BASE_URL = f"http://localhost:{PORT}{BASE_PATH}"
+_BASE_PATH = _detect_base_path()
+_BASE_URL = f"http://localhost:{CONFIG.server_port}{_BASE_PATH}"
 
 
 class _SilentHandler(http.server.SimpleHTTPRequestHandler):
-    """Serves dist/ files under whatever base path Vite was built with."""
+    """Serves dist/ under whatever base path Vite was built with."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=DIST_DIR, **kwargs)
 
     def translate_path(self, path: str) -> str:
-        if BASE_PATH != "/" and path.startswith(BASE_PATH):
-            path = "/" + path[len(BASE_PATH):]
-        elif BASE_PATH != "/" and path == BASE_PATH.rstrip("/"):
+        if _BASE_PATH != "/" and path.startswith(_BASE_PATH):
+            path = "/" + path[len(_BASE_PATH):]
+        elif _BASE_PATH != "/" and path == _BASE_PATH.rstrip("/"):
             path = "/"
         return super().translate_path(path)
 
@@ -43,16 +47,18 @@ class _SilentHandler(http.server.SimpleHTTPRequestHandler):
         pass
 
 
+# ── Session-scoped infrastructure ──
+
 @pytest.fixture(scope="session")
 def base_url() -> str:
     """Base URL for the local test server."""
-    return BASE_URL
+    return _BASE_URL
 
 
 @pytest.fixture(scope="session")
 def _http_server():
     """Session-scoped HTTP server serving the Vite dist/ build."""
-    server = http.server.HTTPServer(("", PORT), _SilentHandler)
+    server = http.server.HTTPServer(("", CONFIG.server_port), _SilentHandler)
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
     yield server
@@ -69,10 +75,14 @@ def _browser():
     pw.stop()
 
 
+# ── Function-scoped contexts and pages ──
+
 @pytest.fixture()
 def context(_http_server, _browser) -> BrowserContext:
-    """Function-scoped browser context — fresh state per test."""
-    ctx = _browser.new_context(viewport={"width": 1280, "height": 720})
+    """Function-scoped desktop browser context — fresh state per test."""
+    ctx = _browser.new_context(
+        viewport={"width": CONFIG.desktop_width, "height": CONFIG.desktop_height},
+    )
     yield ctx
     ctx.close()
 
@@ -88,32 +98,42 @@ def page(context: BrowserContext) -> Page:
 @pytest.fixture()
 def mobile_context(_http_server, _browser) -> BrowserContext:
     """Function-scoped mobile context — iPhone 14 viewport."""
-    ctx = _browser.new_context(viewport={"width": 390, "height": 844})
+    ctx = _browser.new_context(
+        viewport={"width": CONFIG.mobile_width, "height": CONFIG.mobile_height},
+    )
     yield ctx
     ctx.close()
 
 
 @pytest.fixture()
 def mobile_page(mobile_context: BrowserContext) -> Page:
-    """Function-scoped page at 390x844 mobile viewport."""
+    """Function-scoped page at mobile viewport."""
     pg = mobile_context.new_page()
     yield pg
     pg.close()
 
 
+# ── Hydration helpers ──
+
+def _wait_for_hydration(pg: Page, url: str) -> None:
+    """Navigate and wait for React to mount into #root."""
+    pg.goto(url, wait_until="domcontentloaded")
+    pg.locator("#root").wait_for(state="attached", timeout=CONFIG.timeout_hydration)
+    pg.wait_for_function(
+        "document.querySelector('#root').children.length > 0",
+        timeout=CONFIG.timeout_hydration,
+    )
+
+
 @pytest.fixture()
 def hydrated_page(page: Page, base_url: str) -> Page:
-    """Page navigated to base URL with React hydration confirmed."""
-    page.goto(base_url, wait_until="domcontentloaded")
-    page.locator("#root").wait_for(state="attached")
-    page.wait_for_function("document.querySelector('#root').children.length > 0")
+    """Desktop page navigated to base URL with React hydration confirmed."""
+    _wait_for_hydration(page, base_url)
     return page
 
 
 @pytest.fixture()
 def hydrated_mobile_page(mobile_page: Page, base_url: str) -> Page:
     """Mobile page navigated to base URL with React hydration confirmed."""
-    mobile_page.goto(base_url, wait_until="domcontentloaded")
-    mobile_page.locator("#root").wait_for(state="attached")
-    mobile_page.wait_for_function("document.querySelector('#root').children.length > 0")
+    _wait_for_hydration(mobile_page, base_url)
     return mobile_page
