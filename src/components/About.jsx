@@ -78,17 +78,27 @@ export default function About() {
         <div className="space-y-6">
           <div>
             <h3 className="text-lg font-bold mb-3">Why Quality Matters</h3>
+            <p className="text-slate-400 text-sm leading-relaxed mb-3">
+              I've spent 15 years watching the same failure modes repeat across
+              different companies and domains: test suites that nobody trusts,
+              automation that breaks faster than it's written, and releases that
+              go out on hope rather than evidence. That's what I actually work against.
+            </p>
+            <p className="text-slate-400 text-sm leading-relaxed mb-3">
+              I focus on building automation that stays stable — not impressive
+              coverage numbers that collapse under the first refactor. In medical
+              device software this wasn't a preference, it was a requirement.
+              FDA-regulated environments taught me that a flaky test is worse than
+              no test — it creates noise, erodes confidence, and eventually gets skipped.
+            </p>
             <p className="text-slate-400 text-sm leading-relaxed mb-4">
-              I believe every shipped feature deserves a safety net. My approach
-              combines strategic test design with pragmatic automation — covering
-              critical paths without slowing down delivery. Whether it's UI flows,
-              API contracts, or performance baselines, I build test infrastructure
-              that teams can trust.
+              The same principle applies everywhere else. Good automation is
+              invisible — it runs, it catches what matters, and it gets out of the way.
             </p>
             <div className="flex items-center gap-3">
               <Briefcase size={16} className="text-accent" />
               <span className="text-sm text-slate-400">
-                Previously at fintech and e-commerce companies
+                15+ years at GlobalLogic across healthcare and medical domains
               </span>
             </div>
           </div>

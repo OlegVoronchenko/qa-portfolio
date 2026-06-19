@@ -1,10 +1,10 @@
-import { ExternalLink, ShoppingCart, Server, Monitor } from 'lucide-react'
+import { ExternalLink, Smartphone, Activity, Cloud } from 'lucide-react'
 import { useProfile } from '../hooks/useProfile'
 
 const iconMap = {
-  'E2E Testing': <ShoppingCart size={20} />,
-  'API Testing': <Server size={20} />,
-  'Live Demo': <Monitor size={20} />,
+  'Healthcare ePCR Mobile Platform': <Smartphone size={20} />,
+  'Cardiac Device Validation': <Activity size={20} />,
+  'Cloud Emergency Response': <Cloud size={20} />,
 }
 
 const imageMap = {
@@ -43,7 +43,7 @@ export default function Projects() {
                 {p.type}
               </span>
               <div className="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-dark-800/90 border border-dark-600 flex items-center justify-center text-accent">
-                {iconMap[p.type] || <Monitor size={20} />}
+                {iconMap[p.name] || <Cloud size={20} />}
               </div>
             </div>
 

@@ -8,7 +8,7 @@
     "github": "https://olegvoronchenko.github.io/qa-portfolio",
     "availability": "Open to new opportunities"
   },
-  "summary": "Quality Test Automation Engineer with 15+ years of experience designing, building, and scaling automation solutions across Web, Mobile, API, Desktop, Embedded, and cloud-based systems. Led and mentored cross-functional QA/AQA teams of 5–10 engineers. Drove suite stability to 98% and reduced test execution time by up to 50%.",
+  "summary": "Test Automation Engineer with 15+ years of hands-on experience building automation solutions across Web, Mobile, API, Desktop, Embedded, and cloud systems — mostly in healthcare and medical device domains where quality is not optional. Led and mentored QA/AQA teams of 5–10 engineers. Drove suite stability to 98% and cut execution time by up to 50% through framework architecture, code reviews, and systematic flakiness elimination.",
   "stats": {
     "years_experience": "15+",
     "projects": "9+",
@@ -97,21 +97,21 @@
     {
       "name": "Healthcare ePCR Mobile Platform",
       "type": "E2E Testing",
-      "description": "Automation framework for Emergency Medical Services mobile platform handling critical patient data transmission. Android + iOS coverage with CI/CD integration.",
+      "description": "Android and iOS automation for emergency medical services platform used in real ambulance workflows. Patient data transmission at the point of care — the kind of system where a data loss bug is not a ticket, it's an incident.",
       "stack": ["Java", "Appium", "RESTAssured", "TestNG"],
       "metrics": ["Android + iOS coverage", "CI/CD integrated", "Reduced flaky failures"]
     },
     {
       "name": "Cardiac Device Validation",
       "type": "API Testing",
-      "description": "Automation for embedded cardiac rhythm device software in a regulated medical environment. FDA/ISO-oriented validation with audit preparation support.",
+      "description": "Automated validation for embedded cardiac rhythm device software in an FDA-regulated environment. Every test had to be traceable, every failure had to be investigated — no noise tolerated.",
       "stack": ["Java", "TestNG", "FDA/ISO compliance"],
       "metrics": ["FDA/ISO validation", "Critical workflow coverage"]
     },
     {
       "name": "Cloud Emergency Response",
       "type": "Live Demo",
-      "description": "End-to-end automation for cloud-based ePCR platform with complex healthcare integrations. Web, API, and integration coverage achieving 85% regression automation.",
+      "description": "Web, API, and integration automation for a cloud-based ePCR platform connecting hospitals, EMS crews, and dispatch centers. Complex data flows across multiple systems — regression coverage had to be airtight before every release.",
       "stack": ["Java", "Selenium", "RESTAssured", "Cucumber"],
       "metrics": ["85% regression coverage", "40% faster releases"]
     }

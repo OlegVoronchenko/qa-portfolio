@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Mail, Github, Linkedin } from 'lucide-react'
 import { useProfile } from '../hooks/useProfile'
 
@@ -8,6 +9,40 @@ const navLinks = [
   { label: 'Tests', href: '#test-results' },
   { label: 'Contact', href: '#contact' },
 ]
+
+const BADGE_URL = [
+  'https://hits.seeyoufarm.com/api/count/incr/badge.svg',
+  '?url=https%3A%2F%2Folegvoronchenko.github.io%2Fqa-portfolio%2F',
+  '&count_bg=%2310b981',
+  '&title_bg=%23111827',
+  '&icon=github.svg',
+  '&icon_color=%23FFFFFF',
+  '&title=visitors',
+  '&edge_flat=true',
+].join('')
+
+function VisitorBadge() {
+  const [loaded, setLoaded] = useState(false)
+  const [error, setError] = useState(false)
+
+  if (error) return null
+
+  return (
+    <div className="flex justify-center mt-6 pt-4 border-t border-white/5">
+      <img
+        src={BADGE_URL}
+        alt="Visitor count"
+        height={20}
+        style={{ height: '20px', display: loaded ? 'block' : 'none' }}
+        onLoad={() => setLoaded(true)}
+        onError={() => setError(true)}
+      />
+      {!loaded && !error && (
+        <span className="text-xs text-slate-600">loading visitors...</span>
+      )}
+    </div>
+  )
+}
 
 export default function Footer() {
   const profile = useProfile()
@@ -58,21 +93,7 @@ export default function Footer() {
         &copy; {new Date().getFullYear()} {profile.personal.name} — Built with React, tested with Playwright.
       </div>
 
-      <div className="flex justify-center mt-4 pt-4 border-t border-white/5">
-        <a
-          href="https://hits.seeyoufarm.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="opacity-60 hover:opacity-100 transition-opacity duration-200"
-        >
-          <img
-            src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Folegvoronchenko.github.io%2Fqa-portfolio%2F&count_bg=%2310b981&title_bg=%23111827&icon=github.svg&icon_color=%23FFFFFF&title=visitors&edge_flat=true"
-            alt="Visitor count"
-            width="120"
-            height="20"
-          />
-        </a>
-      </div>
+      <VisitorBadge />
     </footer>
   )
 }
