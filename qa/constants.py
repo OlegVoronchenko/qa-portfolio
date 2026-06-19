@@ -42,7 +42,7 @@ class NavLinks:
 
 @dataclass(frozen=True)
 class CoreSkills:
-    ALL: Tuple[str, ...] = ("Python", "Playwright", "Pytest")
+    ALL: Tuple[str, ...] = ("Python", "Playwright", "pytest")
 
 
 @dataclass(frozen=True)

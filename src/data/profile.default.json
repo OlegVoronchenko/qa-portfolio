@@ -81,17 +81,22 @@
     }
   ],
   "skills": {
-    "automation": ["Java", "Selenium", "Appium", "TestNG", "JUnit", "pytest", "Cucumber", "Python"],
+    "automation": ["Java", "Selenium", "Appium 2.x", "TestNG", "JUnit", "pytest", "NUnit", "Cucumber", "Python", "C#", "Playwright"],
     "api_testing": ["RESTAssured", "Postman", "REST API", "Swagger", "httpx", "requests"],
-    "cicd": ["Git", "GitHub Actions", "Maven", "Docker", "Jenkins"],
-    "reporting": ["TestRail", "Jira", "Zephyr", "Allure"],
-    "methodologies": ["BDD", "TDD", "Risk-Based Testing", "Agile/Scrum", "V&V", "API-first"]
+    "mobile": ["Android", "iOS", "Appium 2.x", "Cross-platform automation"],
+    "cicd": ["Git", "GitHub Actions", "Maven", "Jenkins", "Docker"],
+    "reporting": ["TestRail", "Jira", "Allure", "Azure DevOps", "Zephyr"],
+    "methodologies": ["BDD", "TDD", "Risk-Based Testing", "Shift-Left", "V&V", "Agile/Scrum", "FDA/ISO Compliance"]
   },
   "tools": [
-    { "category": "Languages", "items": ["Java", "Python", "C#", "SQL"] },
-    { "category": "Frameworks", "items": ["Selenium", "Appium", "TestNG", "pytest"] },
-    { "category": "CI/CD", "items": ["GitHub Actions", "Maven", "Docker", "Jenkins"] },
-    { "category": "Other", "items": ["REST API", "Postman", "Git", "Jira"] }
+    { "category": "Test Automation", "items": ["Java", "Selenium", "Appium 2.x", "TestNG", "pytest", "Cucumber"] },
+    { "category": "API Testing", "items": ["RESTAssured", "Postman", "REST API", "Swagger"] },
+    { "category": "Mobile Testing", "items": ["Appium 2.x", "Android", "iOS", "BrowserStack"] },
+    { "category": "Bug Tracking", "items": ["Jira", "Azure DevOps", "TestRail"] },
+    { "category": "Version Control", "items": ["Git", "GitHub", "GitHub Actions"] },
+    { "category": "CI/CD", "items": ["Jenkins", "GitHub Actions", "Maven", "Docker"] },
+    { "category": "Reporting", "items": ["Allure", "TestRail", "Zephyr", "Jira"] },
+    { "category": "Regulated Testing", "items": ["FDA 21 CFR Part 11", "ISO", "V&V", "Audit preparation"] }
   ],
   "projects": [
     {
