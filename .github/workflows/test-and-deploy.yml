@@ -30,6 +30,10 @@ jobs:
         env:
           VITE_BASE_PATH: /${{ github.event.repository.name }}/
 
+      - name: Inject deployment fingerprint
+        run: |
+          echo "${{ github.sha }}" > dist/version.txt
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -57,21 +61,21 @@ jobs:
           publish_dir: ./dist
           force_orphan: true
 
-      - name: Wait for GitHub Pages deployment
+      - name: Wait for correct deployment version
         run: |
-          echo "Waiting for GitHub Pages to deploy..."
-          sleep 30
-
-          MAX_ATTEMPTS=10
+          EXPECTED_SHA="${{ github.sha }}"
+          URL="https://olegvoronchenko.github.io/${{ github.event.repository.name }}/version.txt"
+          MAX_ATTEMPTS=20
           ATTEMPT=0
-          URL="${{ env.GITHUB_PAGES_URL }}"
+
+          echo "Waiting for SHA: $EXPECTED_SHA"
 
           while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
-            echo "Attempt $((ATTEMPT+1)): HTTP $STATUS"
+            DEPLOYED_SHA=$(curl -s "$URL" | tr -d '[:space:]')
+            echo "Attempt $((ATTEMPT+1)): deployed=$DEPLOYED_SHA"
 
-            if [ "$STATUS" = "200" ]; then
-              echo "GitHub Pages is live!"
+            if [ "$DEPLOYED_SHA" = "$EXPECTED_SHA" ]; then
+              echo "Correct version deployed!"
               break
             fi
 
@@ -80,9 +84,11 @@ jobs:
           done
 
           if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
-            echo "GitHub Pages did not respond after $MAX_ATTEMPTS attempts"
+            echo "Correct version never deployed"
             exit 1
           fi
 
       - name: Run deployment verification tests
         run: pytest tests/test_deployment.py -v --tb=short
+        env:
+          GITHUB_SHA: ${{ github.sha }}

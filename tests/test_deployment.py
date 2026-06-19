@@ -55,19 +55,35 @@ class TestDeployment:
         )
 
         # Act — navigate and wait for full network settle
-        deploy_page.goto(_PAGES_URL, wait_until="networkidle")
+        deploy_page.goto(
+            _PAGES_URL,
+            wait_until="networkidle",
+            timeout=CONFIG.timeout_navigation,
+        )
 
-        # Wait for React hydration using Playwright auto-retry
+        # Verify correct version is deployed
+        if CONFIG.github_sha:
+            version_url = _PAGES_URL.rstrip("/") + "/version.txt"
+            response = deploy_page.request.get(version_url)
+            deployed_sha = response.text().strip()
+            assert deployed_sha == CONFIG.github_sha, (
+                Msg.DEPLOY_WRONG_VERSION.format(
+                    expected=CONFIG.github_sha[:7],
+                    actual=deployed_sha[:7],
+                )
+            )
+
+        # Assert — no 404s on asset files (base path issue)
+        asset_failures = [u for u in failed_requests if "/assets/" in u]
+        assert asset_failures == [], Msg.ASSET_404.format(urls=asset_failures)
+
+        # Assert — React rendered using Playwright auto-retry
         expect(deploy_page.get_by_role("navigation")).to_be_visible(
             timeout=CONFIG.timeout_hydration,
         )
         expect(deploy_page.get_by_role("heading", level=1)).to_be_visible(
             timeout=CONFIG.timeout_hydration,
         )
-
-        # Assert — no 404s on asset files (base path issue)
-        asset_failures = [u for u in failed_requests if "/assets/" in u]
-        assert asset_failures == [], Msg.ASSET_404.format(urls=asset_failures)
 
         # Assert — title
         title = deploy_page.title()

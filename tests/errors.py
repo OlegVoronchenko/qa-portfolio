@@ -42,6 +42,9 @@ class Messages:
     )
 
     # Deployment
+    DEPLOY_WRONG_VERSION = (
+        "Wrong version deployed. Expected: {expected}, Got: {actual}"
+    )
     ASSET_404 = "Asset requests returned 404 (likely wrong base path): {urls}"
     DEPLOY_TITLE_WRONG = "Page title should contain '{expected}', got: '{actual}'"
     DEPLOY_NAV_NOT_VISIBLE = "Navigation not visible — React may have failed to render"

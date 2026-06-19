@@ -10,6 +10,7 @@ class TestConfig:
 
     base_url: str
     github_pages_url: str
+    github_sha: str
     timeout_default: int
     timeout_navigation: int
     timeout_hydration: int
@@ -25,6 +26,7 @@ def get_config() -> TestConfig:
     return TestConfig(
         base_url=os.getenv("BASE_URL", "http://localhost:8080"),
         github_pages_url=os.getenv("GITHUB_PAGES_URL", ""),
+        github_sha=os.getenv("GITHUB_SHA", ""),
         timeout_default=10_000,
         timeout_navigation=30_000,
         timeout_hydration=15_000,
