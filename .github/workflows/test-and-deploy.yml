@@ -21,6 +21,11 @@ jobs:
       - name: Install Node dependencies
         run: npm install
 
+      - name: Build Vite app
+        run: npm run build
+        env:
+          VITE_BASE_PATH: /${{ github.event.repository.name }}/
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -32,24 +37,13 @@ jobs:
       - name: Install Playwright browsers
         run: playwright install chromium --with-deps
 
-      - name: Build for testing
-        run: npm run build
-
       - name: Run tests
         run: pytest tests/ -v
 
       - name: Generate report
         run: python scripts/generate_report.py
 
-      - name: Rebuild for GitHub Pages
-        run: npm run build
-        env:
-          BASE_PATH: /qa-portfolio/
-
-      - name: Copy report to deploy build
-        run: cp reports/test_report.json dist/test_report.json
-
-      - name: Add SPA 404 fallback
+      - name: Copy index.html to 404.html
         run: cp dist/index.html dist/404.html
 
       - name: Deploy to GitHub Pages
@@ -58,3 +52,11 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
           force_orphan: true
+
+      - name: Wait for GitHub Pages deployment
+        run: sleep 30
+
+      - name: Run deployment verification tests
+        run: pytest tests/test_deployment.py -v --tb=short
+        env:
+          GITHUB_PAGES_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/

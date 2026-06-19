@@ -1,4 +1,5 @@
 import http.server
+import re
 import threading
 from pathlib import Path
 
@@ -7,12 +8,36 @@ from playwright.sync_api import sync_playwright, Page, BrowserContext
 
 DIST_DIR = str(Path(__file__).resolve().parent.parent / "dist")
 PORT = 8080
-BASE_URL = f"http://localhost:{PORT}"
+
+
+def _detect_base_path() -> str:
+    """Read dist/index.html to find the actual Vite base path."""
+    index = Path(DIST_DIR) / "index.html"
+    if not index.exists():
+        return "/"
+    html = index.read_text()
+    m = re.search(r'src="(/[^"]*?)/assets/', html)
+    if m:
+        return m.group(1) + "/"
+    return "/"
+
+
+BASE_PATH = _detect_base_path()
+BASE_URL = f"http://localhost:{PORT}{BASE_PATH}"
 
 
 class _SilentHandler(http.server.SimpleHTTPRequestHandler):
+    """Serves dist/ files under whatever base path Vite was built with."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=DIST_DIR, **kwargs)
+
+    def translate_path(self, path: str) -> str:
+        if BASE_PATH != "/" and path.startswith(BASE_PATH):
+            path = "/" + path[len(BASE_PATH):]
+        elif BASE_PATH != "/" and path == BASE_PATH.rstrip("/"):
+            path = "/"
+        return super().translate_path(path)
 
     def log_message(self, format, *args):
         pass
