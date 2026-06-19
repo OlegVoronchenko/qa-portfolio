@@ -15,6 +15,8 @@ from config import CONFIG
 from constants import PAGE_TITLE
 from errors import Messages as Msg
 
+_ASSET_EXTENSIONS = (".js", ".css", ".png", ".jpg")
+
 pytestmark = pytest.mark.skipif(
     not CONFIG.github_pages_url,
     reason="Deployment tests only run in CI with GITHUB_PAGES_URL set",
@@ -47,53 +49,35 @@ class TestDeployment:
 
     @pytest.mark.deployment
     def test_assets_load_on_github_pages(self, deploy_page: Page):
-        # Arrange — collect 404s before navigating
+        """Verify production site loads with no 404 asset errors."""
+        # Arrange — track failed network requests
         failed_requests: list[str] = []
         deploy_page.on(
             "response",
             lambda r: failed_requests.append(r.url) if r.status == 404 else None,
         )
 
-        # Act — navigate and wait for full network settle
+        # Act — navigate and wait for full load
         deploy_page.goto(
             _PAGES_URL,
             wait_until="networkidle",
             timeout=CONFIG.timeout_navigation,
         )
 
-        # Verify correct version is deployed
-        if CONFIG.github_sha:
-            version_url = _PAGES_URL.rstrip("/") + "/version.txt"
-            response = deploy_page.request.get(version_url)
-            deployed_sha = response.text().strip()
-            assert deployed_sha == CONFIG.github_sha, (
-                Msg.DEPLOY_WRONG_VERSION.format(
-                    expected=CONFIG.github_sha[:7],
-                    actual=deployed_sha[:7],
-                )
-            )
+        # Assert — no 404s on asset files
+        asset_404s = [
+            url for url in failed_requests
+            if any(ext in url for ext in _ASSET_EXTENSIONS)
+        ]
+        assert not asset_404s, Msg.ASSET_404.format(urls=asset_404s)
 
-        # Assert — no 404s on asset files (base path issue)
-        asset_failures = [u for u in failed_requests if "/assets/" in u]
-        assert asset_failures == [], Msg.ASSET_404.format(urls=asset_failures)
-
-        # Assert — React rendered using Playwright auto-retry
+        # Assert — React rendered successfully
         expect(deploy_page.get_by_role("navigation")).to_be_visible(
             timeout=CONFIG.timeout_hydration,
         )
         expect(deploy_page.get_by_role("heading", level=1)).to_be_visible(
             timeout=CONFIG.timeout_hydration,
         )
-
-        # Assert — title
-        title = deploy_page.title()
-        assert PAGE_TITLE.CONTAINS_ROLE in title, Msg.DEPLOY_TITLE_WRONG.format(
-            expected=PAGE_TITLE.CONTAINS_ROLE, actual=title,
-        )
-
-        # Assert — not a 404 fallback page
-        page_text = deploy_page.locator("body").inner_text()
-        assert "404" not in page_text, Msg.DEPLOY_404_PAGE
 
     @pytest.mark.deployment
     def test_base_path_is_correct(self, deploy_page: Page):

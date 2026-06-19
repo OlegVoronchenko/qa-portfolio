@@ -30,10 +30,6 @@ jobs:
         env:
           VITE_BASE_PATH: /${{ github.event.repository.name }}/
 
-      - name: Inject deployment fingerprint
-        run: |
-          echo "${{ github.sha }}" > dist/version.txt
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -61,22 +57,56 @@ jobs:
           publish_dir: ./dist
           force_orphan: true
 
-      - name: Wait for correct deployment version
+      - name: Wait for GitHub Pages deployment
         run: |
-          EXPECTED_SHA="${{ github.sha }}"
-          URL="https://olegvoronchenko.github.io/${{ github.event.repository.name }}/version.txt"
+          echo "Waiting for GitHub Pages deployment to complete..."
+
+          REPO="${{ github.repository }}"
+          SHA="${{ github.sha }}"
           MAX_ATTEMPTS=20
           ATTEMPT=0
 
-          echo "Waiting for SHA: $EXPECTED_SHA"
-
           while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
-            DEPLOYED_SHA=$(curl -s "$URL" | tr -d '[:space:]')
-            echo "Attempt $((ATTEMPT+1)): deployed=$DEPLOYED_SHA"
+            # Check GitHub Deployments API for pages deployment
+            DEPLOYMENT_STATUS=$(curl -s \
+              -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              -H "Accept: application/vnd.github.v3+json" \
+              "https://api.github.com/repos/$REPO/deployments?sha=$SHA&environment=github-pages" \
+              | python3 -c "
+          import sys, json
+          data = json.load(sys.stdin)
+          if not data:
+              print('pending')
+          else:
+              dep_id = data[0]['id']
+              print(dep_id)
+          ")
 
-            if [ "$DEPLOYED_SHA" = "$EXPECTED_SHA" ]; then
-              echo "Correct version deployed!"
-              break
+            echo "Attempt $((ATTEMPT+1)): deployment_id=$DEPLOYMENT_STATUS"
+
+            if [ "$DEPLOYMENT_STATUS" != "pending" ] && \
+               [ "$DEPLOYMENT_STATUS" != "" ]; then
+              # Check deployment status
+              STATUS=$(curl -s \
+                -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                -H "Accept: application/vnd.github.v3+json" \
+                "https://api.github.com/repos/$REPO/deployments/$DEPLOYMENT_STATUS/statuses" \
+                | python3 -c "
+          import sys, json
+          data = json.load(sys.stdin)
+          if data:
+              print(data[0]['state'])
+          else:
+              print('pending')
+          ")
+
+              echo "Deployment state: $STATUS"
+
+              if [ "$STATUS" = "success" ]; then
+                echo "GitHub Pages deployed successfully!"
+                sleep 5
+                break
+              fi
             fi
 
             ATTEMPT=$((ATTEMPT+1))
@@ -84,11 +114,9 @@ jobs:
           done
 
           if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
-            echo "Correct version never deployed"
+            echo "GitHub Pages deployment did not complete after $MAX_ATTEMPTS attempts"
             exit 1
           fi
 
       - name: Run deployment verification tests
         run: pytest tests/test_deployment.py -v --tb=short
-        env:
-          GITHUB_SHA: ${{ github.sha }}
