@@ -8,4 +8,7 @@ __pycache__/
 src/data/profile.json
 cv/parsed_profile.json
 qa/screenshots/*.png
+qa/screenshots/*.jpg
+!qa/screenshots/.gitkeep
+qa/.pytest_cache/
 qa/reports/
