@@ -10,6 +10,7 @@ permissions:
 env:
   GITHUB_PAGES_URL: >-
     https://olegvoronchenko.github.io/${{ github.event.repository.name }}/
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: false
 
 jobs:
   test-and-deploy:

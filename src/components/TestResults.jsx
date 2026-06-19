@@ -43,7 +43,7 @@ export default function TestResults() {
 
   const fetchReport = () => {
     setLoading(true)
-    fetch('/test_report.json')
+    fetch(`${import.meta.env.BASE_URL}test_report.json`)
       .then((r) => {
         if (!r.ok) throw new Error('not found')
         return r.json()
