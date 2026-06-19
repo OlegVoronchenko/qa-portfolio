@@ -81,7 +81,7 @@
     }
   ],
   "skills": {
-    "automation": ["Java", "Selenium", "Appium 2.x", "TestNG", "JUnit", "pytest", "Cucumber", "Python"],
+    "automation": ["Java", "Selenium", "Appium", "TestNG", "JUnit", "pytest", "Cucumber", "Python"],
     "api_testing": ["RESTAssured", "Postman", "REST API", "Swagger", "httpx", "requests"],
     "cicd": ["Git", "GitHub Actions", "Maven", "Docker", "Jenkins"],
     "reporting": ["TestRail", "Jira", "Zephyr", "Allure"],
@@ -98,7 +98,7 @@
       "name": "Healthcare ePCR Mobile Platform",
       "type": "E2E Testing",
       "description": "Automation framework for Emergency Medical Services mobile platform handling critical patient data transmission. Android + iOS coverage with CI/CD integration.",
-      "stack": ["Java", "Appium 2.x", "RESTAssured", "TestNG"],
+      "stack": ["Java", "Appium", "RESTAssured", "TestNG"],
       "metrics": ["Android + iOS coverage", "CI/CD integrated", "Reduced flaky failures"]
     },
     {

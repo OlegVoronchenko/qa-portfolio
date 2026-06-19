@@ -34,7 +34,7 @@ const practices = [
   {
     icon: <Smartphone size={20} />,
     title: 'Mobile & Cross-Platform',
-    desc: 'Android and iOS automation with Appium 2.x for healthcare-critical workflows across devices and OS versions.',
+    desc: 'Android and iOS automation with Appium for Healthcare-critical workflows across devices and OS versions.',
   },
 ]
 

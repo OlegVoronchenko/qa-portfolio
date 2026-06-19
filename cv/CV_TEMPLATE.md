@@ -1,4 +1,4 @@
-# Oleg V.
+# Oleg Voronchenko
 ## Lead Test Automation Engineer
 
 **Email:** your.email@gmail.com
@@ -77,7 +77,7 @@ Started test automation career in medical and financial systems, including cardi
 
 ## Skills
 
-**Test Automation:** Java, Selenium, Appium 2.x, TestNG, JUnit, pytest, NUnit, Cucumber, Python, C#
+**Test Automation:** Java, Selenium, Appium, TestNG, JUnit, pytest, NUnit, Cucumber, Python, C#
 **API Testing:** RESTAssured, Postman, REST API, Swagger, httpx, requests
 **Mobile Testing:** Android, iOS, Cross-platform automation
 **CI/CD:** Git, GitHub Actions, Maven, Jira, TestRail, Agile/Scrum
@@ -88,7 +88,7 @@ Started test automation career in medical and financial systems, including cardi
 
 ### Healthcare ePCR Mobile Platform
 **Type:** Mobile & API Automation
-**Stack:** Java, Appium 2.x, RESTAssured, TestNG, GitHub Actions
+**Stack:** Java, Appium, RESTAssured, TestNG, GitHub Actions
 **Description:** Automation framework for Emergency Medical Services mobile platform handling critical patient data transmission.
 **Metrics:**
 - Android + iOS coverage
