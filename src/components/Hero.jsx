@@ -67,10 +67,13 @@ export default function Hero() {
           {profile.personal.availability}
         </div>
 
-        <h1 data-testid="hero-name" className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mb-4">
-          Hi, I'm{' '}
+        <p className="text-sm md:text-lg text-slate-400 font-normal mb-1 tracking-wide">
+          Hi, I'm
+        </p>
+        <h1 data-testid="hero-name" className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-none mb-4">
+          <span className="text-white">Oleg </span>
           <span className="bg-gradient-to-r from-accent to-accent-teal bg-clip-text text-transparent">
-            {profile.personal.name}
+            Voronchenko
           </span>
         </h1>
 
