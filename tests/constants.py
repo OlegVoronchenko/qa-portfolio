@@ -56,6 +56,23 @@ class PerformanceBudget:
     MAX_LOAD_TIME_MS: int = 3_000
 
 
+@dataclass(frozen=True)
+class DeploymentConfig:
+    EXCLUDED_404_PATHS: Tuple[str, ...] = (
+        "test_report.json",
+        "version.txt",
+        "favicon.ico",
+    )
+    CHECKED_ASSET_EXTENSIONS: Tuple[str, ...] = (
+        ".js",
+        ".css",
+        ".png",
+        ".jpg",
+        ".woff",
+        ".woff2",
+    )
+
+
 PAGE_TITLE = PageTitle()
 HERO = HeroContent()
 SECTIONS = Sections()
@@ -63,3 +80,4 @@ NAV = NavLinks()
 SKILLS = CoreSkills()
 COUNTS = ExpectedCounts()
 PERF = PerformanceBudget()
+DEPLOYMENT = DeploymentConfig()

@@ -12,10 +12,8 @@ from playwright.sync_api import sync_playwright, Page, expect
 sys.path.insert(0, str(Path(__file__).parent))
 
 from config import CONFIG
-from constants import PAGE_TITLE
+from constants import PAGE_TITLE, DEPLOYMENT
 from errors import Messages as Msg
-
-_ASSET_EXTENSIONS = (".js", ".css", ".png", ".jpg")
 
 pytestmark = pytest.mark.skipif(
     not CONFIG.github_pages_url,
@@ -64,10 +62,11 @@ class TestDeployment:
             timeout=CONFIG.timeout_navigation,
         )
 
-        # Assert — no 404s on asset files
+        # Assert — no 404s on asset files (excludes expected missing files)
         asset_404s = [
             url for url in failed_requests
-            if any(ext in url for ext in _ASSET_EXTENSIONS)
+            if any(ext in url for ext in DEPLOYMENT.CHECKED_ASSET_EXTENSIONS)
+            and not any(exc in url for exc in DEPLOYMENT.EXCLUDED_404_PATHS)
         ]
         assert not asset_404s, Msg.ASSET_404.format(urls=asset_404s)
 

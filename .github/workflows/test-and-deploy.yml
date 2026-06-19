@@ -105,7 +105,6 @@ jobs:
 
               if [ "$STATUS" = "success" ]; then
                 echo "GitHub Pages deployed successfully!"
-                sleep 5
                 break
               fi
             fi
@@ -118,6 +117,9 @@ jobs:
             echo "GitHub Pages deployment did not complete after $MAX_ATTEMPTS attempts"
             exit 1
           fi
+
+      - name: Wait for CDN cache to clear
+        run: sleep 60
 
       - name: Run deployment verification tests
         run: pytest tests/test_deployment.py -v --tb=short
