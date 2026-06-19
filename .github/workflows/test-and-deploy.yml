@@ -28,7 +28,7 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install Python dependencies
+      - name: Install CV parser dependencies
         run: pip install -r requirements.txt
 
       - name: Parse CV or use default profile
@@ -52,12 +52,17 @@ jobs:
         env:
           VITE_BASE_PATH: /${{ github.event.repository.name }}/
 
+      - name: Install test dependencies
+        working-directory: qa
+        run: pip install -r requirements.txt
+
       - name: Install Playwright browsers
-        run: playwright install chromium --with-deps
+        working-directory: qa
+        run: python -m playwright install chromium --with-deps
 
       - name: Run tests
         working-directory: qa
-        run: pytest tests/ -v
+        run: pytest tests/ -v --tb=short
 
       - name: Generate report
         run: python scripts/generate_report.py

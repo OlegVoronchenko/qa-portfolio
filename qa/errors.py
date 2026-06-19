@@ -6,21 +6,41 @@ class Messages:
     TITLE_MISSING_NAME = "Page title should contain engineer name, got: '{title}'"
     TITLE_MISSING_ROLE = "Page title should contain '{expected}', got: '{actual}'"
     HERO_NAME_MISSING = "Hero heading should contain '{expected}', got: '{actual}'"
-    NAV_NOT_VISIBLE = "Primary navigation should be visible on page load"
+    NAV_NOT_VISIBLE = (
+        "No navigation landmark found on '{url}'. "
+        "Found {count} elements with role='navigation'. "
+        "Expected at least 1 visible <nav>."
+    )
     JS_ERRORS_FOUND = "Uncaught JavaScript errors on page: {errors}"
-    HYDRATION_FAILED = "React root should have rendered child elements"
-    ERROR_BOUNDARY_RENDERED = "No React error boundary should be rendered"
+    HYDRATION_FAILED = (
+        "React #root has {actual} children on '{url}'. "
+        "Expected > 0. "
+        "This usually means JS failed to load or execute. "
+        "Preview: '{preview}'"
+    )
+    ERROR_BOUNDARY_RENDERED = (
+        "React error boundary detected ({count} elements) on '{url}'. "
+        "The app crashed during render."
+    )
 
     # Navigation
     NAV_LINK_NOT_VISIBLE = "Nav link '{name}' should be visible in navbar"
-    NAV_LINK_WRONG_HREF = "Nav link '{name}' href should be '{expected}', got: '{actual}'"
+    NAV_LINK_WRONG_HREF = (
+        "Nav link '{name}' href should be '{expected}', got: '{actual}'"
+    )
 
     # Content
     SKILL_NOT_VISIBLE = "Skill '{name}' should be visible in the skills section"
     WRONG_PROJECT_COUNT = "Expected {expected} project cards, got: {actual}"
     WRONG_CONTACT_COUNT = "Expected {expected} contact channels, got: {actual}"
-    TEST_RESULTS_NOT_VISIBLE = "Test results section should be visible"
-    TEST_RESULTS_NO_HEADINGS = "Test results section should have at least one heading"
+    TEST_RESULTS_NOT_VISIBLE = (
+        "Test results section not visible on '{url}'. "
+        "Section exists in DOM: {exists}."
+    )
+    TEST_RESULTS_NO_HEADINGS = (
+        "Test results section has {actual} headings on '{url}'. "
+        "Expected at least 1."
+    )
 
     # Responsive
     HORIZONTAL_OVERFLOW = (
@@ -45,10 +65,27 @@ class Messages:
     # Deployment
     ASSET_404 = "Asset requests returned 404 (likely wrong base path): {urls}"
     DEPLOY_TITLE_WRONG = "Page title should contain '{expected}', got: '{actual}'"
-    DEPLOY_NAV_NOT_VISIBLE = "Navigation not visible — React may have failed to render"
-    DEPLOY_H1_NOT_VISIBLE = "h1 heading not visible — React may have failed to render"
+    DEPLOY_NAV_NOT_FOUND = (
+        "Navigation not found on '{url}'. "
+        "Found {count} elements with role='navigation'. "
+        "React may not have hydrated."
+    )
+    DEPLOY_NAV_HIDDEN = (
+        "Navigation exists ({count} elements) but is not visible on '{url}'."
+    )
+    DEPLOY_H1_WRONG_COUNT = (
+        "Expected exactly 1 h1 on production, found {actual} on '{url}'."
+    )
+    DEPLOY_H1_EMPTY = "h1 exists but has no text content on '{url}'."
+    DEPLOY_NAV_NOT_VISIBLE = (
+        "Navigation not visible on '{url}' — React may have failed to render"
+    )
+    DEPLOY_H1_NOT_VISIBLE = (
+        "h1 heading not visible on '{url}' — React may have failed to render"
+    )
     DEPLOY_404_PAGE = "Page displays 404 text — deployment may have failed"
     DEPLOY_WRONG_BASE_PATH = (
-        "Assets using wrong base path '/assets/' instead of repo-prefixed path: {paths}"
+        "Assets using wrong base path '/assets/' instead of "
+        "repo-prefixed path: {paths}"
     )
     DEPLOY_JS_ERRORS = "JavaScript errors on production: {errors}"

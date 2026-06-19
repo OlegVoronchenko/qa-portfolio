@@ -9,6 +9,7 @@ from playwright.sync_api import Page
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from config import CONFIG
+from conftest import step
 from constants import PAGE_TITLE, HERO, NAV, SKILLS, COUNTS, PERF
 from errors import Messages as Msg
 from pages.portfolio_page import PortfolioPage
@@ -38,53 +39,139 @@ class TestSmoke:
 
     @pytest.mark.smoke
     def test_page_loads_with_correct_title(self, portfolio: PortfolioPage):
-        title = portfolio.get_title()
-        portfolio.take_screenshot("assert_page_title")
+        """Verify the browser tab title identifies the engineer.
 
-        assert PAGE_TITLE.CONTAINS_NAME in title, Msg.TITLE_MISSING_NAME.format(
-            title=title,
-        )
-        assert PAGE_TITLE.CONTAINS_ROLE in title, Msg.TITLE_MISSING_ROLE.format(
-            expected=PAGE_TITLE.CONTAINS_ROLE, actual=title,
-        )
-        assert PAGE_TITLE.CONTAINS_TYPE in title, Msg.TITLE_MISSING_ROLE.format(
-            expected=PAGE_TITLE.CONTAINS_TYPE, actual=title,
-        )
+        Checks three substrings in page.title():
+          - Name:  'Oleg'
+          - Role:  'Automation'
+          - Type:  'Engineer'
+
+        Failure means: either the page didn't load, or the
+        <title> tag in index.html was changed incorrectly.
+        """
+        with step("Read page title from browser tab"):
+            title = portfolio.get_title()
+
+        with step("Capture screenshot before assertions"):
+            portfolio.take_screenshot("assert_page_title")
+
+        with step(f"Assert title contains name '{PAGE_TITLE.CONTAINS_NAME}'"):
+            assert PAGE_TITLE.CONTAINS_NAME in title, \
+                Msg.TITLE_MISSING_NAME.format(title=title)
+
+        with step(f"Assert title contains role '{PAGE_TITLE.CONTAINS_ROLE}'"):
+            assert PAGE_TITLE.CONTAINS_ROLE in title, \
+                Msg.TITLE_MISSING_ROLE.format(
+                    expected=PAGE_TITLE.CONTAINS_ROLE, actual=title,
+                )
+
+        with step(f"Assert title contains type '{PAGE_TITLE.CONTAINS_TYPE}'"):
+            assert PAGE_TITLE.CONTAINS_TYPE in title, \
+                Msg.TITLE_MISSING_ROLE.format(
+                    expected=PAGE_TITLE.CONTAINS_TYPE, actual=title,
+                )
 
     @pytest.mark.smoke
     def test_hero_heading_displays_name(self, portfolio: PortfolioPage):
-        text = portfolio.get_hero_heading_text()
-        portfolio.take_screenshot("assert_hero_heading")
+        """Verify the main h1 heading contains the engineer's name.
 
-        assert HERO.CONTAINS_NAME in text, Msg.HERO_NAME_MISSING.format(
-            expected=HERO.CONTAINS_NAME, actual=text,
-        )
+        Locates the first heading with level=1 via ARIA role
+        and checks that it contains 'Oleg'.
+
+        Failure means: Hero component didn't render, or the
+        name was removed from the h1 element.
+        """
+        with step("Get h1 heading text content"):
+            text = portfolio.get_hero_heading_text()
+
+        with step("Capture screenshot of hero section"):
+            portfolio.take_screenshot("assert_hero_heading")
+
+        with step(f"Assert heading contains '{HERO.CONTAINS_NAME}'"):
+            assert HERO.CONTAINS_NAME in text, Msg.HERO_NAME_MISSING.format(
+                expected=HERO.CONTAINS_NAME, actual=text,
+            )
 
     @pytest.mark.smoke
     def test_navigation_is_present(self, portfolio: PortfolioPage):
-        portfolio.take_screenshot("assert_navigation")
-        assert portfolio.navigation.is_visible(), Msg.NAV_NOT_VISIBLE
+        """Verify a <nav> landmark exists and is visible.
+
+        Uses ARIA role='navigation' to locate the navbar.
+        Checks both element count and visibility.
+
+        Failure means: Navbar component didn't render, or
+        the <nav> element was replaced with a non-semantic tag.
+        """
+        with step("Locate navigation landmark by ARIA role"):
+            nav = portfolio.navigation
+            nav_count = nav.count()
+
+        with step("Capture screenshot of navigation"):
+            portfolio.take_screenshot("assert_navigation")
+
+        with step(f"Assert navigation is visible (found {nav_count} elements)"):
+            url = portfolio._page.url
+            assert nav.is_visible(), Msg.NAV_NOT_VISIBLE.format(
+                url=url, count=nav_count,
+            )
 
     @pytest.mark.smoke
     def test_page_has_no_javascript_errors(self, page: Page, base_url: str):
+        """Verify no uncaught JS exceptions during page load.
+
+        Attaches a listener to the 'pageerror' event before
+        navigation, then asserts the error list is empty.
+
+        Failure means: a runtime JS error occurred — could be
+        a missing module, undefined variable, or API failure.
+        """
         js_errors: list[str] = []
-        page.on("pageerror", lambda err: js_errors.append(str(err)))
 
-        page.goto(base_url, wait_until="networkidle")
+        with step("Attach JavaScript error listener"):
+            page.on("pageerror", lambda err: js_errors.append(str(err)))
 
-        assert js_errors == [], Msg.JS_ERRORS_FOUND.format(errors=js_errors)
+        with step(f"Navigate to {base_url} and wait for network idle"):
+            page.goto(base_url, wait_until="networkidle")
+
+        with step("Assert no JavaScript errors were captured"):
+            assert js_errors == [], Msg.JS_ERRORS_FOUND.format(errors=js_errors)
 
     @pytest.mark.smoke
     def test_react_app_hydrated_successfully(self, hydrated_page: Page):
-        child_count = hydrated_page.evaluate(
-            "document.querySelector('#root').children.length"
-        )
-        assert child_count > 0, Msg.HYDRATION_FAILED
+        """Verify React mounted into #root with child elements.
 
-        error_boundary = hydrated_page.locator(
-            '[data-reactroot] .error-boundary, #root > [class*="error"]'
-        )
-        assert error_boundary.count() == 0, Msg.ERROR_BOUNDARY_RENDERED
+        Checks that #root has at least one child (React rendered)
+        and no error boundary is displayed (React didn't crash).
+
+        Failure means: JS bundle failed to execute, or React
+        threw during render and an error boundary caught it.
+        """
+        with step("Count #root child elements"):
+            child_count = hydrated_page.evaluate(
+                "document.querySelector('#root').children.length"
+            )
+
+        with step("Get #root innerHTML preview for diagnostics"):
+            preview = hydrated_page.evaluate(
+                "document.querySelector('#root').innerHTML.slice(0, 200)"
+            )
+            url = hydrated_page.url
+
+        with step(f"Assert #root has children (found {child_count})"):
+            assert child_count > 0, Msg.HYDRATION_FAILED.format(
+                actual=child_count, url=url, preview=preview,
+            )
+
+        with step("Check for React error boundary"):
+            error_boundary = hydrated_page.locator(
+                '[data-reactroot] .error-boundary, #root > [class*="error"]'
+            )
+            boundary_count = error_boundary.count()
+
+        with step(f"Assert no error boundary rendered (found {boundary_count})"):
+            assert boundary_count == 0, Msg.ERROR_BOUNDARY_RENDERED.format(
+                count=boundary_count, url=url,
+            )
 
 
 # ── Navigation ──
@@ -96,13 +183,25 @@ class TestNavigation:
     def test_nav_link_is_visible_with_correct_href(
         self, portfolio: PortfolioPage, label: str, href: str,
     ):
-        link = portfolio.nav_link(label)
+        """Verify each nav link is visible with the correct anchor href.
 
-        assert link.is_visible(), Msg.NAV_LINK_NOT_VISIBLE.format(name=label)
-        actual_href = link.get_attribute("href")
-        assert actual_href == href, Msg.NAV_LINK_WRONG_HREF.format(
-            name=label, expected=href, actual=actual_href,
-        )
+        Parametrized across all nav items defined in constants.
+        Checks visibility and href attribute for each link.
+
+        Failure means: a nav link was removed, hidden, or its
+        href was changed in the Navbar component.
+        """
+        with step(f"Locate nav link '{label}'"):
+            link = portfolio.nav_link(label)
+
+        with step(f"Assert '{label}' link is visible"):
+            assert link.is_visible(), Msg.NAV_LINK_NOT_VISIBLE.format(name=label)
+
+        with step(f"Assert '{label}' href equals '{href}'"):
+            actual_href = link.get_attribute("href")
+            assert actual_href == href, Msg.NAV_LINK_WRONG_HREF.format(
+                name=label, expected=href, actual=actual_href,
+            )
 
 
 # ── Content ──
@@ -114,38 +213,96 @@ class TestContent:
     def test_skills_section_contains_core_stack(
         self, portfolio: PortfolioPage, skill: str,
     ):
-        tag = portfolio.skill_text(skill)
-        portfolio.take_screenshot(f"assert_skill_{skill.lower()}")
+        """Verify core skill tag is visible in the Skills section.
 
-        assert tag.first.is_visible(), Msg.SKILL_NOT_VISIBLE.format(name=skill)
+        Parametrized across Python, Playwright, pytest.
+        Uses exact text matching within #skills.
+
+        Failure means: the skill was removed from profile.json
+        or the Skills component stopped rendering it.
+        """
+        with step(f"Locate skill tag with exact text '{skill}'"):
+            tag = portfolio.skill_text(skill)
+
+        with step("Capture screenshot of skills section"):
+            portfolio.take_screenshot(f"assert_skill_{skill.lower()}")
+
+        with step(f"Assert '{skill}' tag is visible"):
+            assert tag.first.is_visible(), Msg.SKILL_NOT_VISIBLE.format(name=skill)
 
     @pytest.mark.content
     def test_projects_section_has_expected_cards(self, portfolio: PortfolioPage):
-        count = portfolio.count_project_cards()
-        portfolio.take_screenshot("assert_project_cards")
+        """Verify the Projects section renders the expected number of cards.
 
-        assert count == COUNTS.PROJECT_CARDS, Msg.WRONG_PROJECT_COUNT.format(
-            expected=COUNTS.PROJECT_CARDS, actual=count,
-        )
+        Counts elements with role='article' inside #projects.
+        Expected: {COUNTS.PROJECT_CARDS} cards from profile.json.
+
+        Failure means: a project was added or removed from
+        profile.json, or the Projects component changed markup.
+        """
+        with step("Count project cards with role='article'"):
+            count = portfolio.count_project_cards()
+
+        with step("Capture screenshot of project cards"):
+            portfolio.take_screenshot("assert_project_cards")
+
+        with step(f"Assert {COUNTS.PROJECT_CARDS} project cards (found {count})"):
+            assert count == COUNTS.PROJECT_CARDS, Msg.WRONG_PROJECT_COUNT.format(
+                expected=COUNTS.PROJECT_CARDS, actual=count,
+            )
 
     @pytest.mark.content
     def test_contact_section_has_required_channels(self, portfolio: PortfolioPage):
-        count = portfolio.count_contact_links()
-        portfolio.take_screenshot("assert_contact_channels")
+        """Verify the Contact section renders the expected number of links.
 
-        assert count == COUNTS.CONTACT_LINKS, Msg.WRONG_CONTACT_COUNT.format(
-            expected=COUNTS.CONTACT_LINKS, actual=count,
-        )
+        Counts links with role='link' inside #contact.
+        Expected: {COUNTS.CONTACT_LINKS} channels from profile.json.
+
+        Failure means: a contact channel was added or removed
+        from profile.json, or the Contact component changed.
+        """
+        with step("Count contact links with role='link'"):
+            count = portfolio.count_contact_links()
+
+        with step("Capture screenshot of contact section"):
+            portfolio.take_screenshot("assert_contact_channels")
+
+        with step(f"Assert {COUNTS.CONTACT_LINKS} contact links (found {count})"):
+            assert count == COUNTS.CONTACT_LINKS, Msg.WRONG_CONTACT_COUNT.format(
+                expected=COUNTS.CONTACT_LINKS, actual=count,
+            )
 
     @pytest.mark.content
     def test_test_results_section_renders(self, portfolio: PortfolioPage):
-        section = portfolio.test_results_section
-        portfolio.take_screenshot("assert_test_results")
+        """Verify the Test Results section is visible with headings.
 
-        assert section.is_visible(), Msg.TEST_RESULTS_NOT_VISIBLE
+        Checks that #test-results is visible in the DOM and
+        contains at least one heading element.
 
-        headings = section.get_by_role("heading")
-        assert headings.count() > 0, Msg.TEST_RESULTS_NO_HEADINGS
+        Failure means: TestResults component didn't render,
+        the section ID was changed, or content is empty.
+        """
+        with step("Locate test results section by ID"):
+            section = portfolio.test_results_section
+            url = portfolio._page.url
+
+        with step("Capture screenshot of test results"):
+            portfolio.take_screenshot("assert_test_results")
+
+        with step("Assert test results section is visible"):
+            exists = section.count() > 0
+            assert section.is_visible(), Msg.TEST_RESULTS_NOT_VISIBLE.format(
+                url=url, exists=exists,
+            )
+
+        with step("Count headings inside test results section"):
+            headings = section.get_by_role("heading")
+            heading_count = headings.count()
+
+        with step(f"Assert at least 1 heading (found {heading_count})"):
+            assert heading_count > 0, Msg.TEST_RESULTS_NO_HEADINGS.format(
+                actual=heading_count, url=url,
+            )
 
 
 # ── Responsive ──
@@ -156,20 +313,45 @@ class TestResponsive:
     def test_mobile_viewport_no_horizontal_scroll(
         self, mobile_portfolio: PortfolioPage,
     ):
-        scroll_w = mobile_portfolio.get_scroll_width()
-        viewport_w = mobile_portfolio.get_viewport_width()
-        mobile_portfolio.take_screenshot("assert_mobile_no_scroll")
+        """Verify no horizontal overflow at 390px mobile viewport.
 
-        assert scroll_w <= viewport_w, Msg.HORIZONTAL_OVERFLOW.format(
-            scroll_w=scroll_w, viewport_w=viewport_w,
-        )
+        Compares document.scrollWidth against the viewport width.
+        scrollWidth > viewportWidth means content overflows.
+
+        Failure means: an element is wider than the viewport —
+        check for fixed-width containers or unresponsive images.
+        """
+        with step("Measure document scroll width"):
+            scroll_w = mobile_portfolio.get_scroll_width()
+
+        with step("Get viewport width"):
+            viewport_w = mobile_portfolio.get_viewport_width()
+
+        with step("Capture screenshot at 390px viewport"):
+            mobile_portfolio.take_screenshot("assert_mobile_no_scroll")
+
+        with step(f"Assert no overflow (scroll={scroll_w}, viewport={viewport_w})"):
+            assert scroll_w <= viewport_w, Msg.HORIZONTAL_OVERFLOW.format(
+                scroll_w=scroll_w, viewport_w=viewport_w,
+            )
 
     @pytest.mark.responsive
     def test_mobile_hero_section_visible(self, mobile_portfolio: PortfolioPage):
-        mobile_portfolio.take_screenshot("assert_mobile_hero")
-        assert mobile_portfolio.hero_heading.is_visible(), (
-            Msg.MOBILE_HERO_NOT_VISIBLE.format(width=CONFIG.mobile_width)
-        )
+        """Verify the hero h1 heading is visible at mobile viewport.
+
+        Checks that the main heading is not hidden or pushed
+        off-screen at 390px width.
+
+        Failure means: CSS media queries or layout changes are
+        hiding the hero at small viewport sizes.
+        """
+        with step("Capture screenshot of mobile hero"):
+            mobile_portfolio.take_screenshot("assert_mobile_hero")
+
+        with step(f"Assert hero heading visible at {CONFIG.mobile_width}px"):
+            assert mobile_portfolio.hero_heading.is_visible(), (
+                Msg.MOBILE_HERO_NOT_VISIBLE.format(width=CONFIG.mobile_width)
+            )
 
 
 # ── Performance ──
@@ -178,14 +360,28 @@ class TestPerformance:
 
     @pytest.mark.performance
     def test_page_load_time_within_budget(self, page: Page, base_url: str):
-        page.goto(base_url, wait_until="load")
-        load_ms = page.evaluate(
-            "performance.timing.loadEventEnd - performance.timing.navigationStart"
-        )
+        """Verify page loads within the performance budget.
 
-        assert load_ms < PERF.MAX_LOAD_TIME_MS, Msg.SLOW_PAGE_LOAD.format(
-            actual=load_ms, budget=PERF.MAX_LOAD_TIME_MS,
-        )
+        Uses Navigation Timing API to measure total load time
+        (navigationStart to loadEventEnd).
+        Budget: 3000ms.
+
+        Failure means: the page is too slow — check bundle size,
+        blocking resources, or server response time.
+        """
+        with step(f"Navigate to {base_url} and wait for load event"):
+            page.goto(base_url, wait_until="load")
+
+        with step("Measure load time via Navigation Timing API"):
+            load_ms = page.evaluate(
+                "performance.timing.loadEventEnd "
+                "- performance.timing.navigationStart"
+            )
+
+        with step(f"Assert load time {load_ms:.0f}ms < {PERF.MAX_LOAD_TIME_MS}ms"):
+            assert load_ms < PERF.MAX_LOAD_TIME_MS, Msg.SLOW_PAGE_LOAD.format(
+                actual=load_ms, budget=PERF.MAX_LOAD_TIME_MS,
+            )
 
 
 # ── Accessibility ──
@@ -194,34 +390,64 @@ class TestAccessibility:
 
     @pytest.mark.accessibility
     def test_images_have_alt_text(self, portfolio: PortfolioPage):
-        images = portfolio.all_images.all()
-        violations = [
-            img.get_attribute("src") or "unknown"
-            for img in images
-            if not (img.get_attribute("alt") or "").strip()
-        ]
-        portfolio.take_screenshot("assert_images_alt")
+        """Verify every <img> element has a non-empty alt attribute.
 
-        assert violations == [], Msg.IMAGES_MISSING_ALT.format(sources=violations)
+        Scans all images on the page and collects those missing alt.
+        Reports the src of each violating image.
+
+        Failure means: an image was added without alt text —
+        this breaks screen readers and fails WCAG 2.1 Level A.
+        """
+        with step("Find all <img> elements on page"):
+            images = portfolio.all_images.all()
+
+        with step(f"Check alt attribute on {len(images)} images"):
+            violations = [
+                img.get_attribute("src") or "unknown"
+                for img in images
+                if not (img.get_attribute("alt") or "").strip()
+            ]
+
+        with step("Capture screenshot before assertion"):
+            portfolio.take_screenshot("assert_images_alt")
+
+        with step(f"Assert no images missing alt ({len(violations)} violations)"):
+            assert violations == [], Msg.IMAGES_MISSING_ALT.format(
+                sources=violations,
+            )
 
     @pytest.mark.accessibility
     def test_headings_hierarchy_is_correct(self, portfolio: PortfolioPage):
-        headings = portfolio.all_headings.all()
-        tags = [h.evaluate("el => el.tagName.toLowerCase()") for h in headings]
+        """Verify heading levels follow semantic HTML hierarchy.
 
-        h1_count = tags.count("h1")
-        assert h1_count == COUNTS.H1_HEADINGS, Msg.WRONG_H1_COUNT.format(
-            expected=COUNTS.H1_HEADINGS, actual=h1_count,
-        )
+        Checks three rules:
+          1. Exactly one h1 on the page
+          2. h1 appears before any h2
+          3. No heading level is skipped (e.g., h2 followed by h4)
 
-        h1_idx = tags.index("h1")
-        h2_indices = [i for i, t in enumerate(tags) if t == "h2"]
-        if h2_indices:
-            assert h1_idx < h2_indices[0], Msg.H1_NOT_FIRST
+        Failure means: heading hierarchy is broken — this hurts
+        screen reader navigation and SEO.
+        """
+        with step("Collect all heading elements and their tag names"):
+            headings = portfolio.all_headings.all()
+            tags = [h.evaluate("el => el.tagName.toLowerCase()") for h in headings]
 
-        levels = [int(t[1]) for t in tags]
-        for i in range(1, len(levels)):
-            gap = levels[i] - levels[i - 1]
-            assert gap <= 1, Msg.HEADING_LEVEL_SKIPPED.format(
-                prev=levels[i - 1], next=levels[i], pos=i,
+        with step(f"Assert exactly {COUNTS.H1_HEADINGS} h1 (found {tags.count('h1')})"):
+            h1_count = tags.count("h1")
+            assert h1_count == COUNTS.H1_HEADINGS, Msg.WRONG_H1_COUNT.format(
+                expected=COUNTS.H1_HEADINGS, actual=h1_count,
             )
+
+        with step("Assert h1 appears before first h2"):
+            h1_idx = tags.index("h1")
+            h2_indices = [i for i, t in enumerate(tags) if t == "h2"]
+            if h2_indices:
+                assert h1_idx < h2_indices[0], Msg.H1_NOT_FIRST
+
+        with step("Assert no heading levels are skipped"):
+            levels = [int(t[1]) for t in tags]
+            for i in range(1, len(levels)):
+                gap = levels[i] - levels[i - 1]
+                assert gap <= 1, Msg.HEADING_LEVEL_SKIPPED.format(
+                    prev=levels[i - 1], next=levels[i], pos=i,
+                )

@@ -1,5 +1,6 @@
 """Shared fixtures — HTTP server, browser, page contexts, hydration helpers, screenshots."""
 
+import contextlib
 import http.server
 import re
 import sys
@@ -155,3 +156,13 @@ def capture_screenshot(request, page: Page):
         page.screenshot(path=str(path), full_page=False)
     except Exception:
         pass
+
+
+# ── Step logging ──
+
+@contextlib.contextmanager
+def step(description: str):
+    """Log a test step for structured debugging output."""
+    print(f"\n    STEP: {description}")
+    yield
+    print(f"    ✓ done")
