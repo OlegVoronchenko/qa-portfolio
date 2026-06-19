@@ -1,8 +1,14 @@
 """Parse a CV file (PDF or DOCX) into structured profile JSON using Claude AI."""
 
 import json
+import os
 import sys
 from pathlib import Path
+
+if not os.getenv("ANTHROPIC_API_KEY"):
+    print("ERROR: ANTHROPIC_API_KEY not set")
+    print("Add CV file and set ANTHROPIC_API_KEY secret to enable parsing")
+    sys.exit(1)
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 CV_DIR = PROJECT_ROOT / "cv"

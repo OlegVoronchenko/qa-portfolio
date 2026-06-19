@@ -33,13 +33,16 @@ jobs:
 
       - name: Parse CV or use default profile
         run: |
-          CV_FILES=$(find cv/ -name "*.pdf" -o -name "*.docx" 2>/dev/null)
+          CV_FILES=$(find cv/ -name "*.pdf" -o -name "*.docx" 2>/dev/null | head -1)
 
-          if [ -n "$CV_FILES" ]; then
-            echo "CV file found, parsing..."
+          if [ -n "$CV_FILES" ] && [ -n "$ANTHROPIC_API_KEY" ]; then
+            echo "CV file found and API key available, parsing..."
             python scripts/parse_cv.py
+          elif [ -n "$CV_FILES" ] && [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "CV file found but no API key — using default profile"
+            cp src/data/profile.default.json src/data/profile.json
           else
-            echo "No CV found, copying default profile..."
+            echo "No CV found — using default profile"
             cp src/data/profile.default.json src/data/profile.json
           fi
         env:
