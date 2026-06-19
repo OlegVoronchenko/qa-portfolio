@@ -392,28 +392,39 @@ class TestAccessibility:
     def test_images_have_alt_text(self, portfolio: PortfolioPage):
         """Verify every <img> element has a non-empty alt attribute.
 
-        Scans all images on the page and collects those missing alt.
-        Reports the src of each violating image.
+        Uses JS evaluation to check all images at once — avoids
+        per-element timeouts on external images (e.g. Unsplash).
 
         Failure means: an image was added without alt text —
         this breaks screen readers and fails WCAG 2.1 Level A.
         """
-        with step("Find all <img> elements on page"):
-            images = portfolio.all_images.all()
-
-        with step(f"Check alt attribute on {len(images)} images"):
-            violations = [
-                img.get_attribute("src") or "unknown"
-                for img in images
-                if not (img.get_attribute("alt") or "").strip()
-            ]
+        with step("Find all images and check alt attributes via JS"):
+            violations = portfolio._page.evaluate("""
+                () => {
+                    const images = Array.from(
+                        document.querySelectorAll('img')
+                    );
+                    return images
+                        .filter(img => !img.alt || img.alt.trim() === '')
+                        .map(img => ({
+                            src: img.src || img.getAttribute('src') || 'unknown',
+                            index: Array.from(
+                                document.querySelectorAll('img')
+                            ).indexOf(img)
+                        }));
+                }
+            """)
 
         with step("Capture screenshot before assertion"):
             portfolio.take_screenshot("assert_images_alt")
 
         with step(f"Assert no images missing alt ({len(violations)} violations)"):
-            assert violations == [], Msg.IMAGES_MISSING_ALT.format(
-                sources=violations,
+            assert violations == [], (
+                f"Found {len(violations)} image(s) missing alt text:\n"
+                + "\n".join(
+                    f"  index={v['index']}: src='{v['src'][:80]}'"
+                    for v in violations
+                )
             )
 
     @pytest.mark.accessibility

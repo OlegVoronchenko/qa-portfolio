@@ -3,7 +3,7 @@ import { ArrowRight, Mail, ChevronDown } from 'lucide-react'
 import { useProfile } from '../hooks/useProfile'
 
 const roles = [
-  'Lead Test Automation Engineer',
+  'Lead Senior Test Automation Engineer',
   'Mobile & Web QA Architect',
   'Healthcare QA Specialist',
   'CI/CD Quality Guardian',
