@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run pytest and generate test_report.json for the portfolio site."""
+"""Generate test_report.json from pytest results for the portfolio site."""
 
 import json
 import subprocess
@@ -7,69 +7,64 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
-REPORTS_DIR = ROOT / "reports"
-DIST_DIR = ROOT / "dist"
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+QA_DIR = PROJECT_ROOT / "qa"
+REPORTS_DIR = QA_DIR / "reports"
+DIST_DIR = PROJECT_ROOT / "dist"
 
 STEPS_MAP = {
     "test_page_loads_with_correct_title": {
-        "description": "Page must load and title must identify the QA engineer",
+        "description": "Page must load and title must identify the engineer",
         "mark": "smoke",
         "steps": [
-            "Navigate to base URL",
-            "Wait for page load state",
-            "Get page title",
-            "Assert title contains name",
-            "Assert title contains QA role",
+            "Read page title from browser tab",
+            "Assert title contains engineer name",
+            "Assert title contains role keyword",
+            "Assert title contains type keyword",
         ],
     },
     "test_hero_heading_displays_name": {
         "description": "Hero section h1 must contain the engineer name",
         "mark": "smoke",
         "steps": [
-            "Navigate to page",
-            "Locate heading level 1 by role",
-            "Get heading inner text",
+            "Get h1 heading text content",
             "Assert name present in heading",
         ],
     },
     "test_navigation_is_present": {
-        "description": "Navigation landmark must be visible on all viewports",
+        "description": "Navigation landmark must be visible on page load",
         "mark": "smoke",
         "steps": [
-            "Navigate to page",
-            "Locate navigation by role",
+            "Locate navigation by ARIA role",
+            "Count navigation elements",
             "Assert navigation is visible",
         ],
     },
     "test_page_has_no_javascript_errors": {
-        "description": "No JavaScript console errors on page load",
+        "description": "No JavaScript console errors during page load",
         "mark": "smoke",
         "steps": [
-            "Set up console error listener",
-            "Navigate to page",
-            "Wait for networkidle",
-            "Filter error-level console messages",
-            "Assert no errors found",
+            "Attach JavaScript error listener",
+            "Navigate to page and wait for network idle",
+            "Assert no errors captured",
         ],
     },
     "test_react_app_hydrated_successfully": {
         "description": "React app must render content into #root element",
         "mark": "smoke",
         "steps": [
-            "Navigate to page",
-            "Locate #root element",
-            "Count child elements",
+            "Count #root child elements",
+            "Get innerHTML preview for diagnostics",
             "Assert children count > 0",
+            "Check for React error boundary",
+            "Assert no error boundary rendered",
         ],
     },
     "test_nav_link_is_visible_with_correct_href": {
         "description": "Each navigation link must be visible with correct anchor href",
         "mark": "navigation",
         "steps": [
-            "Navigate to page",
-            "Locate navigation landmark",
-            "Find link by name within navigation",
+            "Locate nav link by name",
             "Assert link is visible",
             "Assert href attribute matches expected anchor",
         ],
@@ -78,9 +73,7 @@ STEPS_MAP = {
         "description": "Core technology skills must be visible in skills section",
         "mark": "content",
         "steps": [
-            "Navigate to page",
-            "Locate skills section by id",
-            "Search for skill text within section",
+            "Locate skill tag with exact text match",
             "Assert skill tag is visible",
         ],
     },
@@ -88,40 +81,34 @@ STEPS_MAP = {
         "description": "Projects section must display exactly 3 project cards",
         "mark": "content",
         "steps": [
-            "Navigate to page",
-            "Locate projects section",
-            "Count project card elements",
+            "Count project cards with role='article'",
             "Assert count equals 3",
         ],
     },
     "test_contact_section_has_required_channels": {
-        "description": "Contact section must show all 4 communication channels",
+        "description": "Contact section must show all 3 communication channels",
         "mark": "content",
         "steps": [
-            "Navigate to page",
-            "Locate contact section",
-            "Count contact item elements",
-            "Assert count equals 4",
+            "Count contact links with role='link'",
+            "Assert count equals 3",
         ],
     },
     "test_test_results_section_renders": {
-        "description": "Test results section must render summary and test rows",
+        "description": "Test results section must render with heading content",
         "mark": "content",
         "steps": [
-            "Navigate to page",
-            "Locate test results section",
-            "Assert summary cards are visible",
-            "Wait for test rows to render",
-            "Assert at least one test row exists",
+            "Locate test results section by ID",
+            "Assert section is visible",
+            "Count headings in section",
+            "Assert at least 1 heading exists",
         ],
     },
     "test_mobile_viewport_no_horizontal_scroll": {
         "description": "Page must not cause horizontal overflow on mobile viewport",
         "mark": "responsive",
         "steps": [
-            "Set viewport to 390x844 mobile size",
-            "Navigate to page",
-            "Evaluate scrollWidth vs innerWidth",
+            "Measure document scroll width",
+            "Get viewport width (390px)",
             "Assert no horizontal overflow",
         ],
     },
@@ -130,30 +117,25 @@ STEPS_MAP = {
         "mark": "responsive",
         "steps": [
             "Set viewport to 390x844 mobile size",
-            "Navigate to page",
             "Locate hero heading",
-            "Assert heading is visible",
+            "Assert heading is visible at mobile width",
         ],
     },
     "test_page_load_time_within_budget": {
         "description": "Full page load must complete within 3000ms budget",
         "mark": "performance",
         "steps": [
-            "Navigate to page",
-            "Measure loadEventEnd via Performance API",
-            "Measure navigationStart via Performance API",
-            "Calculate load duration",
-            "Assert duration < 3000ms",
+            "Navigate and wait for load event",
+            "Measure load time via Navigation Timing API",
+            "Assert load time < 3000ms",
         ],
     },
     "test_images_have_alt_text": {
         "description": "All images must have non-empty alt attributes for accessibility",
         "mark": "accessibility",
         "steps": [
-            "Navigate to page",
-            "Find all img elements",
+            "Find all <img> elements on page",
             "Check alt attribute on each image",
-            "Collect violations",
             "Assert no violations found",
         ],
     },
@@ -161,10 +143,9 @@ STEPS_MAP = {
         "description": "Page must have exactly one h1 and correct heading hierarchy",
         "mark": "accessibility",
         "steps": [
-            "Navigate to page",
-            "Count h1 elements",
+            "Collect all heading elements",
             "Assert exactly one h1 exists",
-            "Verify h2 elements exist",
+            "Assert h1 appears before first h2",
             "Assert no heading levels are skipped",
         ],
     },
@@ -199,13 +180,15 @@ def generic_steps(test_name, test_passed):
 
 
 def run_tests():
+    """Run pytest from qa/ directory and save raw JSON report."""
+    REPORTS_DIR.mkdir(parents=True, exist_ok=True)
     result = subprocess.run(
         [
             sys.executable, "-m", "pytest",
             "tests/", "-v",
             "--json-report", "--json-report-file", str(REPORTS_DIR / "raw.json"),
         ],
-        cwd=str(ROOT),
+        cwd=str(QA_DIR),
         capture_output=True,
         text=True,
     )
@@ -218,7 +201,7 @@ def run_tests():
 def parse_report():
     raw_path = REPORTS_DIR / "raw.json"
     if not raw_path.exists():
-        print("ERROR: raw.json not found — did pytest run?")
+        print(f"ERROR: {raw_path} not found — did pytest run?")
         sys.exit(1)
 
     raw = json.loads(raw_path.read_text())
@@ -229,6 +212,8 @@ def parse_report():
         nodeid = t.get("nodeid", "")
         name = nodeid.split("::")[-1] if "::" in nodeid else nodeid
         outcome = t.get("outcome", "unknown")
+        if outcome == "skipped":
+            continue
         duration = t.get("call", {}).get("duration", 0)
         duration_ms = round(duration * 1000)
         total_duration_ms += duration_ms
@@ -273,15 +258,19 @@ def parse_report():
 
 
 def main():
-    REPORTS_DIR.mkdir(exist_ok=True)
+    REPORTS_DIR.mkdir(parents=True, exist_ok=True)
     print("Running tests...")
     run_tests()
 
     print("Generating report...")
     report = parse_report()
 
-    for dest in (REPORTS_DIR / "test_report.json", DIST_DIR / "test_report.json"):
-        dest.parent.mkdir(exist_ok=True)
+    destinations = [REPORTS_DIR / "test_report.json"]
+    if DIST_DIR.exists():
+        destinations.append(DIST_DIR / "test_report.json")
+
+    for dest in destinations:
+        dest.parent.mkdir(parents=True, exist_ok=True)
         dest.write_text(json.dumps(report, indent=2))
         print(f"  -> {dest}")
 
