@@ -7,6 +7,10 @@ on:
 permissions:
   contents: write
 
+env:
+  GITHUB_PAGES_URL: >-
+    https://olegvoronchenko.github.io/${{ github.event.repository.name }}/
+
 jobs:
   test-and-deploy:
     runs-on: ubuntu-latest
@@ -54,9 +58,31 @@ jobs:
           force_orphan: true
 
       - name: Wait for GitHub Pages deployment
-        run: sleep 30
+        run: |
+          echo "Waiting for GitHub Pages to deploy..."
+          sleep 30
+
+          MAX_ATTEMPTS=10
+          ATTEMPT=0
+          URL="${{ env.GITHUB_PAGES_URL }}"
+
+          while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
+            echo "Attempt $((ATTEMPT+1)): HTTP $STATUS"
+
+            if [ "$STATUS" = "200" ]; then
+              echo "GitHub Pages is live!"
+              break
+            fi
+
+            ATTEMPT=$((ATTEMPT+1))
+            sleep 15
+          done
+
+          if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
+            echo "GitHub Pages did not respond after $MAX_ATTEMPTS attempts"
+            exit 1
+          fi
 
       - name: Run deployment verification tests
         run: pytest tests/test_deployment.py -v --tb=short
-        env:
-          GITHUB_PAGES_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
