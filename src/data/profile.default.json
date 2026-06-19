@@ -1,0 +1,106 @@
+{
+  "personal": {
+    "name": "Oleg V.",
+    "role": "Senior QA Automation Engineer",
+    "location": "Remote / Worldwide",
+    "email": "oleg.v.qa@gmail.com",
+    "linkedin": "linkedin.com/in/oleg-v-qa",
+    "github": "github.com/oleg-v-qa",
+    "telegram": "@oleg_v_qa",
+    "availability": "Available for hire"
+  },
+  "summary": "5+ years of experience building end-to-end test automation frameworks using Python, Playwright, and Selenium. I specialize in designing scalable Page Object Model architectures, comprehensive regression suites, and seamless CI/CD integration for fast feedback loops.",
+  "stats": {
+    "years_experience": "3+",
+    "tests_written": "500+",
+    "pass_rate": "98%"
+  },
+  "experience": [
+    {
+      "company": "Fintech Startup",
+      "role": "Senior QA Automation Engineer",
+      "period": "2022 — Present",
+      "location": "Remote",
+      "description": "Led test automation strategy for payment processing platform.",
+      "achievements": [
+        "Built Playwright E2E framework covering 120+ test scenarios",
+        "Reduced regression cycle from 4 hours to 25 minutes",
+        "Implemented CI/CD quality gates blocking broken builds"
+      ]
+    },
+    {
+      "company": "E-Commerce Platform",
+      "role": "QA Automation Engineer",
+      "period": "2020 — 2022",
+      "location": "Remote",
+      "description": "Developed comprehensive test automation for checkout and inventory systems.",
+      "achievements": [
+        "Created data-driven API test framework with httpx and pydantic",
+        "Achieved 95% code coverage across critical payment flows",
+        "Mentored 3 junior QA engineers on automation best practices"
+      ]
+    }
+  ],
+  "skills": {
+    "automation": ["Playwright", "Selenium", "Cypress", "Appium"],
+    "api_testing": ["REST API", "GraphQL", "httpx", "Postman", "pydantic"],
+    "cicd": ["GitHub Actions", "Jenkins", "GitLab CI", "Docker"],
+    "reporting": ["Allure", "pytest-html", "Custom JSON reports"],
+    "methodologies": ["Agile/Scrum", "Shift-Left Testing", "BDD/TDD", "Risk-Based Testing"]
+  },
+  "tools": [
+    { "category": "Languages", "items": ["Python", "JavaScript", "SQL"] },
+    { "category": "Frameworks", "items": ["Playwright", "Pytest", "Selenium"] },
+    { "category": "CI/CD", "items": ["GitHub Actions", "Docker", "Jenkins"] },
+    { "category": "Other", "items": ["REST API", "Postman", "Git", "Linux"] }
+  ],
+  "projects": [
+    {
+      "name": "E-Commerce Checkout Suite",
+      "type": "E2E Testing",
+      "description": "Full checkout flow automation with Playwright — cart, payment, order confirmation. 120+ test cases covering happy paths and edge cases across 3 browsers.",
+      "stack": ["Playwright", "Python", "CI/CD"],
+      "metrics": ["120+ test cases", "3 browsers", "15min CI run"]
+    },
+    {
+      "name": "REST API Framework",
+      "type": "API Testing",
+      "description": "Data-driven API test framework built with httpx and pydantic. Schema validation, request chaining, auto-generated reports, and contract testing on every PR.",
+      "stack": ["httpx", "pydantic", "pytest"],
+      "metrics": ["200+ API tests", "100% schema coverage"]
+    },
+    {
+      "name": "This Portfolio Demo",
+      "type": "Live Demo",
+      "description": "The site you're viewing right now — tested with a live Playwright suite. Automated tests verify structure, responsiveness, and performance on every push.",
+      "stack": ["Playwright", "React", "GitHub Actions"],
+      "metrics": ["20 automated tests", "CI/CD pipeline"]
+    }
+  ],
+  "education": [
+    {
+      "institution": "National Technical University",
+      "degree": "Bachelor of Computer Science",
+      "period": "2016 — 2020",
+      "location": "Ukraine"
+    }
+  ],
+  "certifications": [
+    {
+      "name": "ISTQB Certified Tester — Foundation Level",
+      "issuer": "ISTQB",
+      "year": "2021"
+    }
+  ],
+  "languages": [
+    { "language": "English", "level": "Fluent" },
+    { "language": "Ukrainian", "level": "Native" },
+    { "language": "Russian", "level": "Native" }
+  ],
+  "contact": {
+    "email": "oleg.v.qa@gmail.com",
+    "github": "https://github.com/oleg-v-qa",
+    "linkedin": "https://linkedin.com/in/oleg-v-qa",
+    "telegram": "https://t.me/oleg_v_qa"
+  }
+}

@@ -5,3 +5,7 @@ reports/
 __pycache__/
 *.pyc
 .env.local
+src/data/profile.json
+cv/parsed_profile.json
+qa/screenshots/*.png
+qa/reports/

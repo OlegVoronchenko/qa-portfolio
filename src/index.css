@@ -12,7 +12,7 @@ body {
 
 /* Dot grid overlay for hero */
 .dot-grid {
-  background-image: radial-gradient(rgba(16, 185, 129, 0.08) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(14, 165, 233, 0.08) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
@@ -28,7 +28,7 @@ body {
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #10b981;
+  background: #0ea5e9;
 }
 
 /* Test panel slide */
@@ -37,4 +37,12 @@ body {
 }
 .test-panel-active {
   transform: translateX(0);
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+.animate-slide-in-right {
+  animation: slideInRight 0.3s ease-out;
 }

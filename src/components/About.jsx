@@ -1,6 +1,5 @@
 import { User, MapPin, Briefcase, Award, BookOpen, Zap } from 'lucide-react'
-
-const tags = ['Python', 'Playwright', 'pytest', 'CI/CD', 'REST API']
+import { useProfile } from '../hooks/useProfile'
 
 const facts = [
   {
@@ -16,44 +15,49 @@ const facts = [
 ]
 
 export default function About() {
+  const profile = useProfile()
+  const tags = profile.skills.automation.slice(0, 5)
+
+  const cert = profile.certifications?.[0]
+
   return (
     <section id="about" className="py-20 px-4 sm:px-6 max-w-6xl mx-auto">
       <h2 className="font-mono text-2xl sm:text-3xl font-bold mb-2">
         <span className="text-accent">#</span> About Me
       </h2>
       <p className="text-slate-500 mb-10 text-sm sm:text-base">
-        QA Automation Engineer passionate about quality and reliability
+        {profile.personal.role} passionate about quality and reliability
       </p>
 
       <div className="grid md:grid-cols-2 gap-8 items-start">
-        {/* Profile card */}
         <div className="relative">
-          {/* ISTQB cert floating badge */}
-          <div
-            className="absolute -top-4 right-4 z-10 flex items-center gap-2 bg-dark-800 border border-accent/40 rounded-lg px-3 py-2 shadow-lg shadow-accent/5"
-            data-testid="cert-badge"
-          >
-            <Award size={16} className="text-accent" />
-            <span className="font-mono text-xs text-accent font-semibold">ISTQB — CTFL</span>
-          </div>
+          {cert && (
+            <div
+              className="absolute -top-4 right-4 z-10 flex items-center gap-2 bg-dark-800 border border-accent/40 rounded-lg px-3 py-2 shadow-lg shadow-accent/5"
+              data-testid="cert-badge"
+            >
+              <Award size={16} className="text-accent" />
+              <span className="font-mono text-xs text-accent font-semibold">
+                {cert.issuer} — {cert.name.includes('Foundation') ? 'CTFL' : cert.name}
+              </span>
+            </div>
+          )}
 
           <div className="bg-dark-700 border border-dark-600 rounded-2xl p-6 sm:p-8">
-            {/* Avatar + info */}
             <div className="flex items-center gap-4 mb-6">
               <div className="w-16 h-16 rounded-full bg-accent-dim border-2 border-accent/30 flex items-center justify-center">
                 <User size={28} className="text-accent" />
               </div>
               <div>
-                <h3 className="text-lg font-bold">Oleg V.</h3>
-                <p className="text-sm text-accent font-mono">Senior QA Automation Engineer</p>
+                <h3 className="text-lg font-bold">{profile.personal.name}</h3>
+                <p className="text-sm text-accent font-mono">{profile.personal.role}</p>
                 <div className="flex items-center gap-1 text-xs text-slate-500 mt-1">
                   <MapPin size={12} />
-                  Remote / Worldwide
+                  {profile.personal.location}
                 </div>
               </div>
             </div>
 
-            {/* Tags */}
             <div className="flex flex-wrap gap-2 mb-6">
               {tags.map((t) => (
                 <span
@@ -65,22 +69,15 @@ export default function About() {
               ))}
             </div>
 
-            {/* Bio */}
             <p className="text-slate-400 text-sm leading-relaxed">
-              5+ years of experience building end-to-end test automation frameworks
-              using Python, Playwright, and Selenium. I specialize in designing
-              scalable Page Object Model architectures, comprehensive regression
-              suites, and seamless CI/CD integration for fast feedback loops.
+              {profile.summary}
             </p>
           </div>
         </div>
 
-        {/* Right column: text + fact cards */}
         <div className="space-y-6">
           <div>
-            <h3 className="text-lg font-bold mb-3">
-              Why Quality Matters
-            </h3>
+            <h3 className="text-lg font-bold mb-3">Why Quality Matters</h3>
             <p className="text-slate-400 text-sm leading-relaxed mb-4">
               I believe every shipped feature deserves a safety net. My approach
               combines strategic test design with pragmatic automation — covering

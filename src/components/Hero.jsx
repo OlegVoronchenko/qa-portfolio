@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { ArrowRight, Mail, ChevronDown } from 'lucide-react'
+import { useProfile } from '../hooks/useProfile'
 
 const roles = [
   'QA Automation Engineer',
@@ -9,6 +10,7 @@ const roles = [
 ]
 
 export default function Hero() {
+  const profile = useProfile()
   const [text, setText] = useState('')
   const [roleIdx, setRoleIdx] = useState(0)
   const [charIdx, setCharIdx] = useState(0)
@@ -37,9 +39,9 @@ export default function Hero() {
   }, [charIdx, deleting, roleIdx])
 
   const stats = [
-    { value: '3+', label: 'Years Experience' },
-    { value: '500+', label: 'Tests Written' },
-    { value: '98%', label: 'Pass Rate' },
+    { value: profile.stats.years_experience, label: 'Years Experience' },
+    { value: profile.stats.tests_written, label: 'Tests Written' },
+    { value: profile.stats.pass_rate, label: 'Pass Rate' },
   ]
 
   return (
@@ -48,7 +50,6 @@ export default function Hero() {
       data-testid="hero-section"
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
     >
-      {/* Circuit board background */}
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
@@ -56,26 +57,22 @@ export default function Hero() {
             "url('https://images.unsplash.com/photo-1518770660439-4636190af475?w=1920&q=80')",
         }}
       />
-      {/* Dark overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-dark-900/[0.93] via-dark-900/[0.88] to-dark-900" />
-      {/* Dot grid */}
       <div className="absolute inset-0 dot-grid" />
 
       <div className="relative z-10 text-center px-4 max-w-3xl mx-auto pt-16">
-        {/* Availability badge */}
         <div className="inline-flex items-center gap-2 border border-accent/40 bg-accent-dim rounded-full px-4 py-1.5 mb-8 font-mono text-xs text-accent">
           <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-          Available for hire
+          {profile.personal.availability}
         </div>
 
         <h1 data-testid="hero-name" className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mb-4">
           Hi, I'm{' '}
           <span className="bg-gradient-to-r from-accent to-accent-teal bg-clip-text text-transparent">
-            Oleg V.
+            {profile.personal.name}
           </span>
         </h1>
 
-        {/* Typewriter */}
         <div data-testid="hero-typewriter" className="font-mono text-lg sm:text-xl text-accent mb-4 h-8">
           {text}
           <span className="animate-typewriter-blink">|</span>
@@ -86,7 +83,6 @@ export default function Hero() {
           at every stage of the development lifecycle.
         </p>
 
-        {/* CTA */}
         <div className="flex flex-wrap gap-3 justify-center mb-14">
           <a
             href="#projects"
@@ -104,7 +100,6 @@ export default function Hero() {
           </a>
         </div>
 
-        {/* Stats */}
         <div className="flex justify-center gap-8 sm:gap-14">
           {stats.map((s) => (
             <div key={s.label} className="text-center">
@@ -118,7 +113,6 @@ export default function Hero() {
           ))}
         </div>
 
-        {/* Scroll indicator */}
         <div className="mt-14 flex justify-center">
           <ChevronDown size={24} className="text-accent/50 animate-bounce-slow" />
         </div>

@@ -11,9 +11,11 @@ export default {
           600: '#1e293b',
         },
         accent: {
-          DEFAULT: '#10b981',
-          dim: 'rgba(16, 185, 129, 0.12)',
-          teal: '#14b8a6',
+          DEFAULT: '#0ea5e9',
+          light: '#38bdf8',
+          dark: '#0284c7',
+          dim: 'rgba(14, 165, 233, 0.12)',
+          teal: '#06b6d4',
         },
       },
       fontFamily: {
@@ -28,8 +30,8 @@ export default {
       },
       keyframes: {
         'pulse-ring': {
-          '0%, 100%': { boxShadow: '0 0 0 0 rgba(16, 185, 129, 0.4)' },
-          '50%': { boxShadow: '0 0 0 12px rgba(16, 185, 129, 0)' },
+          '0%, 100%': { boxShadow: '0 0 0 0 rgba(14, 165, 233, 0.4)' },
+          '50%': { boxShadow: '0 0 0 12px rgba(14, 165, 233, 0)' },
         },
         blink: {
           '50%': { opacity: '0' },

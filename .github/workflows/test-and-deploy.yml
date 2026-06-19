@@ -23,14 +23,6 @@ jobs:
         with:
           node-version: '24'
 
-      - name: Install Node dependencies
-        run: npm install
-
-      - name: Build Vite app
-        run: npm run build
-        env:
-          VITE_BASE_PATH: /${{ github.event.repository.name }}/
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -39,14 +31,45 @@ jobs:
       - name: Install Python dependencies
         run: pip install -r requirements.txt
 
+      - name: Parse CV or use default profile
+        run: |
+          CV_FILES=$(find cv/ -name "*.pdf" -o -name "*.docx" 2>/dev/null)
+
+          if [ -n "$CV_FILES" ]; then
+            echo "CV file found, parsing..."
+            python scripts/parse_cv.py
+          else
+            echo "No CV found, copying default profile..."
+            cp src/data/profile.default.json src/data/profile.json
+          fi
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - name: Install Node dependencies
+        run: npm install
+
+      - name: Build Vite app
+        run: npm run build
+        env:
+          VITE_BASE_PATH: /${{ github.event.repository.name }}/
+
       - name: Install Playwright browsers
         run: playwright install chromium --with-deps
 
       - name: Run tests
+        working-directory: qa
         run: pytest tests/ -v
 
       - name: Generate report
         run: python scripts/generate_report.py
+
+      - name: Upload test screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-screenshots-${{ github.run_number }}
+          path: qa/screenshots/
+          retention-days: 30
 
       - name: Copy index.html to 404.html
         run: cp dist/index.html dist/404.html
@@ -89,4 +112,5 @@ jobs:
           fi
 
       - name: Run deployment verification tests
+        working-directory: qa
         run: pytest tests/test_deployment.py -v --tb=short
