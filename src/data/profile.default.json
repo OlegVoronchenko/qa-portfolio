@@ -1,106 +1,152 @@
 {
   "personal": {
     "name": "Oleg V.",
-    "role": "Senior QA Automation Engineer",
+    "role": "Lead Test Automation Engineer",
     "location": "Remote / Worldwide",
-    "email": "oleg.v.qa@gmail.com",
-    "linkedin": "linkedin.com/in/oleg-v-qa",
-    "github": "github.com/oleg-v-qa",
-    "telegram": "@oleg_v_qa",
-    "availability": "Available for hire"
+    "email": "your.email@gmail.com",
+    "linkedin": "linkedin.com/in/your-profile",
+    "github": "github.com/your-username",
+    "telegram": "@your_telegram",
+    "availability": "Open to new opportunities"
   },
-  "summary": "5+ years of experience building end-to-end test automation frameworks using Python, Playwright, and Selenium. I specialize in designing scalable Page Object Model architectures, comprehensive regression suites, and seamless CI/CD integration for fast feedback loops.",
+  "summary": "Test Automation Engineer with 15+ years of experience designing, building, and scaling automation solutions across Web, Mobile, API, Desktop, Embedded, and cloud-based systems. Led and mentored cross-functional QA/AQA teams of 5–10 engineers. Drove suite stability to 98% and reduced test execution time by up to 50%.",
   "stats": {
-    "years_experience": "3+",
-    "tests_written": "500+",
-    "pass_rate": "98%"
+    "years_experience": "15+",
+    "projects": "9+",
+    "tests_written": "10K+",
+    "suite_stability": "98%"
   },
   "experience": [
     {
-      "company": "Fintech Startup",
-      "role": "Senior QA Automation Engineer",
-      "period": "2022 — Present",
+      "company": "GlobalLogic (Hitachi Group)",
+      "role": "Lead Test Automation Engineer",
+      "period": "March 2023 — Present",
       "location": "Remote",
-      "description": "Led test automation strategy for payment processing platform.",
+      "description": "Lead automation for a mobile healthcare platform used by Emergency Medical Services and hospitals for ePCR patient data transmission.",
       "achievements": [
-        "Built Playwright E2E framework covering 120+ test scenarios",
-        "Reduced regression cycle from 4 hours to 25 minutes",
-        "Implemented CI/CD quality gates blocking broken builds"
+        "Own Android, iOS, and API automation frameworks for emergency-critical medical workflows",
+        "Integrated automated suites into CI/CD pipelines, improving regression reliability and release readiness",
+        "Conduct regular automation code reviews and improve framework standards and reusable components",
+        "Mentor automation engineers and improve test design practices",
+        "Reduced flaky failures through better synchronization, logging, and root cause analysis"
       ]
     },
     {
-      "company": "E-Commerce Platform",
-      "role": "QA Automation Engineer",
-      "period": "2020 — 2022",
+      "company": "GlobalLogic (Hitachi Group)",
+      "role": "Senior Test Automation Engineer",
+      "period": "March 2020 — March 2023",
       "location": "Remote",
-      "description": "Developed comprehensive test automation for checkout and inventory systems.",
+      "description": "Worked on automation for embedded cardiac rhythm device software in a regulated medical environment.",
       "achievements": [
-        "Created data-driven API test framework with httpx and pydantic",
-        "Achieved 95% code coverage across critical payment flows",
-        "Mentored 3 junior QA engineers on automation best practices"
+        "Built and maintained automation for embedded medical device validation",
+        "Increased coverage for critical cardiac workflows",
+        "Supported FDA/ISO-oriented quality activities and audit preparation",
+        "Investigated complex failures using logs, test results, and integration data"
+      ]
+    },
+    {
+      "company": "GlobalLogic",
+      "role": "Senior / Lead Test Automation Engineer",
+      "period": "April 2017 — March 2020",
+      "location": "Remote",
+      "description": "Automated a cloud-based emergency response and ePCR platform with complex healthcare integrations.",
+      "achievements": [
+        "Designed and evolved automation frameworks for web, API, and integration testing",
+        "Automated regression and integration scenarios for emergency medical data workflows",
+        "Reviewed automation code and guided engineers on framework design and maintainability"
+      ]
+    },
+    {
+      "company": "GlobalLogic",
+      "role": "Senior / Lead QA Automation Engineer",
+      "period": "2012 — 2017",
+      "location": "Kharkiv, Ukraine",
+      "description": "Delivered automation across medical imaging, medical data exchange, cardiac monitoring, enterprise security, and mobile payment products.",
+      "achievements": [
+        "Built automation frameworks for web, mobile, API, integration, and desktop applications",
+        "Led QA/AQA teams of up to 10 engineers including mentoring, interviews, and code reviews",
+        "Improved regression coverage and reduced manual verification effort"
+      ]
+    },
+    {
+      "company": "GlobalLogic",
+      "role": "QA / Test Automation Engineer",
+      "period": "2010 — 2012",
+      "location": "Kharkiv, Ukraine",
+      "description": "Started test automation career in medical and financial systems, including cardiac rhythm stimulator applications and mobile wallet solutions.",
+      "achievements": [
+        "Automated WPF-based medical applications and cross-platform iOS/Android payment workflows",
+        "Built functional and regression test suites for patient-critical systems",
+        "Led a 5-person QA team during mobile wallet testing"
       ]
     }
   ],
   "skills": {
-    "automation": ["Playwright", "Selenium", "Cypress", "Appium"],
-    "api_testing": ["REST API", "GraphQL", "httpx", "Postman", "pydantic"],
-    "cicd": ["GitHub Actions", "Jenkins", "GitLab CI", "Docker"],
-    "reporting": ["Allure", "pytest-html", "Custom JSON reports"],
-    "methodologies": ["Agile/Scrum", "Shift-Left Testing", "BDD/TDD", "Risk-Based Testing"]
+    "automation": ["Java", "Selenium", "Appium 2.x", "TestNG", "JUnit", "pytest", "Cucumber", "Python"],
+    "api_testing": ["RESTAssured", "Postman", "REST API", "Swagger", "httpx", "requests"],
+    "cicd": ["Git", "GitHub Actions", "Maven", "Docker", "Jenkins"],
+    "reporting": ["TestRail", "Jira", "Zephyr", "Allure"],
+    "methodologies": ["BDD", "TDD", "Risk-Based Testing", "Agile/Scrum", "V&V", "API-first"]
   },
   "tools": [
-    { "category": "Languages", "items": ["Python", "JavaScript", "SQL"] },
-    { "category": "Frameworks", "items": ["Playwright", "Pytest", "Selenium"] },
-    { "category": "CI/CD", "items": ["GitHub Actions", "Docker", "Jenkins"] },
-    { "category": "Other", "items": ["REST API", "Postman", "Git", "Linux"] }
+    { "category": "Languages", "items": ["Java", "Python", "C#", "SQL"] },
+    { "category": "Frameworks", "items": ["Selenium", "Appium", "TestNG", "pytest"] },
+    { "category": "CI/CD", "items": ["GitHub Actions", "Maven", "Docker", "Jenkins"] },
+    { "category": "Other", "items": ["REST API", "Postman", "Git", "Jira"] }
   ],
   "projects": [
     {
-      "name": "E-Commerce Checkout Suite",
+      "name": "Healthcare ePCR Mobile Platform",
       "type": "E2E Testing",
-      "description": "Full checkout flow automation with Playwright — cart, payment, order confirmation. 120+ test cases covering happy paths and edge cases across 3 browsers.",
-      "stack": ["Playwright", "Python", "CI/CD"],
-      "metrics": ["120+ test cases", "3 browsers", "15min CI run"]
+      "description": "Automation framework for Emergency Medical Services mobile platform handling critical patient data transmission. Android + iOS coverage with CI/CD integration.",
+      "stack": ["Java", "Appium 2.x", "RESTAssured", "TestNG"],
+      "metrics": ["Android + iOS coverage", "CI/CD integrated", "Reduced flaky failures"]
     },
     {
-      "name": "REST API Framework",
+      "name": "Cardiac Device Validation",
       "type": "API Testing",
-      "description": "Data-driven API test framework built with httpx and pydantic. Schema validation, request chaining, auto-generated reports, and contract testing on every PR.",
-      "stack": ["httpx", "pydantic", "pytest"],
-      "metrics": ["200+ API tests", "100% schema coverage"]
+      "description": "Automation for embedded cardiac rhythm device software in a regulated medical environment. FDA/ISO-oriented validation with audit preparation support.",
+      "stack": ["Java", "TestNG", "FDA/ISO compliance"],
+      "metrics": ["FDA/ISO validation", "Critical workflow coverage"]
     },
     {
-      "name": "This Portfolio Demo",
+      "name": "Cloud Emergency Response",
       "type": "Live Demo",
-      "description": "The site you're viewing right now — tested with a live Playwright suite. Automated tests verify structure, responsiveness, and performance on every push.",
-      "stack": ["Playwright", "React", "GitHub Actions"],
-      "metrics": ["20 automated tests", "CI/CD pipeline"]
+      "description": "End-to-end automation for cloud-based ePCR platform with complex healthcare integrations. Web, API, and integration coverage achieving 85% regression automation.",
+      "stack": ["Java", "Selenium", "RESTAssured", "Cucumber"],
+      "metrics": ["85% regression coverage", "40% faster releases"]
     }
   ],
   "education": [
     {
-      "institution": "National Technical University",
-      "degree": "Bachelor of Computer Science",
-      "period": "2016 — 2020",
-      "location": "Ukraine"
+      "institution": "KhPI — Kharkiv Polytechnic University",
+      "degree": "Master's Degree — Mathematician Analyst Engineer",
+      "period": "2001 — 2007",
+      "location": "Kharkiv, Ukraine"
+    },
+    {
+      "institution": "KhPI — Kharkiv Polytechnic University",
+      "degree": "Specialist's Degree — Project Management and Program Professional",
+      "period": "2005 — 2007",
+      "location": "Kharkiv, Ukraine"
     }
   ],
   "certifications": [
     {
       "name": "ISTQB Certified Tester — Foundation Level",
       "issuer": "ISTQB",
-      "year": "2021"
+      "year": "2018"
     }
   ],
   "languages": [
-    { "language": "English", "level": "Fluent" },
+    { "language": "English", "level": "Professional" },
     { "language": "Ukrainian", "level": "Native" },
     { "language": "Russian", "level": "Native" }
   ],
   "contact": {
-    "email": "oleg.v.qa@gmail.com",
-    "github": "https://github.com/oleg-v-qa",
-    "linkedin": "https://linkedin.com/in/oleg-v-qa",
-    "telegram": "https://t.me/oleg_v_qa"
+    "email": "your.email@gmail.com",
+    "github": "https://github.com/your-username",
+    "linkedin": "https://linkedin.com/in/your-profile",
+    "telegram": "https://t.me/your_telegram"
   }
 }

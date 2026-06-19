@@ -3,9 +3,9 @@ import { ArrowRight, Mail, ChevronDown } from 'lucide-react'
 import { useProfile } from '../hooks/useProfile'
 
 const roles = [
-  'QA Automation Engineer',
-  'Playwright Specialist',
-  'Python Test Developer',
+  'Lead Test Automation Engineer',
+  'Mobile & Web QA Architect',
+  'Healthcare QA Specialist',
   'CI/CD Quality Guardian',
 ]
 
@@ -40,8 +40,9 @@ export default function Hero() {
 
   const stats = [
     { value: profile.stats.years_experience, label: 'Years Experience' },
+    { value: profile.stats.projects, label: 'Projects Delivered' },
     { value: profile.stats.tests_written, label: 'Tests Written' },
-    { value: profile.stats.pass_rate, label: 'Pass Rate' },
+    { value: profile.stats.suite_stability, label: 'Suite Stability' },
   ]
 
   return (
@@ -79,8 +80,8 @@ export default function Hero() {
         </div>
 
         <p className="text-slate-400 text-base sm:text-lg max-w-xl mx-auto mb-8 leading-relaxed">
-          Building robust test automation frameworks that ensure software quality
-          at every stage of the development lifecycle.
+          15+ years designing and scaling automation across Web, Mobile, API,
+          and Embedded systems in healthcare and regulated environments.
         </p>
 
         <div className="flex flex-wrap gap-3 justify-center mb-14">

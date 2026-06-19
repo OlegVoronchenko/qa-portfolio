@@ -19,34 +19,34 @@ const practices = [
   {
     icon: <Search size={20} />,
     title: 'Test Automation',
-    desc: 'End-to-end, integration, and unit test frameworks with Page Object Model patterns and data-driven design.',
+    desc: 'Web, mobile, API, desktop, and embedded test frameworks with Selenium, Appium, and TestNG across regulated and commercial products.',
   },
   {
     icon: <GitBranch size={20} />,
     title: 'CI/CD Integration',
-    desc: 'GitHub Actions, Jenkins, and GitLab CI pipelines with automated test gates and quality reports.',
+    desc: 'GitHub Actions, Maven, and Jenkins pipelines with automated regression gates, quality reports, and release readiness checks.',
   },
   {
     icon: <Gauge size={20} />,
-    title: 'Performance Testing',
-    desc: 'Load and stress testing with Locust and k6 to validate throughput and response time SLAs.',
+    title: 'Framework Architecture',
+    desc: 'Designed and scaled automation frameworks that reduced test execution time by 50% and drove suite stability to 98%.',
   },
   {
     icon: <Smartphone size={20} />,
-    title: 'Cross-Platform Testing',
-    desc: 'Browser compatibility, responsive layouts, and mobile device testing across viewports.',
+    title: 'Mobile & Cross-Platform',
+    desc: 'Android and iOS automation with Appium 2.x for healthcare-critical workflows across devices and OS versions.',
   },
 ]
 
 const tools = [
+  { icon: <Code2 size={20} />, name: 'Java' },
+  { icon: <Globe size={20} />, name: 'Selenium' },
+  { icon: <Smartphone size={20} />, name: 'Appium' },
   { icon: <Code2 size={20} />, name: 'Python' },
   { icon: <TestTube2 size={20} />, name: 'Playwright' },
   { icon: <FlaskConical size={20} />, name: 'Pytest' },
-  { icon: <Globe size={20} />, name: 'Selenium' },
   { icon: <Terminal size={20} />, name: 'REST API' },
-  { icon: <Container size={20} />, name: 'Docker' },
   { icon: <Settings size={20} />, name: 'GitHub Actions' },
-  { icon: <Bug size={20} />, name: 'Postman' },
 ]
 
 export default function Skills() {

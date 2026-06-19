@@ -1,65 +1,134 @@
-# [YOUR NAME]
-## [YOUR ROLE TITLE]
+# Oleg V.
+## Lead Test Automation Engineer
 
-**Email:** your@email.com
-**LinkedIn:** linkedin.com/in/yourprofile
-**GitHub:** github.com/yourusername
-**Telegram:** @yourusername
-**Location:** City, Country
+**Email:** your.email@gmail.com
+**LinkedIn:** linkedin.com/in/your-profile
+**GitHub:** github.com/your-username
+**Telegram:** @your_telegram
+**Location:** Remote / Worldwide
+**Availability:** Open to new opportunities
 
 ## Summary
 
-2-3 sentences about yourself, your experience, and what you specialize in.
+Test Automation Engineer with 15+ years of experience designing, building, and scaling automation solutions across Web, Mobile, API, Desktop, Embedded, and cloud-based systems. Strong background in test automation architecture, framework development, CI/CD integration, test strategy, and quality process improvement.
+
+Led and mentored cross-functional QA/AQA teams of 5–10 engineers. Conducted systematic UI automation code reviews that reduced test execution time by up to 50%, cut manual testing effort in half, and drove suite stability to 98%.
+
+## Stats
+
+**Years of Experience:** 15+
+**Tests Automated:** 85% regression coverage achieved
+**Pass Rate:** 98% suite stability
 
 ## Experience
 
-### [Company Name] | [Role Title]
-**Period:** January 2023 — Present | [Location]
+### Lead Test Automation Engineer | GlobalLogic (Hitachi Group)
+**Period:** March 2023 — Present | Remote
 
-Description of your responsibilities and work.
+Lead automation for a mobile healthcare platform used by Emergency Medical Services and hospitals for ePCR patient data transmission.
 
 **Key Achievements:**
-- Achievement 1
-- Achievement 2
-- Achievement 3
+- Own Android, iOS, and API automation frameworks for emergency-critical medical workflows
+- Integrated automated suites into CI/CD pipelines, improving regression reliability and release readiness
+- Conduct regular automation code reviews and improve framework standards and reusable components
+- Mentor automation engineers and improve test design practices
+- Reduced flaky failures through better synchronization, logging, and root cause analysis
 
-### [Previous Company] | [Previous Role]
-**Period:** March 2020 — December 2022 | [Location]
+### Senior Test Automation Engineer | GlobalLogic (Hitachi Group)
+**Period:** March 2020 — March 2023 | Remote
 
-Description of your responsibilities.
+Worked on automation for embedded cardiac rhythm device software in a regulated medical environment.
 
-- Achievement 1
-- Achievement 2
+**Key Achievements:**
+- Built and maintained automation for embedded medical device validation
+- Increased coverage for critical cardiac workflows
+- Supported FDA/ISO-oriented quality activities and audit preparation
+- Investigated complex failures using logs, test results, and integration data
+
+### Senior / Lead Test Automation Engineer | GlobalLogic
+**Period:** April 2017 — March 2020 | Remote
+
+Automated a cloud-based emergency response and ePCR platform with complex healthcare integrations.
+
+**Key Achievements:**
+- Designed and evolved automation frameworks for web, API, and integration testing
+- Automated regression and integration scenarios for emergency medical data workflows
+- Reviewed automation code and guided engineers on framework design and maintainability
+
+### Senior / Lead QA Automation Engineer | GlobalLogic
+**Period:** 2012 — 2017 | Kharkiv, Ukraine
+
+Delivered automation across medical imaging, medical data exchange, cardiac monitoring, enterprise security, and mobile payment products.
+
+**Key Achievements:**
+- Built automation frameworks for web, mobile, API, integration, and desktop applications
+- Led QA/AQA teams of up to 10 engineers including mentoring, interviews, and code reviews
+- Improved regression coverage and reduced manual verification effort
+
+### QA / Test Automation Engineer | GlobalLogic
+**Period:** 2010 — 2012 | Kharkiv, Ukraine
+
+Started test automation career in medical and financial systems, including cardiac rhythm stimulator applications and mobile wallet solutions.
+
+**Key Achievements:**
+- Automated WPF-based medical applications and cross-platform iOS/Android payment workflows
+- Built functional and regression test suites for patient-critical systems
+- Led a 5-person QA team during mobile wallet testing
 
 ## Skills
 
-**Test Automation:** Python, Playwright, pytest, Selenium
-**API Testing:** Postman, REST, httpx, requests
-**CI/CD:** GitHub Actions, Docker, Jenkins
-**Reporting:** Allure, pytest-html, Jira
+**Test Automation:** Java, Selenium, Appium 2.x, TestNG, JUnit, pytest, NUnit, Cucumber, Python, C#
+**API Testing:** RESTAssured, Postman, REST API, Swagger, httpx, requests
+**Mobile Testing:** Android, iOS, Cross-platform automation
+**CI/CD:** Git, GitHub Actions, Maven, Jira, TestRail, Agile/Scrum
+**Reporting:** TestRail, Jira, Zephyr, Allure
+**Methodologies:** BDD, TDD, Risk-Based Testing, V&V, Regression, Smoke, Functional, Integration, Exploratory, Acceptance, API-first
+
+## Projects
+
+### Healthcare ePCR Mobile Platform
+**Type:** Mobile & API Automation
+**Stack:** Java, Appium 2.x, RESTAssured, TestNG, GitHub Actions
+**Description:** Automation framework for Emergency Medical Services mobile platform handling critical patient data transmission.
+**Metrics:**
+- Android + iOS coverage
+- Integrated in CI/CD pipeline
+- Reduced flaky failures significantly
+
+### Cardiac Device Software Validation
+**Type:** Embedded & Regulated Testing
+**Stack:** Java, TestNG, FDA/ISO compliance
+**Description:** Automation for embedded cardiac rhythm device software in a regulated medical environment.
+**Metrics:**
+- FDA/ISO-oriented validation
+- Audit preparation support
+- Critical cardiac workflow coverage
+
+### Cloud Emergency Response Platform
+**Type:** Web & API Automation
+**Stack:** Java, Selenium, RESTAssured, Cucumber
+**Description:** End-to-end automation for cloud-based ePCR platform with complex healthcare integrations.
+**Metrics:**
+- Web, API, integration coverage
+- 40% faster release cycles
+- 85% regression automation rate
 
 ## Education
 
-### [University Name]
-**Degree:** Bachelor of [Field]
-**Period:** 2018 — 2022 | [City, Country]
+### KhPI — Kharkiv Polytechnic University
+**Degree:** Master's Degree — Mathematician Analyst Engineer
+**Period:** 2001 — 2007 | Kharkiv, Ukraine
+
+### KhPI — Kharkiv Polytechnic University
+**Degree:** Specialist's Degree — Project Management and Program Professional
+**Period:** 2005 — 2007 | Kharkiv, Ukraine
 
 ## Certifications
 
-- ISTQB CTFL — ISTQB — 2023
-- [Other Cert] — [Issuer] — [Year]
+- ISTQB Foundation Level — ISTQB — 2018
 
 ## Languages
 
 - English — Professional
-- [Language] — Native
-
-## Projects
-
-### [Project Name]
-Description of the project.
-**Stack:** Python, Playwright, pytest, GitHub Actions
-
-### [Another Project]
-Description of the project.
-**Stack:** Postman, REST API, Docker
+- Ukrainian — Native
+- Russian — Native
