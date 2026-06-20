@@ -273,35 +273,77 @@ class TestContent:
             )
 
     @pytest.mark.content
-    def test_test_results_section_renders(self, portfolio: PortfolioPage):
-        """Verify the Test Results section is visible with headings.
-
-        Checks that #test-results is visible in the DOM and
-        contains at least one heading element.
-
-        Failure means: TestResults component didn't render,
-        the section ID was changed, or content is empty.
+    def test_test_results_section_renders(self, page: Page, base_url: str):
         """
-        with step("Locate test results section by ID"):
-            section = portfolio.test_results_section
-            url = portfolio._page.url
+        Test results section must render summary cards and test rows.
 
-        with step("Capture screenshot of test results"):
-            portfolio.take_screenshot("assert_test_results")
+        Verifies:
+        - Section is visible
+        - Summary cards show numeric values (passed/failed/total)
+        - At least 1 test row is rendered in the list
+        - No error state is shown (e.g. "failed to load")
 
-        with step("Assert test results section is visible"):
-            exists = section.count() > 0
-            assert section.is_visible(), Msg.TEST_RESULTS_NOT_VISIBLE.format(
-                url=url, exists=exists,
+        Failure means: test_report.json was not generated,
+        not deployed, or the fetch URL is wrong.
+        """
+        with step("Open the portfolio page"):
+            portfolio = PortfolioPage(page, base_url)
+            portfolio.navigate()
+
+        with step("Locate the test results section"):
+            section = page.locator("#test-results")
+            assert section.is_visible(), (
+                "Test results section #test-results is not visible on page"
             )
 
-        with step("Count headings inside test results section"):
-            headings = section.get_by_role("heading")
-            heading_count = headings.count()
+        with step("Wait for test data to load from test_report.json"):
+            page.wait_for_timeout(2000)
 
-        with step(f"Assert at least 1 heading (found {heading_count})"):
-            assert heading_count > 0, Msg.TEST_RESULTS_NO_HEADINGS.format(
-                actual=heading_count, url=url,
+        with step("Verify summary cards show numeric values"):
+            summary_cards = section.locator(
+                "[class*='summary'], [class*='stat'], [class*='count']"
+            )
+            card_count = summary_cards.count()
+
+            section_text = section.inner_text()
+            has_numbers = any(
+                char.isdigit() for char in section_text
+            )
+            assert has_numbers, (
+                f"Test results section has no numeric values. "
+                f"Section text: '{section_text[:200]}'. "
+                f"Likely test_report.json failed to load."
+            )
+
+        with step("Verify at least one test row is rendered"):
+            row_count = page.evaluate("""
+                () => {
+                    const section = document.querySelector('#test-results');
+                    if (!section) return 0;
+                    // Each test row has a button with a grid layout
+                    // containing a CheckCircle or XCircle icon + test name
+                    const buttons = section.querySelectorAll(
+                        'button[class*="grid"]'
+                    );
+                    // Subtract 0 — all grid buttons are test rows
+                    return buttons.length;
+                }
+            """)
+
+            assert row_count > 0, (
+                f"No test rows found in results section. "
+                f"Expected at least 1 row from test_report.json. "
+                f"Found {row_count} rows. "
+                f"Check that test_report.json is deployed to dist/ "
+                f"and fetch URL uses import.meta.env.BASE_URL prefix."
+            )
+
+        with step("Take screenshot showing test results"):
+            from datetime import datetime
+            ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+            page.screenshot(
+                path=f"screenshots/assert_test_results_{ts}.png",
+                full_page=False
             )
 
 

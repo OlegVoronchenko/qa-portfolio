@@ -83,7 +83,7 @@ export default function Hero() {
         </div>
 
         <p className="text-slate-400 text-base sm:text-lg max-w-xl mx-auto mb-8 leading-relaxed">
-          15+ years designing and scaling automation across Web, Mobile, API,
+          {profile.stats.years_experience} years designing and scaling automation across Web, Mobile, API,
           and Embedded systems in healthcare and regulated environments.
         </p>
 

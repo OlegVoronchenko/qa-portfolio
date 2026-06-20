@@ -161,14 +161,16 @@ STEPS_MAP = {
         ],
     },
     "test_test_results_section_renders": {
-        "description": "Test results section must be visible with content",
+        "description": "Test results section must show loaded data from test_report.json",
         "mark": "content",
         "steps": [
             "Open the portfolio page",
-            "Scroll to the Test Results section",
-            "Confirm the section is visible on screen",
-            "Look for headings inside the section",
-            "Verify at least one heading exists",
+            "Locate the Test Results section (#test-results)",
+            "Verify the section is visible on screen",
+            "Wait 2 seconds for test_report.json to load via fetch",
+            "Check that numeric values appear in summary cards",
+            "Verify at least 1 test row is rendered in the list",
+            "Failure here means test_report.json was not deployed",
         ],
     },
     "test_mobile_viewport_no_horizontal_scroll": {

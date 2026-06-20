@@ -98,7 +98,7 @@ export default function About() {
             <div className="flex items-center gap-3">
               <Briefcase size={16} className="text-accent" />
               <span className="text-sm text-slate-400">
-                15+ years at GlobalLogic across healthcare and medical domains
+                {profile.stats.years_experience} years at {profile.experience[0]?.company} across healthcare and medical domains
               </span>
             </div>
           </div>
