@@ -56,28 +56,17 @@ function TestRow({ test, isOpen, onToggle }) {
     <div className={`border-b border-dark-600/50 last:border-b-0 ${isOpen ? 'bg-dark-800/40' : 'hover:bg-dark-800/30'} transition-colors`}>
       <button
         onClick={onToggle}
-        className="w-full grid grid-cols-[1fr_80px_80px] sm:grid-cols-[1fr_100px_100px] gap-2 px-4 sm:px-6 py-3 items-start text-left"
+        className="w-full grid grid-cols-[1fr_80px_80px] sm:grid-cols-[1fr_100px_100px] gap-2 px-4 sm:px-6 py-3 items-center text-left"
       >
-        <div className="flex items-start gap-2 min-w-0">
-          <span className="mt-0.5 flex-shrink-0">
-            {test.status === 'pass' ? (
-              <CheckCircle2 size={14} className="text-emerald-400" />
-            ) : (
-              <XCircle size={14} className="text-red-400" />
-            )}
-          </span>
-          <div className="flex flex-col min-w-0">
-            <span className="font-mono text-xs sm:text-sm text-slate-300 truncate">
-              {test.name}
-            </span>
-            {test.description && (
-              <span className="text-[11px] sm:text-xs text-slate-500 italic mt-0.5 truncate sm:whitespace-normal">
-                {test.description}
-              </span>
-            )}
-          </div>
-        </div>
-        <span className="text-center mt-0.5">
+        <span className="font-mono text-xs sm:text-sm text-slate-300 truncate flex items-center gap-2">
+          {test.status === 'pass' ? (
+            <CheckCircle2 size={14} className="text-emerald-400 flex-shrink-0" />
+          ) : (
+            <XCircle size={14} className="text-red-400 flex-shrink-0" />
+          )}
+          {test.name}
+        </span>
+        <span className="text-center">
           {test.status === 'pass' ? (
             <span className="inline-flex items-center gap-1 text-emerald-400 text-xs font-mono font-semibold">
               <span className="hidden sm:inline">PASS</span>
@@ -88,7 +77,7 @@ function TestRow({ test, isOpen, onToggle }) {
             </span>
           )}
         </span>
-        <span className="text-right text-xs font-mono text-slate-500 flex items-center justify-end gap-1 mt-0.5">
+        <span className="text-right text-xs font-mono text-slate-500 flex items-center justify-end gap-1">
           {formatMs(test.duration_ms)}
           <ChevronDown size={12} className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} />
         </span>
@@ -97,6 +86,13 @@ function TestRow({ test, isOpen, onToggle }) {
       {isOpen && (
         <div className="px-4 sm:px-6 pb-4">
           <div className="bg-dark-700 border border-dark-600 rounded-xl p-4 space-y-3">
+            {test.description && (
+              <div className="pb-3 border-b border-white/5">
+                <span className="text-[11px] text-slate-500 uppercase tracking-wider font-semibold">Description</span>
+                <p className="text-sm text-slate-300 mt-1">{test.description}</p>
+              </div>
+            )}
+
             <div>
               <span className="text-[11px] text-slate-500 uppercase tracking-wider">Steps</span>
               <div className="mt-1.5 space-y-1">
