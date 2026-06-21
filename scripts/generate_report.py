@@ -400,7 +400,7 @@ STEPS_MAP = {
             },
             {
                 "description": "Verify at least 1 test row is rendered in the list",
-                "code": "row_count = page.evaluate(\"\"\"\n    () => {\n        const section = document.querySelector(\n            '#test-results'\n        );\n        return section\n            ? section.querySelectorAll(\n                'button[class*=\"grid\"]'\n            ).length\n            : 0;\n    }\n\"\"\")\nassert row_count > 0",
+                "code": "row_count = page.evaluate(\"\"\"\n    () => {\n        const section = document.querySelector(\n            '#test-results'\n        );\n        return section\n            ? section.querySelectorAll(\n                'div[class*=\"cursor-pointer\"]'\n            ).length\n            : 0;\n    }\n\"\"\")\nassert row_count > 0",
             },
         ],
     },

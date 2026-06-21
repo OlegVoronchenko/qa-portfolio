@@ -320,13 +320,9 @@ class TestContent:
                 () => {
                     const section = document.querySelector('#test-results');
                     if (!section) return 0;
-                    // Each test row has a button with a grid layout
-                    // containing a CheckCircle or XCircle icon + test name
-                    const buttons = section.querySelectorAll(
-                        'button[class*="grid"]'
-                    );
-                    // Subtract 0 — all grid buttons are test rows
-                    return buttons.length;
+                    return section.querySelectorAll(
+                        'div[class*="cursor-pointer"]'
+                    ).length;
                 }
             """)
 
