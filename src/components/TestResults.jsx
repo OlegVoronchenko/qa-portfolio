@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { useLastRun } from '../hooks/useLastRun'
 import {
   CheckCircle2,
   XCircle,
@@ -221,6 +222,7 @@ export default function TestResults() {
   const [runProgress, setRunProgress] = useState(0)
   const [expanded, setExpanded] = useState(new Set())
   const [fullScreenshot, setFullScreenshot] = useState(null)
+  const lastRun = useLastRun()
 
   const fetchReport = useCallback(() => {
     setLoading(true)
@@ -285,11 +287,24 @@ export default function TestResults() {
 
   return (
     <section id="test-results" className="py-20 px-4 sm:px-6 max-w-6xl mx-auto">
-      <h2 className="font-mono text-2xl sm:text-3xl font-bold mb-2">
-        <span className="text-accent">#</span> Test Results
-      </h2>
+      <div className="flex items-baseline justify-between flex-wrap gap-2 mb-2">
+        <h2 className="font-mono text-2xl sm:text-3xl font-bold">
+          <span className="text-accent">#</span> Test Results
+        </h2>
+        {lastRun && (
+          <a
+            href={lastRun.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-300 transition-colors duration-200"
+          >
+            <span className={`w-1.5 h-1.5 rounded-full ${lastRun.conclusion === 'success' ? 'bg-emerald-400' : 'bg-red-400'}`} />
+            Last run: {lastRun.time}
+          </a>
+        )}
+      </div>
       <p className="text-slate-500 mb-10 text-sm sm:text-base">
-        Live results from this portfolio's automated test suite
+        Live results from this portfolio&apos;s automated test suite
       </p>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">

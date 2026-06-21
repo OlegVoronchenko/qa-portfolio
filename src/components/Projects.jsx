@@ -42,6 +42,11 @@ export default function Projects() {
               <span className="absolute top-3 left-3 bg-dark-900/80 backdrop-blur text-accent text-[11px] font-mono font-semibold px-2.5 py-1 rounded-md border border-accent/20">
                 {p.type}
               </span>
+              {p.domain && (
+                <span className="absolute top-3 right-3 flex items-center gap-1 text-xs px-2 py-1 rounded-full bg-dark-900/80 border border-white/10 text-slate-300 backdrop-blur-sm">
+                  {p.domain_icon} {p.domain}
+                </span>
+              )}
               <div className="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-dark-800/90 border border-dark-600 flex items-center justify-center text-accent">
                 {iconMap[p.name] || <Cloud size={20} />}
               </div>

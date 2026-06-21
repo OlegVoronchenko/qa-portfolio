@@ -102,6 +102,8 @@
     {
       "name": "Healthcare ePCR Mobile Platform",
       "type": "E2E Testing",
+      "domain": "EMS",
+      "domain_icon": "🚑",
       "description": "Android and iOS automation for emergency medical services platform used in real ambulance workflows. Patient data transmission at the point of care — the kind of system where a data loss bug is not a ticket, it's an incident.",
       "stack": ["Java", "Appium", "RESTAssured", "TestNG"],
       "metrics": ["Android + iOS coverage", "CI/CD integrated", "Reduced flaky failures"]
@@ -109,6 +111,8 @@
     {
       "name": "Cardiac Device Validation",
       "type": "API Testing",
+      "domain": "Medical Device",
+      "domain_icon": "💊",
       "description": "Automated validation for embedded cardiac rhythm device software in an FDA-regulated environment. Every test had to be traceable, every failure had to be investigated — no noise tolerated.",
       "stack": ["Java", "TestNG", "FDA/ISO compliance"],
       "metrics": ["FDA/ISO validation", "Critical workflow coverage"]
@@ -116,6 +120,8 @@
     {
       "name": "Cloud Emergency Response",
       "type": "Live Demo",
+      "domain": "Healthcare",
+      "domain_icon": "🏥",
       "description": "Web, API, and integration automation for a cloud-based ePCR platform connecting hospitals, EMS crews, and dispatch centers. Complex data flows across multiple systems — regression coverage had to be airtight before every release.",
       "stack": ["Java", "Selenium", "RESTAssured", "Cucumber"],
       "metrics": ["85% regression coverage", "40% faster releases"]
