@@ -39,6 +39,8 @@ COVERAGE_MAP = {
 
 STEPS_MAP = {
     "test_page_loads_with_correct_title": {
+        "req_id": "REQ-001",
+        "ac_ids": ["AC-001-1", "AC-001-2", "AC-001-3"],
         "description": "Browser tab title must identify the engineer by name and role",
         "mark": "smoke",
         "steps": [
@@ -65,6 +67,8 @@ STEPS_MAP = {
         ],
     },
     "test_hero_heading_displays_name": {
+        "req_id": "REQ-001",
+        "ac_ids": ["AC-001-4"],
         "description": "Main heading on hero section must show the engineer name",
         "mark": "smoke",
         "steps": [
@@ -87,6 +91,8 @@ STEPS_MAP = {
         ],
     },
     "test_navigation_is_present": {
+        "req_id": "REQ-001",
+        "ac_ids": ["AC-001-5"],
         "description": "Navigation bar must be visible when the page loads",
         "mark": "smoke",
         "steps": [
@@ -109,6 +115,8 @@ STEPS_MAP = {
         ],
     },
     "test_page_has_no_javascript_errors": {
+        "req_id": "REQ-001",
+        "ac_ids": ["AC-001-6"],
         "description": "No JavaScript errors should appear in the browser console",
         "mark": "smoke",
         "steps": [
@@ -135,6 +143,8 @@ STEPS_MAP = {
         ],
     },
     "test_react_app_hydrated_successfully": {
+        "req_id": "REQ-001",
+        "ac_ids": ["AC-001-7", "AC-001-8"],
         "description": "React application must render visible content on screen",
         "mark": "smoke",
         "steps": [
@@ -161,6 +171,8 @@ STEPS_MAP = {
         ],
     },
     "test_nav_link_is_visible_with_correct_href[About-#about]": {
+        "req_id": "REQ-002",
+        "ac_ids": ["AC-002-1", "AC-002-2"],
         "description": "About link must be visible in navbar and point to #about",
         "mark": "navigation",
         "steps": [
@@ -187,6 +199,8 @@ STEPS_MAP = {
         ],
     },
     "test_nav_link_is_visible_with_correct_href[Skills-#skills]": {
+        "req_id": "REQ-002",
+        "ac_ids": ["AC-002-3", "AC-002-4"],
         "description": "Skills link must be visible in navbar and point to #skills",
         "mark": "navigation",
         "steps": [
@@ -213,6 +227,8 @@ STEPS_MAP = {
         ],
     },
     "test_nav_link_is_visible_with_correct_href[Projects-#projects]": {
+        "req_id": "REQ-002",
+        "ac_ids": ["AC-002-5", "AC-002-6"],
         "description": "Projects link must be visible in navbar and point to #projects",
         "mark": "navigation",
         "steps": [
@@ -239,6 +255,8 @@ STEPS_MAP = {
         ],
     },
     "test_nav_link_is_visible_with_correct_href[Contact-#contact]": {
+        "req_id": "REQ-002",
+        "ac_ids": ["AC-002-7", "AC-002-8"],
         "description": "Contact link must be visible in navbar and point to #contact",
         "mark": "navigation",
         "steps": [
@@ -265,6 +283,8 @@ STEPS_MAP = {
         ],
     },
     "test_skills_section_contains_core_stack[Python]": {
+        "req_id": "REQ-003",
+        "ac_ids": ["AC-003-1"],
         "description": "Python must appear as a visible skill tag in Skills section",
         "mark": "content",
         "steps": [
@@ -287,6 +307,8 @@ STEPS_MAP = {
         ],
     },
     "test_skills_section_contains_core_stack[Playwright]": {
+        "req_id": "REQ-003",
+        "ac_ids": ["AC-003-2"],
         "description": "Playwright must appear as a visible skill tag in Skills section",
         "mark": "content",
         "steps": [
@@ -309,6 +331,8 @@ STEPS_MAP = {
         ],
     },
     "test_skills_section_contains_core_stack[pytest]": {
+        "req_id": "REQ-003",
+        "ac_ids": ["AC-003-3"],
         "description": "pytest must appear as a visible skill tag in Skills section",
         "mark": "content",
         "steps": [
@@ -331,6 +355,8 @@ STEPS_MAP = {
         ],
     },
     "test_projects_section_has_expected_cards": {
+        "req_id": "REQ-003",
+        "ac_ids": ["AC-003-4"],
         "description": "Projects section must display exactly 3 project cards",
         "mark": "content",
         "steps": [
@@ -353,6 +379,8 @@ STEPS_MAP = {
         ],
     },
     "test_contact_section_has_required_channels": {
+        "req_id": "REQ-003",
+        "ac_ids": ["AC-003-5"],
         "description": "Contact section must display all required contact channels",
         "mark": "content",
         "steps": [
@@ -375,6 +403,8 @@ STEPS_MAP = {
         ],
     },
     "test_test_results_section_renders": {
+        "req_id": "REQ-003",
+        "ac_ids": ["AC-003-6", "AC-003-7", "AC-003-8"],
         "description": "Test results section must show loaded data from test_report.json",
         "mark": "content",
         "steps": [
@@ -405,6 +435,8 @@ STEPS_MAP = {
         ],
     },
     "test_mobile_viewport_no_horizontal_scroll": {
+        "req_id": "REQ-004",
+        "ac_ids": ["AC-004-1"],
         "description": "No horizontal scrollbar at 390px mobile width",
         "mark": "responsive",
         "steps": [
@@ -431,6 +463,8 @@ STEPS_MAP = {
         ],
     },
     "test_mobile_hero_section_visible": {
+        "req_id": "REQ-004",
+        "ac_ids": ["AC-004-2"],
         "description": "Hero heading must be visible at 390px mobile width",
         "mark": "responsive",
         "steps": [
@@ -453,6 +487,8 @@ STEPS_MAP = {
         ],
     },
     "test_page_load_time_within_budget": {
+        "req_id": "REQ-005",
+        "ac_ids": ["AC-005-1"],
         "description": "Page must finish loading in under 3000ms",
         "mark": "performance",
         "steps": [
@@ -475,6 +511,8 @@ STEPS_MAP = {
         ],
     },
     "test_images_have_alt_text": {
+        "req_id": "REQ-006",
+        "ac_ids": ["AC-006-1"],
         "description": "Every image must have descriptive alt text",
         "mark": "accessibility",
         "steps": [
@@ -497,6 +535,8 @@ STEPS_MAP = {
         ],
     },
     "test_headings_hierarchy_is_correct": {
+        "req_id": "REQ-006",
+        "ac_ids": ["AC-006-2", "AC-006-3", "AC-006-4"],
         "description": "Heading levels must follow correct order without gaps",
         "mark": "accessibility",
         "steps": [
@@ -523,6 +563,8 @@ STEPS_MAP = {
         ],
     },
     "test_assets_load_on_github_pages": {
+        "req_id": "REQ-007",
+        "ac_ids": ["AC-007-1", "AC-007-2", "AC-007-3"],
         "description": "All CSS and JS files must load on production site",
         "mark": "deployment",
         "steps": [
@@ -553,6 +595,8 @@ STEPS_MAP = {
         ],
     },
     "test_base_path_is_correct": {
+        "req_id": "REQ-007",
+        "ac_ids": ["AC-007-4"],
         "description": "Asset paths must include the /qa-portfolio/ prefix",
         "mark": "deployment",
         "steps": [
@@ -579,6 +623,8 @@ STEPS_MAP = {
         ],
     },
     "test_no_console_errors_on_production": {
+        "req_id": "REQ-007",
+        "ac_ids": ["AC-007-5"],
         "description": "No JavaScript errors on the production site",
         "mark": "deployment",
         "steps": [
@@ -782,6 +828,8 @@ def parse_report():
             "steps": steps,
             "locator_strategy": detect_locator_strategy(mapped["steps"]),
             "coverage": get_coverage_tags(name),
+            "req_id": mapped.get("req_id"),
+            "ac_ids": mapped.get("ac_ids", []),
             "screenshot": find_screenshot_for_test(name),
             "error": error_msg,
         })

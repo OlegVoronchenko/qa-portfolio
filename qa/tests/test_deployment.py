@@ -32,6 +32,7 @@ def deploy_page(page: Page) -> Page:
 
 class TestDeployment:
 
+    # REQ-007 | AC-007-1, AC-007-2, AC-007-3
     @pytest.mark.deployment
     def test_assets_load_on_github_pages(self, deploy_page: Page):
         """Verify production site loads with no 404 asset errors.
@@ -92,6 +93,7 @@ class TestDeployment:
             h1_text = h1.inner_text()
             assert h1_text.strip(), Msg.DEPLOY_H1_EMPTY.format(url=_PAGES_URL)
 
+    # REQ-007 | AC-007-4
     @pytest.mark.deployment
     def test_base_path_is_correct(self, deploy_page: Page):
         """Verify assets use the correct repo-prefixed base path.
@@ -122,6 +124,7 @@ class TestDeployment:
                 paths=bad_paths,
             )
 
+    # REQ-007 | AC-007-5
     @pytest.mark.deployment
     def test_no_console_errors_on_production(self, deploy_page: Page):
         """Verify no JavaScript errors on the production site.

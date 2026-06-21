@@ -37,6 +37,7 @@ def mobile_portfolio(mobile_page: Page, base_url: str) -> PortfolioPage:
 
 class TestSmoke:
 
+    # REQ-001 | AC-001-1, AC-001-2, AC-001-3
     @pytest.mark.smoke
     def test_page_loads_with_correct_title(self, portfolio: PortfolioPage):
         """Verify the browser tab title identifies the engineer.
@@ -71,6 +72,7 @@ class TestSmoke:
                     expected=PAGE_TITLE.CONTAINS_TYPE, actual=title,
                 )
 
+    # REQ-001 | AC-001-4
     @pytest.mark.smoke
     def test_hero_heading_displays_name(self, portfolio: PortfolioPage):
         """Verify the main h1 heading contains the engineer's name.
@@ -92,6 +94,7 @@ class TestSmoke:
                 expected=HERO.CONTAINS_NAME, actual=text,
             )
 
+    # REQ-001 | AC-001-5
     @pytest.mark.smoke
     def test_navigation_is_present(self, portfolio: PortfolioPage):
         """Verify a <nav> landmark exists and is visible.
@@ -115,6 +118,7 @@ class TestSmoke:
                 url=url, count=nav_count,
             )
 
+    # REQ-001 | AC-001-6
     @pytest.mark.smoke
     def test_page_has_no_javascript_errors(self, page: Page, base_url: str):
         """Verify no uncaught JS exceptions during page load.
@@ -136,6 +140,7 @@ class TestSmoke:
         with step("Assert no JavaScript errors were captured"):
             assert js_errors == [], Msg.JS_ERRORS_FOUND.format(errors=js_errors)
 
+    # REQ-001 | AC-001-7, AC-001-8
     @pytest.mark.smoke
     def test_react_app_hydrated_successfully(self, hydrated_page: Page):
         """Verify React mounted into #root with child elements.
@@ -178,6 +183,7 @@ class TestSmoke:
 
 class TestNavigation:
 
+    # REQ-002 | AC-002-1, AC-002-2 (and per parametrize)
     @pytest.mark.navigation
     @pytest.mark.parametrize("label, href", NAV.ALL_WITH_HREFS)
     def test_nav_link_is_visible_with_correct_href(
@@ -208,6 +214,7 @@ class TestNavigation:
 
 class TestContent:
 
+    # REQ-003 | AC-003-1, AC-003-2, AC-003-3
     @pytest.mark.content
     @pytest.mark.parametrize("skill", SKILLS.ALL)
     def test_skills_section_contains_core_stack(
@@ -230,6 +237,7 @@ class TestContent:
         with step(f"Assert '{skill}' tag is visible"):
             assert tag.first.is_visible(), Msg.SKILL_NOT_VISIBLE.format(name=skill)
 
+    # REQ-003 | AC-003-4
     @pytest.mark.content
     def test_projects_section_has_expected_cards(self, portfolio: PortfolioPage):
         """Verify the Projects section renders the expected number of cards.
@@ -251,6 +259,7 @@ class TestContent:
                 expected=COUNTS.PROJECT_CARDS, actual=count,
             )
 
+    # REQ-003 | AC-003-5
     @pytest.mark.content
     def test_contact_section_has_required_channels(self, portfolio: PortfolioPage):
         """Verify the Contact section renders the expected number of links.
@@ -272,6 +281,7 @@ class TestContent:
                 expected=COUNTS.CONTACT_LINKS, actual=count,
             )
 
+    # REQ-003 | AC-003-6, AC-003-7, AC-003-8
     @pytest.mark.content
     def test_test_results_section_renders(self, page: Page, base_url: str):
         """
@@ -347,6 +357,7 @@ class TestContent:
 
 class TestResponsive:
 
+    # REQ-004 | AC-004-1
     @pytest.mark.responsive
     def test_mobile_viewport_no_horizontal_scroll(
         self, mobile_portfolio: PortfolioPage,
@@ -373,6 +384,7 @@ class TestResponsive:
                 scroll_w=scroll_w, viewport_w=viewport_w,
             )
 
+    # REQ-004 | AC-004-2
     @pytest.mark.responsive
     def test_mobile_hero_section_visible(self, mobile_portfolio: PortfolioPage):
         """Verify the hero h1 heading is visible at mobile viewport.
@@ -396,6 +408,7 @@ class TestResponsive:
 
 class TestPerformance:
 
+    # REQ-005 | AC-005-1
     @pytest.mark.performance
     def test_page_load_time_within_budget(self, page: Page, base_url: str):
         """Verify page loads within the performance budget.
@@ -426,6 +439,7 @@ class TestPerformance:
 
 class TestAccessibility:
 
+    # REQ-006 | AC-006-1
     @pytest.mark.accessibility
     def test_images_have_alt_text(self, page: Page, base_url: str):
         """
@@ -464,6 +478,7 @@ class TestAccessibility:
                 + str(violations)
             )
 
+    # REQ-006 | AC-006-2, AC-006-3, AC-006-4
     @pytest.mark.accessibility
     def test_headings_hierarchy_is_correct(self, portfolio: PortfolioPage):
         """Verify heading levels follow semantic HTML hierarchy.

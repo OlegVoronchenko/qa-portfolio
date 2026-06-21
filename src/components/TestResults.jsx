@@ -148,6 +148,19 @@ function TestRow({ test, isOpen, onToggle, onScreenshot }) {
               )}
             </div>
 
+            {test.req_id && (
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-xs px-2 py-0.5 rounded bg-gray-800 border border-white/10 text-gray-400 font-mono">
+                  {test.req_id}
+                </span>
+                {test.ac_ids?.map((ac) => (
+                  <span key={ac} className="text-xs px-2 py-0.5 rounded bg-gray-800/60 border border-white/5 text-gray-500 font-mono">
+                    {ac}
+                  </span>
+                ))}
+              </div>
+            )}
+
             {test.description && (
               <div className="pb-3 border-b border-white/5">
                 <span className="text-[11px] text-slate-500 uppercase tracking-wider font-semibold">Description</span>
