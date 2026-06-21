@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { Mail, Github, Linkedin } from 'lucide-react'
 import { useProfile } from '../hooks/useProfile'
 
@@ -11,6 +12,14 @@ const navLinks = [
 
 export default function Footer() {
   const profile = useProfile()
+  const [showBadge, setShowBadge] = useState(false)
+
+  useEffect(() => {
+    const isAutomated = navigator.webdriver || !!window.__playwright
+    if (!isAutomated) {
+      setShowBadge(true)
+    }
+  }, [])
 
   const socials = [
     { icon: <Mail size={18} />, href: `mailto:${profile.contact.email}`, label: 'Email' },
@@ -58,27 +67,29 @@ export default function Footer() {
         &copy; {new Date().getFullYear()} {profile.personal.name} — Built with React, tested with Playwright.
       </div>
 
-      <div
-        className="flex justify-center mt-6 pt-4 border-t border-white/5"
-        title="Visitor count"
-      >
-        <img
-          src="https://visitor-badge.laobi.icu/badge?page_id=OlegVoronchenko.qa-portfolio"
-          alt="Visitor count badge"
-          aria-hidden="true"
-          className="opacity-30 hover:opacity-70 transition-opacity duration-500"
-          style={{ height: '16px' }}
-          onError={(e) => {
-            const img = e.currentTarget
-            if (!img.dataset.fallback) {
-              img.dataset.fallback = 'true'
-              img.src = 'https://hits.sh/olegvoronchenko.github.io/qa-portfolio.svg?style=flat&color=10b981&labelColor=111827'
-            } else {
-              img.style.display = 'none'
-            }
-          }}
-        />
-      </div>
+      {showBadge && (
+        <div
+          className="flex justify-center mt-6 pt-4 border-t border-white/5"
+          title="Visitor count"
+        >
+          <img
+            src="https://visitor-badge.laobi.icu/badge?page_id=OlegVoronchenko.qa-portfolio"
+            alt="Visitor count badge"
+            aria-hidden="true"
+            className="opacity-30 hover:opacity-70 transition-opacity duration-500"
+            style={{ height: '16px' }}
+            onError={(e) => {
+              const img = e.currentTarget
+              if (!img.dataset.fallback) {
+                img.dataset.fallback = 'true'
+                img.src = 'https://hits.sh/olegvoronchenko.github.io/qa-portfolio.svg?style=flat&color=10b981&labelColor=111827'
+              } else {
+                img.style.display = 'none'
+              }
+            }}
+          />
+        </div>
+      )}
     </footer>
   )
 }
