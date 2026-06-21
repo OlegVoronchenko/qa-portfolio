@@ -360,10 +360,11 @@ export default function TestResults() {
       )}
 
       <div className="bg-dark-700 border border-dark-600 rounded-2xl overflow-hidden">
-        <div className="grid grid-cols-[24px_1fr_auto] gap-2 px-4 sm:px-6 py-3 bg-dark-800/50 border-b border-dark-600 text-[11px] text-slate-500 uppercase tracking-wider font-mono">
-          <span></span>
-          <span>Test Name</span>
-          <span className="text-right">Duration</span>
+        <div className="flex items-center gap-3 px-4 sm:px-6 py-2 border-b border-white/5">
+          <div className="w-3.5 flex-shrink-0" />
+          <span className="flex-1 min-w-0 text-xs font-semibold text-slate-500 uppercase tracking-wider">Test Name</span>
+          <span className="flex-shrink-0 w-12 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</span>
+          <span className="flex-shrink-0 w-16 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Duration</span>
         </div>
 
         {data.tests.map((t) => (
