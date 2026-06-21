@@ -99,35 +99,31 @@ function TestRow({ test, isOpen, onToggle, onScreenshot }) {
     <div className={`border-b border-dark-600/50 last:border-b-0 ${isOpen ? 'bg-dark-800/40' : 'hover:bg-dark-800/30'} transition-colors`}>
       <button
         onClick={onToggle}
-        className="w-full grid grid-cols-[1fr_80px_80px] sm:grid-cols-[1fr_100px_100px] gap-2 px-4 sm:px-6 py-3 items-center text-left"
+        className="w-full grid grid-cols-[24px_1fr_auto] gap-2 px-4 sm:px-6 py-3 items-center text-left"
       >
-        <span className="font-mono text-xs sm:text-sm text-slate-300 truncate flex items-center gap-2">
+        <span className="flex items-center justify-center">
           {test.status === 'pass' ? (
-            <CheckCircle2 size={14} className="text-emerald-400 flex-shrink-0" />
+            <CheckCircle2 size={14} className="text-emerald-400" />
+          ) : test.status === 'fail' ? (
+            <XCircle size={14} className="text-red-400" />
           ) : (
-            <XCircle size={14} className="text-red-400 flex-shrink-0" />
+            <span className="w-3.5 h-3.5 rounded-full bg-yellow-400/80" />
           )}
+        </span>
+        <span className="font-mono text-xs sm:text-sm text-slate-300 truncate">
           {test.name}
         </span>
-        <span className="text-center flex items-center justify-center gap-1.5">
-          {test.status === 'pass' ? (
-            <span className="inline-flex items-center gap-1 text-emerald-400 text-xs font-mono font-semibold">
-              <span className="hidden sm:inline">PASS</span>
-            </span>
-          ) : (
-            <span className="inline-flex items-center gap-1 text-red-400 text-xs font-mono font-semibold">
-              <span className="hidden sm:inline">FAIL</span>
-            </span>
-          )}
+        <span className="flex items-center gap-1.5 flex-shrink-0">
+          <span className={`hidden sm:inline text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full ${MARK_COLORS[test.mark] || MARK_COLORS.general}`}>
+            {test.mark}
+          </span>
           {locBadge && (
             <span className={`hidden sm:inline text-[10px] px-1.5 py-0.5 rounded border font-mono ${locBadge.color}`} title={locBadge.title}>
               {locBadge.label}
             </span>
           )}
-        </span>
-        <span className="text-right text-xs font-mono text-slate-500 flex items-center justify-end gap-1">
-          {formatMs(test.duration_ms)}
-          <ChevronDown size={12} className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+          <span className="text-xs font-mono text-slate-500 ml-1">{formatMs(test.duration_ms)}</span>
+          <ChevronDown size={12} className={`text-slate-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
         </span>
       </button>
 
@@ -350,9 +346,9 @@ export default function TestResults() {
       )}
 
       <div className="bg-dark-700 border border-dark-600 rounded-2xl overflow-hidden">
-        <div className="grid grid-cols-[1fr_80px_80px] sm:grid-cols-[1fr_100px_100px] gap-2 px-4 sm:px-6 py-3 bg-dark-800/50 border-b border-dark-600 text-[11px] text-slate-500 uppercase tracking-wider font-mono">
+        <div className="grid grid-cols-[24px_1fr_auto] gap-2 px-4 sm:px-6 py-3 bg-dark-800/50 border-b border-dark-600 text-[11px] text-slate-500 uppercase tracking-wider font-mono">
+          <span></span>
           <span>Test Name</span>
-          <span className="text-center">Status</span>
           <span className="text-right">Duration</span>
         </div>
 
