@@ -94,43 +94,43 @@ function StepRow({ step, index }) {
 }
 
 function TestRow({ test, isOpen, onToggle, onScreenshot }) {
-  const locBadge = LOCATOR_BADGES[test.locator_strategy]
-
   return (
     <div className={`border-b border-dark-600/50 last:border-b-0 ${isOpen ? 'bg-dark-800/40' : 'hover:bg-dark-800/30'} transition-colors`}>
-      <button
+      <div
+        className="flex items-center gap-3 py-3 px-4 sm:px-6 cursor-pointer hover:bg-white/5 transition-colors duration-150"
         onClick={onToggle}
-        className="w-full grid grid-cols-[24px_1fr_auto] gap-2 px-4 sm:px-6 py-3 items-center text-left"
       >
-        <span className="flex items-center justify-center">
-          {test.status === 'pass' ? (
-            <CheckCircle2 size={14} className="text-emerald-400" />
-          ) : test.status === 'fail' ? (
-            <XCircle size={14} className="text-red-400" />
-          ) : (
-            <span className="w-3.5 h-3.5 rounded-full bg-yellow-400/80" />
-          )}
-        </span>
-        <span className="font-mono text-xs sm:text-sm text-slate-300 truncate">
+        {test.status === 'pass' ? (
+          <CheckCircle2 size={14} className="text-emerald-400 flex-shrink-0" />
+        ) : test.status === 'fail' ? (
+          <XCircle size={14} className="text-red-400 flex-shrink-0" />
+        ) : (
+          <span className="w-3.5 h-3.5 rounded-full bg-yellow-400/80 flex-shrink-0" />
+        )}
+        <span className="flex-1 text-sm font-mono text-slate-300 truncate">
           {test.name}
         </span>
-        <span className="flex items-center gap-1.5 flex-shrink-0">
-          <span className={`hidden sm:inline text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full ${MARK_COLORS[test.mark] || MARK_COLORS.general}`}>
-            {test.mark}
-          </span>
-          {locBadge && (
-            <span className={`hidden sm:inline text-[10px] px-1.5 py-0.5 rounded border font-mono ${locBadge.color}`} title={locBadge.title}>
-              {locBadge.label}
-            </span>
-          )}
-          <span className="text-xs font-mono text-slate-500 ml-1">{formatMs(test.duration_ms)}</span>
-          <ChevronDown size={12} className={`text-slate-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <span className="text-xs font-mono text-slate-500 ml-auto flex-shrink-0">
+          {formatMs(test.duration_ms)}
         </span>
-      </button>
+      </div>
 
       {isOpen && (
         <div className="px-4 sm:px-6 pb-4">
           <div className="bg-dark-700 border border-dark-600 rounded-xl p-4 space-y-3">
+            <div className="flex items-center gap-2">
+              {test.mark && (
+                <span className={`text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full ${MARK_COLORS[test.mark] || MARK_COLORS.general}`}>
+                  {test.mark}
+                </span>
+              )}
+              {test.locator_strategy && LOCATOR_BADGES[test.locator_strategy] && (
+                <span className={`text-[10px] px-1.5 py-0.5 rounded border font-mono ${LOCATOR_BADGES[test.locator_strategy].color}`} title={LOCATOR_BADGES[test.locator_strategy].title}>
+                  {LOCATOR_BADGES[test.locator_strategy].label}
+                </span>
+              )}
+            </div>
+
             {test.description && (
               <div className="pb-3 border-b border-white/5">
                 <span className="text-[11px] text-slate-500 uppercase tracking-wider font-semibold">Description</span>
@@ -182,24 +182,6 @@ function TestRow({ test, isOpen, onToggle, onScreenshot }) {
                 <span className="text-[11px] text-slate-500 uppercase tracking-wider">Duration</span>
                 <p className="text-xs font-mono text-slate-300 mt-0.5">{formatMs(test.duration_ms)}</p>
               </div>
-              <div>
-                <span className="text-[11px] text-slate-500 uppercase tracking-wider">Mark</span>
-                <p className="mt-0.5">
-                  <span className={`text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full ${MARK_COLORS[test.mark] || MARK_COLORS.general}`}>
-                    {test.mark}
-                  </span>
-                </p>
-              </div>
-              {locBadge && (
-                <div>
-                  <span className="text-[11px] text-slate-500 uppercase tracking-wider">Locator</span>
-                  <p className="mt-0.5">
-                    <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${locBadge.color}`} title={locBadge.title}>
-                      {locBadge.label}
-                    </span>
-                  </p>
-                </div>
-              )}
             </div>
 
             {test.error && (
