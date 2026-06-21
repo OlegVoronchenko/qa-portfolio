@@ -50,7 +50,7 @@ STEPS_MAP = {
         "steps": [
             "Set up a listener to catch any JS errors",
             "Open the portfolio page",
-            "Wait for the page to fully load",
+            "Wait until no network requests for 500ms (networkidle)",
             "Check the collected error list",
             "Verify no JavaScript errors were thrown",
         ],
@@ -167,7 +167,7 @@ STEPS_MAP = {
             "Open the portfolio page",
             "Locate the Test Results section (#test-results)",
             "Verify the section is visible on screen",
-            "Wait 2 seconds for test_report.json to load via fetch",
+            "Wait 2000ms for fetch(test_report.json) to complete",
             "Check that numeric values appear in summary cards",
             "Verify at least 1 test row is rendered in the list",
             "Failure here means test_report.json was not deployed",
@@ -199,7 +199,7 @@ STEPS_MAP = {
         "mark": "performance",
         "steps": [
             "Open the portfolio page",
-            "Wait for the load event to complete",
+            "Wait for load event — all images and scripts ready",
             "Measure total load time in milliseconds",
             "Verify load time is under 3000ms",
         ],
@@ -232,7 +232,7 @@ STEPS_MAP = {
         "steps": [
             "Set up a listener to track failed network requests",
             "Open the production site on GitHub Pages",
-            "Wait for all resources to finish loading",
+            "Wait until network is idle — no requests for 500ms",
             "Check for any 404 errors on JS or CSS files",
             "Verify the navigation bar is visible",
             "Verify the main heading is visible",
@@ -243,7 +243,7 @@ STEPS_MAP = {
         "mark": "deployment",
         "steps": [
             "Open the production site on GitHub Pages",
-            "Wait for all resources to finish loading",
+            "Wait until network is idle — all scripts and styles loaded",
             "Inspect all script and stylesheet paths",
             "Check for paths missing the /qa-portfolio/ prefix",
             "Verify all asset paths are correctly prefixed",
@@ -255,7 +255,7 @@ STEPS_MAP = {
         "steps": [
             "Set up a listener to catch JS errors",
             "Open the production site on GitHub Pages",
-            "Wait for the page to fully load",
+            "Wait until network is idle — all async resources settled",
             "Check the collected error list",
             "Verify no JavaScript errors occurred",
         ],
