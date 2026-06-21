@@ -39,7 +39,7 @@ export default function Contact() {
         Let's connect and discuss quality engineering
       </p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl">
+      <div className="flex flex-wrap justify-center gap-4">
         {entries.map(([key, value]) => {
           const href = buildHref(key, value)
           return (
