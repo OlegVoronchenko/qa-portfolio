@@ -64,7 +64,7 @@ export default function Footer() {
       >
         <img
           src="https://visitor-badge.laobi.icu/badge?page_id=OlegVoronchenko.qa-portfolio"
-          alt=""
+          alt="Visitor count badge"
           aria-hidden="true"
           className="opacity-30 hover:opacity-70 transition-opacity duration-500"
           style={{ height: '16px' }}

@@ -444,7 +444,10 @@ class TestAccessibility:
         with step("Evaluate all images via JavaScript"):
             violations: list[dict] = page.evaluate("""
                 () => Array.from(document.querySelectorAll('img'))
-                    .filter(img => !img.alt || img.alt.trim() === '')
+                    .filter(img =>
+                        img.getAttribute('aria-hidden') !== 'true'
+                        && (!img.alt || img.alt.trim() === '')
+                    )
                     .map((img, i) => ({
                         index: i,
                         src: (img.src || '').slice(0, 80)

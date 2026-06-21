@@ -483,8 +483,8 @@ STEPS_MAP = {
                 "code": "portfolio = PortfolioPage(page, base_url)\nportfolio.navigate()",
             },
             {
-                "description": "Find all images and check alt attributes via JS",
-                "code": "violations = page.evaluate(\"\"\"\n    () => Array.from(\n        document.querySelectorAll('img')\n    )\n    .filter(img =>\n        !img.alt || img.alt.trim() === ''\n    )\n    .map((img, i) => ({\n        index: i,\n        src: (img.src || '').slice(0, 80)\n    }))\n\"\"\")",
+                "description": "Find all non-decorative images and check alt via JS",
+                "code": "violations = page.evaluate(\"\"\"\n    () => Array.from(\n        document.querySelectorAll('img')\n    )\n    .filter(img =>\n        img.getAttribute('aria-hidden') !== 'true'\n        && (!img.alt || img.alt.trim() === '')\n    )\n    .map((img, i) => ({\n        index: i,\n        src: (img.src || '').slice(0, 80)\n    }))\n\"\"\")",
             },
             {
                 "description": "Collect any images with missing or empty alt",
