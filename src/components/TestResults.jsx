@@ -20,6 +20,15 @@ const MARK_COLORS = {
   general: 'bg-slate-500/20 text-slate-400',
 }
 
+const LOCATOR_BADGES = {
+  'get_by_role': { label: 'role', color: 'text-emerald-400 border-emerald-500/30', title: 'Uses ARIA role — best practice' },
+  'get_by_text': { label: 'text', color: 'text-blue-400 border-blue-500/30', title: 'Uses visible text content' },
+  'get_by_label': { label: 'label', color: 'text-purple-400 border-purple-500/30', title: 'Uses form label' },
+  'data-testid': { label: 'testid', color: 'text-yellow-400 border-yellow-500/30', title: 'Uses data-testid attribute' },
+  'css-selector': { label: 'css', color: 'text-orange-400 border-orange-500/30', title: 'Uses CSS selector' },
+  'evaluate': { label: 'js', color: 'text-cyan-400 border-cyan-500/30', title: 'Uses JavaScript evaluation' },
+}
+
 const DEFAULT_DATA = {
   timestamp: 'not yet run',
   summary: { passed: 20, failed: 0, total: 20, duration_ms: 18450 },
@@ -83,7 +92,9 @@ function StepRow({ step, index }) {
   )
 }
 
-function TestRow({ test, isOpen, onToggle }) {
+function TestRow({ test, isOpen, onToggle, onScreenshot }) {
+  const locBadge = LOCATOR_BADGES[test.locator_strategy]
+
   return (
     <div className={`border-b border-dark-600/50 last:border-b-0 ${isOpen ? 'bg-dark-800/40' : 'hover:bg-dark-800/30'} transition-colors`}>
       <button
@@ -98,7 +109,7 @@ function TestRow({ test, isOpen, onToggle }) {
           )}
           {test.name}
         </span>
-        <span className="text-center">
+        <span className="text-center flex items-center justify-center gap-1.5">
           {test.status === 'pass' ? (
             <span className="inline-flex items-center gap-1 text-emerald-400 text-xs font-mono font-semibold">
               <span className="hidden sm:inline">PASS</span>
@@ -106,6 +117,11 @@ function TestRow({ test, isOpen, onToggle }) {
           ) : (
             <span className="inline-flex items-center gap-1 text-red-400 text-xs font-mono font-semibold">
               <span className="hidden sm:inline">FAIL</span>
+            </span>
+          )}
+          {locBadge && (
+            <span className={`hidden sm:inline text-[10px] px-1.5 py-0.5 rounded border font-mono ${locBadge.color}`} title={locBadge.title}>
+              {locBadge.label}
             </span>
           )}
         </span>
@@ -122,6 +138,36 @@ function TestRow({ test, isOpen, onToggle }) {
               <div className="pb-3 border-b border-white/5">
                 <span className="text-[11px] text-slate-500 uppercase tracking-wider font-semibold">Description</span>
                 <p className="text-sm text-slate-300 mt-1">{test.description}</p>
+              </div>
+            )}
+
+            {test.coverage && test.coverage.length > 0 && (
+              <div>
+                <span className="text-[11px] text-slate-500 uppercase tracking-wider font-semibold">Coverage</span>
+                <div className="flex flex-wrap gap-1.5 mt-1.5">
+                  {test.coverage.map((tag) => (
+                    <span key={tag} className="text-[10px] px-2 py-0.5 rounded-full bg-dark-800 border border-white/[0.08] text-slate-400">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {test.screenshot && (
+              <div>
+                <span className="text-[11px] text-slate-500 uppercase tracking-wider font-semibold block mb-2">Screenshot</span>
+                <div className="relative group inline-block">
+                  <img
+                    src={test.screenshot}
+                    alt={`Screenshot for ${test.name}`}
+                    className="h-24 w-auto rounded-lg border border-white/10 cursor-zoom-in hover:border-emerald-500/30 transition-all duration-200"
+                    onClick={(e) => { e.stopPropagation(); onScreenshot(test.screenshot) }}
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                    <span className="text-white text-[10px] bg-black/60 px-2 py-1 rounded">Click to expand</span>
+                  </div>
+                </div>
               </div>
             )}
 
@@ -147,6 +193,16 @@ function TestRow({ test, isOpen, onToggle }) {
                   </span>
                 </p>
               </div>
+              {locBadge && (
+                <div>
+                  <span className="text-[11px] text-slate-500 uppercase tracking-wider">Locator</span>
+                  <p className="mt-0.5">
+                    <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${locBadge.color}`} title={locBadge.title}>
+                      {locBadge.label}
+                    </span>
+                  </p>
+                </div>
+              )}
             </div>
 
             {test.error && (
@@ -168,6 +224,7 @@ export default function TestResults() {
   const [running, setRunning] = useState(false)
   const [runProgress, setRunProgress] = useState(0)
   const [expanded, setExpanded] = useState(new Set())
+  const [fullScreenshot, setFullScreenshot] = useState(null)
 
   const fetchReport = useCallback(() => {
     setLoading(true)
@@ -305,9 +362,29 @@ export default function TestResults() {
             test={t}
             isOpen={expanded.has(t.name)}
             onToggle={() => toggleExpand(t.name)}
+            onScreenshot={setFullScreenshot}
           />
         ))}
       </div>
+
+      {fullScreenshot && (
+        <div
+          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
+          onClick={() => setFullScreenshot(null)}
+        >
+          <img
+            src={fullScreenshot}
+            alt="Full screenshot"
+            className="max-w-full max-h-full rounded-lg border border-white/20"
+          />
+          <button
+            className="absolute top-4 right-4 text-white/60 hover:text-white text-2xl"
+            onClick={() => setFullScreenshot(null)}
+          >
+            &#x2715;
+          </button>
+        </div>
+      )}
     </section>
   )
 }

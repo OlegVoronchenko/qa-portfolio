@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Generate test_report.json from pytest results for the portfolio site."""
 
+import base64
 import json
+import re
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -10,7 +12,30 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 QA_DIR = PROJECT_ROOT / "qa"
 REPORTS_DIR = QA_DIR / "reports"
+SCREENSHOTS_DIR = QA_DIR / "screenshots"
 DIST_DIR = PROJECT_ROOT / "dist"
+
+
+COVERAGE_MAP = {
+    "test_page_loads_with_correct_title": ["UI", "SEO", "Page Load"],
+    "test_hero_heading_displays_name": ["UI", "Content", "Typography"],
+    "test_navigation_is_present": ["UI", "Navigation", "Accessibility"],
+    "test_page_has_no_javascript_errors": ["JavaScript", "Console", "Runtime"],
+    "test_react_app_hydrated_successfully": ["React", "Hydration", "SPA"],
+    "test_nav_link_is_visible_with_correct_href": ["Navigation", "Links", "Anchors"],
+    "test_skills_section_contains_core_stack": ["UI", "Content", "Data Binding"],
+    "test_projects_section_has_expected_cards": ["UI", "Content", "Count"],
+    "test_contact_section_has_required_channels": ["UI", "Content", "Contact"],
+    "test_test_results_section_renders": ["UI", "API", "Data Fetch"],
+    "test_mobile_viewport_no_horizontal_scroll": ["Mobile", "Responsive", "Layout"],
+    "test_mobile_hero_section_visible": ["Mobile", "Responsive", "Visibility"],
+    "test_page_load_time_within_budget": ["Performance", "Timing", "Budget"],
+    "test_images_have_alt_text": ["Accessibility", "WCAG", "Images"],
+    "test_headings_hierarchy_is_correct": ["Accessibility", "WCAG", "Semantics"],
+    "test_assets_load_on_github_pages": ["Deployment", "Network", "Assets"],
+    "test_base_path_is_correct": ["Deployment", "Routing", "Base Path"],
+    "test_no_console_errors_on_production": ["Deployment", "JavaScript", "Production"],
+}
 
 STEPS_MAP = {
     "test_page_loads_with_correct_title": {
@@ -610,6 +635,94 @@ def build_steps(step_defs, test_passed):
     return steps
 
 
+POM_ROLE_METHODS = (
+    "portfolio.nav_link", "portfolio.navigation", "portfolio.hero_heading",
+    "portfolio.skill_text", "portfolio.get_hero_heading_text",
+    "portfolio.get_title", "portfolio.all_headings",
+    "portfolio.count_project_cards", "portfolio.count_contact_links",
+    "mobile_portfolio.", "deploy_page.get_by_role",
+)
+
+
+def detect_locator_strategy(steps):
+    """Detect the primary locator strategy used in a test's step code."""
+    all_code = " ".join(s.get("code", "") for s in steps)
+    if "get_by_role" in all_code or any(m in all_code for m in POM_ROLE_METHODS):
+        return "get_by_role"
+    if "get_by_text" in all_code:
+        return "get_by_text"
+    if "get_by_label" in all_code:
+        return "get_by_label"
+    if "get_by_placeholder" in all_code:
+        return "get_by_placeholder"
+    if "get_by_alt_text" in all_code:
+        return "get_by_alt_text"
+    if "data-testid" in all_code:
+        return "data-testid"
+    if "locator(" in all_code or "evaluate(" in all_code:
+        return "css-selector"
+    return "evaluate"
+
+
+def get_coverage_tags(test_name):
+    """Get coverage tags for a test, matching parametrized tests by prefix."""
+    if test_name in COVERAGE_MAP:
+        return COVERAGE_MAP[test_name]
+    base = test_name.split("[")[0]
+    if base in COVERAGE_MAP:
+        return COVERAGE_MAP[base]
+    return ["UI"]
+
+
+def _resize_screenshot(src_path, max_width=320):
+    """Resize a PNG to max_width using sips (macOS) or convert (Linux). Returns bytes."""
+    import shutil
+    import tempfile
+    tmp = tempfile.NamedTemporaryFile(suffix=".png", delete=False)
+    tmp.close()
+    tmp_path = tmp.name
+    try:
+        shutil.copy2(str(src_path), tmp_path)
+        if shutil.which("sips"):
+            subprocess.run(
+                ["sips", "--resampleWidth", str(max_width), tmp_path],
+                capture_output=True,
+            )
+        elif shutil.which("convert"):
+            subprocess.run(
+                ["convert", str(src_path), "-resize", f"{max_width}x", tmp_path],
+                capture_output=True,
+            )
+        else:
+            return src_path.read_bytes()
+        return Path(tmp_path).read_bytes()
+    finally:
+        Path(tmp_path).unlink(missing_ok=True)
+
+
+def find_screenshot_for_test(test_name):
+    """Find the most recent screenshot for a test and return as base64 data URI."""
+    if not SCREENSHOTS_DIR.exists():
+        return None
+
+    safe_name = re.sub(r"[^\w-]", "_", test_name)
+    matches = list(SCREENSHOTS_DIR.glob(f"{safe_name}_*.png"))
+
+    short = re.sub(r"[^\w-]", "_", test_name.replace("test_", ""))
+    matches += list(SCREENSHOTS_DIR.glob(f"assert_*{short}*.png"))
+
+    if not matches:
+        return None
+
+    latest = max(matches, key=lambda p: p.stat().st_mtime)
+    try:
+        img_data = _resize_screenshot(latest)
+        b64 = base64.b64encode(img_data).decode("utf-8")
+        return f"data:image/png;base64,{b64}"
+    except Exception:
+        return None
+
+
 def run_tests():
     """Run pytest from qa/ directory and save raw JSON report."""
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
@@ -667,6 +780,9 @@ def parse_report():
             "mark": mark,
             "description": description,
             "steps": steps,
+            "locator_strategy": detect_locator_strategy(mapped["steps"]),
+            "coverage": get_coverage_tags(name),
+            "screenshot": find_screenshot_for_test(name),
             "error": error_msg,
         })
 
