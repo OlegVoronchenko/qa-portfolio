@@ -7,6 +7,7 @@ import {
   Play,
   RotateCw,
   ChevronDown,
+  Code2,
 } from 'lucide-react'
 
 const MARK_COLORS = {
@@ -49,6 +50,37 @@ const DEFAULT_DATA = {
 function formatMs(ms) {
   if (ms >= 1000) return `${(ms / 1000).toFixed(2)}s`
   return `${ms}ms`
+}
+
+function StepRow({ step, index }) {
+  const [showCode, setShowCode] = useState(false)
+  const hasCode = step.code && step.code.trim()
+
+  return (
+    <div>
+      <button
+        onClick={() => hasCode && setShowCode(!showCode)}
+        className={`flex items-center gap-2 text-xs w-full text-left ${hasCode ? 'cursor-pointer hover:bg-dark-600/30 -mx-1 px-1 rounded' : 'cursor-default'}`}
+      >
+        {step.status === 'pass' ? (
+          <CheckCircle2 size={12} className="text-emerald-400 flex-shrink-0" />
+        ) : (
+          <XCircle size={12} className="text-red-400 flex-shrink-0" />
+        )}
+        <span className="text-slate-400 font-mono flex-1">
+          {index + 1}. {step.name}
+        </span>
+        {hasCode && (
+          <Code2 size={11} className={`flex-shrink-0 transition-colors ${showCode ? 'text-accent' : 'text-slate-600'}`} />
+        )}
+      </button>
+      {showCode && hasCode && (
+        <pre className="mt-1 mb-2 ml-5 px-3 py-2 bg-dark-900/80 border border-dark-600/50 rounded-lg text-[11px] leading-relaxed text-accent/90 font-mono overflow-x-auto">
+          {step.code}
+        </pre>
+      )}
+    </div>
+  )
 }
 
 function TestRow({ test, isOpen, onToggle }) {
@@ -97,16 +129,7 @@ function TestRow({ test, isOpen, onToggle }) {
               <span className="text-[11px] text-slate-500 uppercase tracking-wider">Steps</span>
               <div className="mt-1.5 space-y-1">
                 {test.steps?.map((step, i) => (
-                  <div key={i} className="flex items-center gap-2 text-xs">
-                    {step.status === 'pass' ? (
-                      <CheckCircle2 size={12} className="text-emerald-400 flex-shrink-0" />
-                    ) : (
-                      <XCircle size={12} className="text-red-400 flex-shrink-0" />
-                    )}
-                    <span className="text-slate-400 font-mono">
-                      {i + 1}. {step.name}
-                    </span>
-                  </div>
+                  <StepRow key={i} step={step} index={i} />
                 ))}
               </div>
             </div>
