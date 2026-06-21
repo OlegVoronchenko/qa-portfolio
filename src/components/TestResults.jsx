@@ -30,6 +30,20 @@ const LOCATOR_BADGES = {
   'evaluate': { label: 'js', color: 'text-cyan-400 border-cyan-500/30', title: 'Uses JavaScript evaluation' },
 }
 
+const STATUS_DISPLAY = {
+  pass:    { label: 'PASS',  className: 'text-emerald-400' },
+  passed:  { label: 'PASS',  className: 'text-emerald-400' },
+  fail:    { label: 'FAIL',  className: 'text-red-400' },
+  failed:  { label: 'FAIL',  className: 'text-red-400' },
+  skip:    { label: 'SKIP',  className: 'text-yellow-400' },
+  skipped: { label: 'SKIP',  className: 'text-yellow-400' },
+  error:   { label: 'ERROR', className: 'text-red-400' },
+  xfail:   { label: 'XFAIL', className: 'text-orange-400' },
+}
+
+const getStatusDisplay = (status) =>
+  STATUS_DISPLAY[status?.toLowerCase()] ?? { label: (status || '').toUpperCase(), className: 'text-slate-400' }
+
 const DEFAULT_DATA = {
   timestamp: 'not yet run',
   summary: { passed: 20, failed: 0, total: 20, duration_ms: 18450 },
@@ -110,7 +124,10 @@ function TestRow({ test, isOpen, onToggle, onScreenshot }) {
         <span className="flex-1 text-sm font-mono text-slate-300 truncate">
           {test.name}
         </span>
-        <span className="text-xs font-mono text-slate-500 ml-auto flex-shrink-0">
+        <span className={`text-xs font-semibold font-mono w-12 text-center flex-shrink-0 ${getStatusDisplay(test.status).className}`}>
+          {getStatusDisplay(test.status).label}
+        </span>
+        <span className="text-xs font-mono text-slate-500 w-16 text-right flex-shrink-0">
           {formatMs(test.duration_ms)}
         </span>
       </div>
