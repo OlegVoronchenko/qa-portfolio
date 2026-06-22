@@ -79,33 +79,6 @@ SCREENSHOTS_DIR = QA_DIR / "screenshots"
 DIST_DIR = PROJECT_ROOT / "dist"
 
 
-TC_ID_MAP = {
-    "test_page_loads_with_correct_title": "TC-001-1",
-    "test_hero_heading_displays_name": "TC-001-2",
-    "test_navigation_is_present": "TC-001-3",
-    "test_page_has_no_javascript_errors": "TC-001-4",
-    "test_react_app_hydrated_successfully": "TC-001-5",
-    "test_nav_link_is_visible_with_correct_href[About-#about]": "TC-002-1",
-    "test_nav_link_is_visible_with_correct_href[Skills-#skills]": "TC-002-2",
-    "test_nav_link_is_visible_with_correct_href[Projects-#projects]": "TC-002-3",
-    "test_nav_link_is_visible_with_correct_href[Contact-#contact]": "TC-002-4",
-    "test_skills_section_contains_core_stack[Python]": "TC-003-1",
-    "test_skills_section_contains_core_stack[Playwright]": "TC-003-2",
-    "test_skills_section_contains_core_stack[pytest]": "TC-003-3",
-    "test_projects_section_has_expected_cards": "TC-003-4",
-    "test_contact_section_has_required_channels": "TC-003-5",
-    "test_test_results_section_renders": "TC-003-6",
-    "test_mobile_viewport_no_horizontal_scroll": "TC-004-1",
-    "test_mobile_hero_section_visible": "TC-004-2",
-    "test_page_load_time_within_budget": "TC-005-1",
-    "test_images_have_alt_text": "TC-006-1",
-    "test_headings_hierarchy_is_correct": "TC-006-2",
-    "test_assets_load_on_github_pages": "TC-007-1",
-    "test_base_path_is_correct": "TC-007-2",
-    "test_no_console_errors_on_production": "TC-007-3",
-}
-
-
 COVERAGE_MAP = {
     "test_page_loads_with_correct_title": ["UI", "SEO", "Page Load"],
     "test_hero_heading_displays_name": ["UI", "Content", "Typography"],
@@ -129,370 +102,317 @@ COVERAGE_MAP = {
 
 STEPS_MAP = {
     "test_page_loads_with_correct_title": {
+        "tc_id": "TC-001-1",
         "req_id": "REQ-001",
         "ac_ids": ["AC-001-1", "AC-001-2", "AC-001-3"],
         "description": "Browser tab title must identify the engineer by name and role",
         "mark": "smoke",
         "steps": [
             {
-                "description": "Open the portfolio page in browser",
-                "code": "portfolio = PortfolioPage(page, base_url)\nportfolio.navigate()",
-            },
-            {
-                "description": "Read the browser tab title",
+                "description": "Read page title from browser tab",
                 "code": "title = portfolio.get_title()",
             },
             {
-                "description": "Verify title contains 'Oleg'",
+                "description": "Capture screenshot before assertions",
+                "code": "portfolio.take_screenshot('assert_page_title')",
+            },
+            {
+                "description": "Assert title contains name 'Oleg'",
                 "code": "assert PAGE_TITLE.CONTAINS_NAME in title, \\\n    Msg.TITLE_MISSING_NAME.format(title=title)",
             },
             {
-                "description": "Verify title contains 'Automation'",
+                "description": "Assert title contains role 'Automation'",
                 "code": "assert PAGE_TITLE.CONTAINS_ROLE in title, \\\n    Msg.TITLE_MISSING_ROLE.format(\n        expected=PAGE_TITLE.CONTAINS_ROLE,\n        actual=title\n    )",
             },
             {
-                "description": "Verify title contains 'Engineer'",
+                "description": "Assert title contains type 'Engineer'",
                 "code": "assert PAGE_TITLE.CONTAINS_TYPE in title, \\\n    Msg.TITLE_MISSING_ROLE.format(\n        expected=PAGE_TITLE.CONTAINS_TYPE,\n        actual=title\n    )",
             },
         ],
     },
     "test_hero_heading_displays_name": {
+        "tc_id": "TC-001-2",
         "req_id": "REQ-001",
         "ac_ids": ["AC-001-4"],
         "description": "Main heading on hero section must show the engineer name",
         "mark": "smoke",
         "steps": [
             {
-                "description": "Open the portfolio page",
-                "code": "portfolio = PortfolioPage(page, base_url)\nportfolio.navigate()",
-            },
-            {
-                "description": "Find the main heading (h1) by ARIA role",
+                "description": "Get h1 heading text content",
                 "code": "text = portfolio.get_hero_heading_text()",
             },
             {
-                "description": "Read the heading text content",
-                "code": "# get_hero_heading_text() calls\n# page.get_by_role('heading', level=1).inner_text()",
+                "description": "Capture screenshot of hero section",
+                "code": "portfolio.take_screenshot('assert_hero_heading')",
             },
             {
-                "description": "Verify heading text contains 'Oleg'",
+                "description": "Assert heading contains 'Oleg'",
                 "code": "assert HERO.CONTAINS_NAME in text, \\\n    Msg.HERO_NAME_MISSING.format(\n        expected=HERO.CONTAINS_NAME,\n        actual=text\n    )",
             },
         ],
     },
     "test_navigation_is_present": {
+        "tc_id": "TC-001-3",
         "req_id": "REQ-001",
         "ac_ids": ["AC-001-5"],
         "description": "Navigation bar must be visible when the page loads",
         "mark": "smoke",
         "steps": [
             {
-                "description": "Open the portfolio page",
-                "code": "portfolio = PortfolioPage(page, base_url)\nportfolio.navigate()",
-            },
-            {
-                "description": "Look for the navigation bar by ARIA role",
+                "description": "Locate navigation landmark by ARIA role",
                 "code": "nav = portfolio.navigation\nnav_count = nav.count()",
             },
             {
-                "description": "Verify at least one navigation element is found",
-                "code": "assert nav_count > 0, \\\n    Msg.NAV_NOT_VISIBLE.format(\n        url=page.url, count=nav_count\n    )",
+                "description": "Capture screenshot of navigation",
+                "code": "portfolio.take_screenshot('assert_navigation')",
             },
             {
-                "description": "Confirm the navigation bar is visible on screen",
-                "code": "assert nav.is_visible(), \\\n    Msg.NAV_NOT_VISIBLE.format(\n        url=page.url, count=nav_count\n    )",
+                "description": "Assert navigation is visible",
+                "code": "assert nav.is_visible(), \\\n    Msg.NAV_NOT_VISIBLE.format(\n        url=portfolio._page.url,\n        count=nav_count\n    )",
             },
         ],
     },
     "test_page_has_no_javascript_errors": {
+        "tc_id": "TC-001-4",
         "req_id": "REQ-001",
         "ac_ids": ["AC-001-6"],
         "description": "No JavaScript errors should appear in the browser console",
         "mark": "smoke",
         "steps": [
             {
-                "description": "Set up a listener to catch any JS errors before navigation",
+                "description": "Attach JavaScript error listener",
                 "code": "js_errors: list[str] = []\npage.on('pageerror',\n    lambda err: js_errors.append(str(err)))",
             },
             {
-                "description": "Open the portfolio page",
+                "description": "Navigate to base URL and wait for network idle",
                 "code": "page.goto(base_url, wait_until='networkidle')",
             },
             {
-                "description": "Wait until no network requests for 500ms (networkidle)",
-                "code": "# wait_until='networkidle' in goto() above",
-            },
-            {
-                "description": "Check the collected error list",
-                "code": "# js_errors collected via pageerror listener",
-            },
-            {
-                "description": "Verify no JavaScript errors were thrown",
+                "description": "Assert no JavaScript errors were captured",
                 "code": "assert js_errors == [], \\\n    Msg.JS_ERRORS_FOUND.format(errors=js_errors)",
             },
         ],
     },
     "test_react_app_hydrated_successfully": {
+        "tc_id": "TC-001-5",
         "req_id": "REQ-001",
         "ac_ids": ["AC-001-7", "AC-001-8"],
         "description": "React application must render visible content on screen",
         "mark": "smoke",
         "steps": [
             {
-                "description": "Open the portfolio page",
-                "code": "# Uses hydrated_page fixture which calls\n# _wait_for_hydration(page, base_url)",
+                "description": "Count #root child elements",
+                "code": "child_count = hydrated_page.evaluate(\n    \"document.querySelector('#root')\"\n    \".children.length\"\n)",
             },
             {
-                "description": "Check the React root container (#root)",
-                "code": "child_count = hydrated_page.evaluate(\n    \"document.querySelector('#root').children.length\"\n)",
+                "description": "Get #root innerHTML preview for diagnostics",
+                "code": "preview = hydrated_page.evaluate(\n    \"document.querySelector('#root')\"\n    \".innerHTML.slice(0, 200)\"\n)\nurl = hydrated_page.url",
             },
             {
-                "description": "Count child elements inside the root",
-                "code": "preview = hydrated_page.evaluate(\n    \"document.querySelector('#root')\"\n    \".innerHTML.slice(0, 200)\"\n)",
-            },
-            {
-                "description": "Verify the root has more than 0 rendered children",
+                "description": "Assert #root has children",
                 "code": "assert child_count > 0, \\\n    Msg.HYDRATION_FAILED.format(\n        actual=child_count,\n        url=url, preview=preview\n    )",
             },
             {
-                "description": "Confirm no React error boundary was triggered",
-                "code": "error_boundary = hydrated_page.locator(\n    '[data-reactroot] .error-boundary, '\n    '#root > [class*=\"error\"]'\n)\nassert error_boundary.count() == 0, \\\n    Msg.ERROR_BOUNDARY_RENDERED.format(\n        count=error_boundary.count(), url=url\n    )",
+                "description": "Check for React error boundary",
+                "code": "error_boundary = hydrated_page.locator(\n    '[data-reactroot] .error-boundary, '\n    '#root > [class*=\"error\"]'\n)\nboundary_count = error_boundary.count()",
+            },
+            {
+                "description": "Assert no error boundary rendered",
+                "code": "assert boundary_count == 0, \\\n    Msg.ERROR_BOUNDARY_RENDERED.format(\n        count=boundary_count, url=url\n    )",
             },
         ],
     },
     "test_nav_link_is_visible_with_correct_href[About-#about]": {
+        "tc_id": "TC-002-1",
         "req_id": "REQ-002",
         "ac_ids": ["AC-002-1", "AC-002-2"],
         "description": "About link must be visible in navbar and point to #about",
         "mark": "navigation",
         "steps": [
             {
-                "description": "Open the portfolio page",
-                "code": "portfolio = PortfolioPage(page, base_url)\nportfolio.navigate()",
-            },
-            {
-                "description": "Find 'About' link inside the navigation bar",
+                "description": "Locate nav link 'About'",
                 "code": "link = portfolio.nav_link('About')",
             },
             {
-                "description": "Verify the 'About' link is visible on screen",
+                "description": "Assert 'About' link is visible",
                 "code": "assert link.is_visible(), \\\n    Msg.NAV_LINK_NOT_VISIBLE.format(name='About')",
             },
             {
-                "description": "Check the link destination attribute",
-                "code": "actual_href = link.get_attribute('href')",
-            },
-            {
-                "description": "Verify href equals '#about'",
-                "code": "assert actual_href == '#about', \\\n    Msg.NAV_LINK_WRONG_HREF.format(\n        name='About',\n        expected='#about',\n        actual=actual_href\n    )",
+                "description": "Assert 'About' href equals '#about'",
+                "code": "actual_href = link.get_attribute('href')\nassert actual_href == '#about', \\\n    Msg.NAV_LINK_WRONG_HREF.format(\n        name='About',\n        expected='#about',\n        actual=actual_href\n    )",
             },
         ],
     },
     "test_nav_link_is_visible_with_correct_href[Skills-#skills]": {
+        "tc_id": "TC-002-2",
         "req_id": "REQ-002",
         "ac_ids": ["AC-002-3", "AC-002-4"],
         "description": "Skills link must be visible in navbar and point to #skills",
         "mark": "navigation",
         "steps": [
             {
-                "description": "Open the portfolio page",
-                "code": "portfolio = PortfolioPage(page, base_url)\nportfolio.navigate()",
-            },
-            {
-                "description": "Find 'Skills' link inside the navigation bar",
+                "description": "Locate nav link 'Skills'",
                 "code": "link = portfolio.nav_link('Skills')",
             },
             {
-                "description": "Verify the 'Skills' link is visible on screen",
+                "description": "Assert 'Skills' link is visible",
                 "code": "assert link.is_visible(), \\\n    Msg.NAV_LINK_NOT_VISIBLE.format(name='Skills')",
             },
             {
-                "description": "Check the link destination attribute",
-                "code": "actual_href = link.get_attribute('href')",
-            },
-            {
-                "description": "Verify href equals '#skills'",
-                "code": "assert actual_href == '#skills', \\\n    Msg.NAV_LINK_WRONG_HREF.format(\n        name='Skills',\n        expected='#skills',\n        actual=actual_href\n    )",
+                "description": "Assert 'Skills' href equals '#skills'",
+                "code": "actual_href = link.get_attribute('href')\nassert actual_href == '#skills', \\\n    Msg.NAV_LINK_WRONG_HREF.format(\n        name='Skills',\n        expected='#skills',\n        actual=actual_href\n    )",
             },
         ],
     },
     "test_nav_link_is_visible_with_correct_href[Projects-#projects]": {
+        "tc_id": "TC-002-3",
         "req_id": "REQ-002",
         "ac_ids": ["AC-002-5", "AC-002-6"],
         "description": "Projects link must be visible in navbar and point to #projects",
         "mark": "navigation",
         "steps": [
             {
-                "description": "Open the portfolio page",
-                "code": "portfolio = PortfolioPage(page, base_url)\nportfolio.navigate()",
-            },
-            {
-                "description": "Find 'Projects' link inside the navigation bar",
+                "description": "Locate nav link 'Projects'",
                 "code": "link = portfolio.nav_link('Projects')",
             },
             {
-                "description": "Verify the 'Projects' link is visible on screen",
+                "description": "Assert 'Projects' link is visible",
                 "code": "assert link.is_visible(), \\\n    Msg.NAV_LINK_NOT_VISIBLE.format(name='Projects')",
             },
             {
-                "description": "Check the link destination attribute",
-                "code": "actual_href = link.get_attribute('href')",
-            },
-            {
-                "description": "Verify href equals '#projects'",
-                "code": "assert actual_href == '#projects', \\\n    Msg.NAV_LINK_WRONG_HREF.format(\n        name='Projects',\n        expected='#projects',\n        actual=actual_href\n    )",
+                "description": "Assert 'Projects' href equals '#projects'",
+                "code": "actual_href = link.get_attribute('href')\nassert actual_href == '#projects', \\\n    Msg.NAV_LINK_WRONG_HREF.format(\n        name='Projects',\n        expected='#projects',\n        actual=actual_href\n    )",
             },
         ],
     },
     "test_nav_link_is_visible_with_correct_href[Contact-#contact]": {
+        "tc_id": "TC-002-4",
         "req_id": "REQ-002",
         "ac_ids": ["AC-002-7", "AC-002-8"],
         "description": "Contact link must be visible in navbar and point to #contact",
         "mark": "navigation",
         "steps": [
             {
-                "description": "Open the portfolio page",
-                "code": "portfolio = PortfolioPage(page, base_url)\nportfolio.navigate()",
-            },
-            {
-                "description": "Find 'Contact' link inside the navigation bar",
+                "description": "Locate nav link 'Contact'",
                 "code": "link = portfolio.nav_link('Contact')",
             },
             {
-                "description": "Verify the 'Contact' link is visible on screen",
+                "description": "Assert 'Contact' link is visible",
                 "code": "assert link.is_visible(), \\\n    Msg.NAV_LINK_NOT_VISIBLE.format(name='Contact')",
             },
             {
-                "description": "Check the link destination attribute",
-                "code": "actual_href = link.get_attribute('href')",
-            },
-            {
-                "description": "Verify href equals '#contact'",
-                "code": "assert actual_href == '#contact', \\\n    Msg.NAV_LINK_WRONG_HREF.format(\n        name='Contact',\n        expected='#contact',\n        actual=actual_href\n    )",
+                "description": "Assert 'Contact' href equals '#contact'",
+                "code": "actual_href = link.get_attribute('href')\nassert actual_href == '#contact', \\\n    Msg.NAV_LINK_WRONG_HREF.format(\n        name='Contact',\n        expected='#contact',\n        actual=actual_href\n    )",
             },
         ],
     },
     "test_skills_section_contains_core_stack[Python]": {
+        "tc_id": "TC-003-1",
         "req_id": "REQ-003",
         "ac_ids": ["AC-003-1"],
         "description": "Python must appear as a visible skill tag in Skills section",
         "mark": "content",
         "steps": [
             {
-                "description": "Open the portfolio page",
-                "code": "portfolio = PortfolioPage(page, base_url)\nportfolio.navigate()",
-            },
-            {
-                "description": "Scroll to the Skills section",
-                "code": "# portfolio fixture navigates to base_url",
-            },
-            {
-                "description": "Look for a tag with text 'Python' in skills section",
+                "description": "Locate skill tag with exact text 'Python'",
                 "code": "tag = portfolio.skill_text('Python')",
             },
             {
-                "description": "Verify the 'Python' skill tag is visible",
+                "description": "Capture screenshot of skills section",
+                "code": "portfolio.take_screenshot('assert_skill_python')",
+            },
+            {
+                "description": "Assert 'Python' tag is visible",
                 "code": "assert tag.first.is_visible(), \\\n    Msg.SKILL_NOT_VISIBLE.format(name='Python')",
             },
         ],
     },
     "test_skills_section_contains_core_stack[Playwright]": {
+        "tc_id": "TC-003-2",
         "req_id": "REQ-003",
         "ac_ids": ["AC-003-2"],
         "description": "Playwright must appear as a visible skill tag in Skills section",
         "mark": "content",
         "steps": [
             {
-                "description": "Open the portfolio page",
-                "code": "portfolio = PortfolioPage(page, base_url)\nportfolio.navigate()",
-            },
-            {
-                "description": "Scroll to the Skills section",
-                "code": "# portfolio fixture navigates to base_url",
-            },
-            {
-                "description": "Look for a tag with text 'Playwright' in skills section",
+                "description": "Locate skill tag with exact text 'Playwright'",
                 "code": "tag = portfolio.skill_text('Playwright')",
             },
             {
-                "description": "Verify the 'Playwright' skill tag is visible",
+                "description": "Capture screenshot of skills section",
+                "code": "portfolio.take_screenshot('assert_skill_playwright')",
+            },
+            {
+                "description": "Assert 'Playwright' tag is visible",
                 "code": "assert tag.first.is_visible(), \\\n    Msg.SKILL_NOT_VISIBLE.format(name='Playwright')",
             },
         ],
     },
     "test_skills_section_contains_core_stack[pytest]": {
+        "tc_id": "TC-003-3",
         "req_id": "REQ-003",
         "ac_ids": ["AC-003-3"],
         "description": "pytest must appear as a visible skill tag in Skills section",
         "mark": "content",
         "steps": [
             {
-                "description": "Open the portfolio page",
-                "code": "portfolio = PortfolioPage(page, base_url)\nportfolio.navigate()",
-            },
-            {
-                "description": "Scroll to the Skills section",
-                "code": "# portfolio fixture navigates to base_url",
-            },
-            {
-                "description": "Look for a tag with text 'pytest' in skills section",
+                "description": "Locate skill tag with exact text 'pytest'",
                 "code": "tag = portfolio.skill_text('pytest')",
             },
             {
-                "description": "Verify the 'pytest' skill tag is visible",
+                "description": "Capture screenshot of skills section",
+                "code": "portfolio.take_screenshot('assert_skill_pytest')",
+            },
+            {
+                "description": "Assert 'pytest' tag is visible",
                 "code": "assert tag.first.is_visible(), \\\n    Msg.SKILL_NOT_VISIBLE.format(name='pytest')",
             },
         ],
     },
     "test_projects_section_has_expected_cards": {
+        "tc_id": "TC-003-4",
         "req_id": "REQ-003",
         "ac_ids": ["AC-003-4"],
         "description": "Projects section must display exactly 3 project cards",
         "mark": "content",
         "steps": [
             {
-                "description": "Open the portfolio page",
-                "code": "portfolio = PortfolioPage(page, base_url)\nportfolio.navigate()",
-            },
-            {
-                "description": "Scroll to the Projects section",
-                "code": "# portfolio fixture navigates to base_url",
-            },
-            {
-                "description": "Count all project cards displayed",
+                "description": "Count project cards with role='article'",
                 "code": "count = portfolio.count_project_cards()",
             },
             {
-                "description": "Verify the total count equals 3",
+                "description": "Capture screenshot of project cards",
+                "code": "portfolio.take_screenshot('assert_project_cards')",
+            },
+            {
+                "description": "Assert project card count matches expected",
                 "code": "assert count == COUNTS.PROJECT_CARDS, \\\n    Msg.WRONG_PROJECT_COUNT.format(\n        expected=COUNTS.PROJECT_CARDS,\n        actual=count\n    )",
             },
         ],
     },
     "test_contact_section_has_required_channels": {
+        "tc_id": "TC-003-5",
         "req_id": "REQ-003",
         "ac_ids": ["AC-003-5"],
         "description": "Contact section must display all required contact channels",
         "mark": "content",
         "steps": [
             {
-                "description": "Open the portfolio page",
-                "code": "portfolio = PortfolioPage(page, base_url)\nportfolio.navigate()",
-            },
-            {
-                "description": "Scroll to the Contact section",
-                "code": "# portfolio fixture navigates to base_url",
-            },
-            {
-                "description": "Count all contact channel links",
+                "description": "Count contact links with role='link'",
                 "code": "count = portfolio.count_contact_links()",
             },
             {
-                "description": "Verify the total count equals 3",
+                "description": "Capture screenshot of contact section",
+                "code": "portfolio.take_screenshot('assert_contact_channels')",
+            },
+            {
+                "description": "Assert contact link count matches expected",
                 "code": "assert count == COUNTS.CONTACT_LINKS, \\\n    Msg.WRONG_CONTACT_COUNT.format(\n        expected=COUNTS.CONTACT_LINKS,\n        actual=count\n    )",
             },
         ],
     },
     "test_test_results_section_renders": {
+        "tc_id": "TC-003-6",
         "req_id": "REQ-003",
         "ac_ids": ["AC-003-6", "AC-003-7", "AC-003-8"],
         "description": "Test results section must show loaded data from test_report.json",
@@ -503,28 +423,29 @@ STEPS_MAP = {
                 "code": "portfolio = PortfolioPage(page, base_url)\nportfolio.navigate()",
             },
             {
-                "description": "Locate the Test Results section (#test-results)",
-                "code": "section = page.locator('#test-results')",
+                "description": "Locate the test results section",
+                "code": "section = page.locator('#test-results')\nassert section.is_visible(), \\\n    'Test results section #test-results '\n    'is not visible on page'",
             },
             {
-                "description": "Verify the section is visible on screen",
-                "code": "assert section.is_visible(), \\\n    'Test results section #test-results '\n    'is not visible on page'",
-            },
-            {
-                "description": "Wait 2000ms for fetch(test_report.json) to complete",
+                "description": "Wait for test data to load from test_report.json",
                 "code": "page.wait_for_timeout(2000)",
             },
             {
-                "description": "Check that numeric values appear in summary cards",
-                "code": "section_text = section.inner_text()\nhas_numbers = any(\n    char.isdigit() for char in section_text\n)\nassert has_numbers, \\\n    f'No numeric values in section. '\n    f'Text: {section_text[:200]}'",
+                "description": "Verify summary cards show numeric values",
+                "code": "section_text = section.inner_text()\nhas_numbers = any(\n    char.isdigit()\n    for char in section_text\n)\nassert has_numbers, \\\n    f'No numeric values in section. '\n    f'Text: {section_text[:200]}'",
             },
             {
-                "description": "Verify at least 1 test row is rendered in the list",
+                "description": "Verify at least one test row is rendered",
                 "code": "row_count = page.evaluate(\"\"\"\n    () => {\n        const section = document.querySelector(\n            '#test-results'\n        );\n        return section\n            ? section.querySelectorAll(\n                'div[class*=\"cursor-pointer\"]'\n            ).length\n            : 0;\n    }\n\"\"\")\nassert row_count > 0",
+            },
+            {
+                "description": "Take screenshot showing test results",
+                "code": "page.screenshot(\n    path='screenshots/assert_test_results.png',\n    full_page=False\n)",
             },
         ],
     },
     "test_mobile_viewport_no_horizontal_scroll": {
+        "tc_id": "TC-004-1",
         "req_id": "REQ-004",
         "ac_ids": ["AC-004-1"],
         "description": "No horizontal scrollbar at 390px mobile width",
@@ -532,28 +453,25 @@ STEPS_MAP = {
         "environment_override": {"viewport": "390x844 (iPhone 14)"},
         "steps": [
             {
-                "description": "Resize browser to 390x844 (iPhone 14)",
-                "code": "# mobile_portfolio uses mobile_page fixture\n# viewport: {width: 390, height: 844}",
-            },
-            {
-                "description": "Open the portfolio page",
-                "code": "mobile_portfolio = PortfolioPage(\n    mobile_page, base_url\n)\nmobile_portfolio.navigate()",
-            },
-            {
-                "description": "Measure the total page content width",
+                "description": "Measure document scroll width",
                 "code": "scroll_w = mobile_portfolio.get_scroll_width()",
             },
             {
-                "description": "Compare content width against 390px viewport",
+                "description": "Get viewport width",
                 "code": "viewport_w = mobile_portfolio.get_viewport_width()",
             },
             {
-                "description": "Verify no horizontal overflow exists",
+                "description": "Capture screenshot at 390px viewport",
+                "code": "mobile_portfolio.take_screenshot(\n    'assert_mobile_no_scroll'\n)",
+            },
+            {
+                "description": "Assert no overflow",
                 "code": "assert scroll_w <= viewport_w, \\\n    Msg.HORIZONTAL_OVERFLOW.format(\n        scroll_w=scroll_w,\n        viewport_w=viewport_w\n    )",
             },
         ],
     },
     "test_mobile_hero_section_visible": {
+        "tc_id": "TC-004-2",
         "req_id": "REQ-004",
         "ac_ids": ["AC-004-2"],
         "description": "Hero heading must be visible at 390px mobile width",
@@ -561,48 +479,38 @@ STEPS_MAP = {
         "environment_override": {"viewport": "390x844 (iPhone 14)"},
         "steps": [
             {
-                "description": "Resize browser to 390x844",
-                "code": "# mobile_portfolio uses mobile_page fixture\n# viewport: {width: 390, height: 844}",
+                "description": "Capture screenshot of mobile hero",
+                "code": "mobile_portfolio.take_screenshot(\n    'assert_mobile_hero'\n)",
             },
             {
-                "description": "Open the portfolio page",
-                "code": "mobile_portfolio = PortfolioPage(\n    mobile_page, base_url\n)\nmobile_portfolio.navigate()",
-            },
-            {
-                "description": "Find the main heading (h1)",
-                "code": "heading = mobile_portfolio.hero_heading",
-            },
-            {
-                "description": "Verify the heading is visible at 390px width",
-                "code": "assert heading.is_visible(), \\\n    Msg.MOBILE_HERO_NOT_VISIBLE.format(\n        width=CONFIG.mobile_width\n    )",
+                "description": "Assert hero heading visible at mobile width",
+                "code": "assert mobile_portfolio.hero_heading\\\n    .is_visible(), \\\n    Msg.MOBILE_HERO_NOT_VISIBLE.format(\n        width=CONFIG.mobile_width\n    )",
             },
         ],
     },
     "test_page_load_time_within_budget": {
+        "tc_id": "TC-005-1",
         "req_id": "REQ-005",
         "ac_ids": ["AC-005-1"],
         "description": "Page must finish loading in under 3000ms",
         "mark": "performance",
         "steps": [
             {
-                "description": "Open the portfolio page",
+                "description": "Navigate to base URL and wait for load event",
                 "code": "page.goto(base_url, wait_until='load')",
             },
             {
-                "description": "Wait for load event — all images and scripts ready",
-                "code": "# wait_until='load' in goto() above",
-            },
-            {
-                "description": "Measure total load time in milliseconds",
+                "description": "Measure load time via Navigation Timing API",
                 "code": "load_ms = page.evaluate(\n    'performance.timing.loadEventEnd '\n    '- performance.timing.navigationStart'\n)",
             },
             {
-                "description": "Verify load time is under 3000ms",
+                "description": "Assert load time is under budget",
                 "code": "assert load_ms < PERF.MAX_LOAD_TIME_MS, \\\n    Msg.SLOW_PAGE_LOAD.format(\n        actual=load_ms,\n        budget=PERF.MAX_LOAD_TIME_MS\n    )",
             },
         ],
     },
     "test_images_have_alt_text": {
+        "tc_id": "TC-006-1",
         "req_id": "REQ-006",
         "ac_ids": ["AC-006-1"],
         "description": "Every image must have descriptive alt text",
@@ -613,12 +521,12 @@ STEPS_MAP = {
                 "code": "portfolio = PortfolioPage(page, base_url)\nportfolio.navigate()",
             },
             {
-                "description": "Find all non-decorative images and check alt via JS",
-                "code": "violations = page.evaluate(\"\"\"\n    () => Array.from(\n        document.querySelectorAll('img')\n    )\n    .filter(img =>\n        img.getAttribute('aria-hidden') !== 'true'\n        && (!img.alt || img.alt.trim() === '')\n    )\n    .map((img, i) => ({\n        index: i,\n        src: (img.src || '').slice(0, 80)\n    }))\n\"\"\")",
+                "description": "Evaluate all images via JavaScript",
+                "code": "violations = page.evaluate(\"\"\"\n    () => Array.from(\n        document.querySelectorAll('img')\n    )\n    .filter(img =>\n        img.getAttribute('aria-hidden')\n            !== 'true'\n        && (!img.alt\n            || img.alt.trim() === '')\n    )\n    .map((img, i) => ({\n        index: i,\n        src: (img.src || '').slice(0, 80)\n    }))\n\"\"\")",
             },
             {
-                "description": "Collect any images with missing or empty alt",
-                "code": "# violations list built by JS evaluation above",
+                "description": "Take screenshot at assertion point",
+                "code": "page.screenshot(\n    path='screenshots/assert_images_alt.png',\n    full_page=False\n)",
             },
             {
                 "description": "Verify no images are missing alt text",
@@ -627,117 +535,101 @@ STEPS_MAP = {
         ],
     },
     "test_headings_hierarchy_is_correct": {
+        "tc_id": "TC-006-2",
         "req_id": "REQ-006",
         "ac_ids": ["AC-006-2", "AC-006-3", "AC-006-4"],
         "description": "Heading levels must follow correct order without gaps",
         "mark": "accessibility",
         "steps": [
             {
-                "description": "Open the portfolio page",
-                "code": "portfolio = PortfolioPage(page, base_url)\nportfolio.navigate()",
+                "description": "Collect all heading elements and their tag names",
+                "code": "headings = portfolio.all_headings.all()\ntags = [\n    h.evaluate(\n        'el => el.tagName.toLowerCase()'\n    )\n    for h in headings\n]",
             },
             {
-                "description": "Find all heading elements (h1 through h6)",
-                "code": "headings = portfolio.all_headings.all()\ntags = [\n    h.evaluate('el => el.tagName.toLowerCase()')\n    for h in headings\n]",
-            },
-            {
-                "description": "Verify exactly 1 h1 heading exists",
+                "description": "Assert exactly 1 h1 heading exists",
                 "code": "h1_count = tags.count('h1')\nassert h1_count == COUNTS.H1_HEADINGS, \\\n    Msg.WRONG_H1_COUNT.format(\n        expected=COUNTS.H1_HEADINGS,\n        actual=h1_count\n    )",
             },
             {
-                "description": "Confirm h1 appears before any h2",
-                "code": "h1_idx = tags.index('h1')\nh2_indices = [\n    i for i, t in enumerate(tags) if t == 'h2'\n]\nif h2_indices:\n    assert h1_idx < h2_indices[0], \\\n        Msg.H1_NOT_FIRST",
+                "description": "Assert h1 appears before first h2",
+                "code": "h1_idx = tags.index('h1')\nh2_indices = [\n    i for i, t in enumerate(tags)\n    if t == 'h2'\n]\nif h2_indices:\n    assert h1_idx < h2_indices[0], \\\n        Msg.H1_NOT_FIRST",
             },
             {
-                "description": "Check no heading levels are skipped (e.g. h2 to h4)",
+                "description": "Assert no heading levels are skipped",
                 "code": "levels = [int(t[1]) for t in tags]\nfor i in range(1, len(levels)):\n    gap = levels[i] - levels[i - 1]\n    assert gap <= 1, \\\n        Msg.HEADING_LEVEL_SKIPPED.format(\n            prev=levels[i-1],\n            next=levels[i], pos=i\n        )",
             },
         ],
     },
     "test_assets_load_on_github_pages": {
+        "tc_id": "TC-007-1",
         "req_id": "REQ-007",
         "ac_ids": ["AC-007-1", "AC-007-2", "AC-007-3"],
         "description": "All CSS and JS files must load on production site",
         "mark": "deployment",
         "steps": [
             {
-                "description": "Set up a listener to track failed network requests",
+                "description": "Attach network response monitor for 404s",
                 "code": "failed_requests: list[str] = []\ndeploy_page.on('response',\n    lambda r: failed_requests.append(r.url)\n    if r.status == 404 else None\n)",
             },
             {
-                "description": "Open the production site on GitHub Pages",
+                "description": "Navigate to production URL and wait for network idle",
                 "code": "deploy_page.goto(\n    _PAGES_URL,\n    wait_until='networkidle',\n    timeout=CONFIG.timeout_navigation\n)",
             },
             {
-                "description": "Wait until network is idle — no requests for 500ms",
-                "code": "# wait_until='networkidle' in goto() above",
+                "description": "Filter asset 404s from captured responses",
+                "code": "asset_404s = [\n    url for url in failed_requests\n    if any(\n        ext in url\n        for ext in\n        DEPLOYMENT.CHECKED_ASSET_EXTENSIONS\n    )\n    and not any(\n        exc in url\n        for exc in\n        DEPLOYMENT.EXCLUDED_404_PATHS\n    )\n]",
             },
             {
-                "description": "Check for any 404 errors on JS or CSS files",
-                "code": "asset_404s = [\n    url for url in failed_requests\n    if any(\n        ext in url\n        for ext in DEPLOYMENT.CHECKED_EXTENSIONS\n    )\n    and not any(\n        exc in url\n        for exc in DEPLOYMENT.EXCLUDED_404_PATHS\n    )\n]\nassert not asset_404s, \\\n    Msg.ASSET_404.format(urls=asset_404s)",
+                "description": "Assert no asset 404s",
+                "code": "assert not asset_404s, \\\n    Msg.ASSET_404.format(urls=asset_404s)",
             },
             {
-                "description": "Verify the navigation bar is visible",
-                "code": "nav = deploy_page.get_by_role('navigation')\nassert nav.count() > 0\nassert nav.is_visible()",
+                "description": "Verify navigation landmark exists and is visible",
+                "code": "nav = deploy_page.get_by_role('navigation')\nnav_count = nav.count()\nassert nav_count > 0, \\\n    Msg.DEPLOY_NAV_NOT_FOUND.format(\n        url=_PAGES_URL, count=nav_count\n    )\nassert nav.is_visible(), \\\n    Msg.DEPLOY_NAV_HIDDEN.format(\n        count=nav_count, url=_PAGES_URL\n    )",
             },
             {
-                "description": "Verify the main heading is visible",
-                "code": "h1 = deploy_page.get_by_role(\n    'heading', level=1\n)\nassert h1.count() == 1\nassert h1.inner_text().strip()",
+                "description": "Verify h1 heading exists with content",
+                "code": "h1 = deploy_page.get_by_role(\n    'heading', level=1\n)\nh1_count = h1.count()\nassert h1_count == 1, \\\n    Msg.DEPLOY_H1_WRONG_COUNT.format(\n        actual=h1_count, url=_PAGES_URL\n    )\nassert h1.inner_text().strip(), \\\n    Msg.DEPLOY_H1_EMPTY.format(\n        url=_PAGES_URL\n    )",
             },
         ],
     },
     "test_base_path_is_correct": {
+        "tc_id": "TC-007-2",
         "req_id": "REQ-007",
         "ac_ids": ["AC-007-4"],
         "description": "Asset paths must include the /qa-portfolio/ prefix",
         "mark": "deployment",
         "steps": [
             {
-                "description": "Open the production site on GitHub Pages",
+                "description": "Navigate to production URL",
                 "code": "deploy_page.goto(\n    _PAGES_URL,\n    wait_until='networkidle'\n)",
             },
             {
-                "description": "Wait until network is idle — all scripts and styles loaded",
-                "code": "# wait_until='networkidle' in goto() above",
+                "description": "Scan script and link elements for wrong base path",
+                "code": "bad_paths = deploy_page.evaluate(\"\"\"\n    () => {\n        const bad = [];\n        document.querySelectorAll(\n            'script[src], link[href]'\n        ).forEach(el => {\n            const val =\n                el.getAttribute('src')\n                || el.getAttribute('href');\n            if (val\n                && val.startsWith('/assets/'))\n                bad.push(val);\n        });\n        return bad;\n    }\n\"\"\")",
             },
             {
-                "description": "Inspect all script and stylesheet paths",
-                "code": "bad_paths = deploy_page.evaluate(\"\"\"() => {\n    const bad = [];\n    document.querySelectorAll(\n        'script[src], link[href]'\n    ).forEach(el => {\n        const val = el.getAttribute('src')\n            || el.getAttribute('href');\n        if (val && val.startsWith('/assets/'))\n            bad.push(val);\n    });\n    return bad;\n}\"\"\")",
-            },
-            {
-                "description": "Check for paths missing the /qa-portfolio/ prefix",
-                "code": "# bad_paths contains any paths starting\n# with '/assets/' instead of\n# '/qa-portfolio/assets/'",
-            },
-            {
-                "description": "Verify all asset paths are correctly prefixed",
+                "description": "Assert no '/assets/' paths found",
                 "code": "assert bad_paths == [], \\\n    Msg.DEPLOY_WRONG_BASE_PATH.format(\n        paths=bad_paths\n    )",
             },
         ],
     },
     "test_no_console_errors_on_production": {
+        "tc_id": "TC-007-3",
         "req_id": "REQ-007",
         "ac_ids": ["AC-007-5"],
         "description": "No JavaScript errors on the production site",
         "mark": "deployment",
         "steps": [
             {
-                "description": "Set up a listener to catch JS errors",
+                "description": "Attach JavaScript error listener",
                 "code": "js_errors: list[str] = []\ndeploy_page.on('pageerror',\n    lambda err: js_errors.append(str(err)))",
             },
             {
-                "description": "Open the production site on GitHub Pages",
+                "description": "Navigate to production URL and wait for network idle",
                 "code": "deploy_page.goto(\n    _PAGES_URL,\n    wait_until='networkidle'\n)",
             },
             {
-                "description": "Wait until network is idle — all async resources settled",
-                "code": "# wait_until='networkidle' in goto() above",
-            },
-            {
-                "description": "Check the collected error list",
-                "code": "# js_errors collected via pageerror listener",
-            },
-            {
-                "description": "Verify no JavaScript errors occurred",
+                "description": "Assert no JS errors",
                 "code": "assert js_errors == [], \\\n    Msg.DEPLOY_JS_ERRORS.format(\n        errors=js_errors\n    )",
             },
         ],
@@ -994,7 +886,7 @@ def parse_report():
             "steps": steps,
             "locator_strategy": detect_locator_strategy(mapped["steps"]),
             "coverage": get_coverage_tags(name),
-            "tc_id": TC_ID_MAP.get(name, "TC-???"),
+            "tc_id": mapped.get("tc_id", "TC-???"),
             "req_id": mapped.get("req_id"),
             "ac_ids": mapped.get("ac_ids", []),
             "screenshot": find_screenshot_for_test(name),
