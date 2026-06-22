@@ -189,15 +189,21 @@ function TestRow({ test, isOpen, onToggle, onScreenshot }) {
               )}
             </div>
 
-            {(test.tc_id || test.req_id || test.ac_ids?.length > 0) && (
+            {test.tc_id && (
               <div className="mb-3">
-                <span className="text-[11px] text-slate-500 uppercase tracking-wider font-semibold block mb-2">Test ID & Requirements</span>
+                <span className="text-[11px] text-slate-500 uppercase tracking-wider font-semibold block mb-2">Test ID</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs px-2.5 py-1 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono font-semibold">
+                    {test.tc_id}
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {(test.req_id || test.ac_ids?.length > 0) && (
+              <div className="mb-3">
+                <span className="text-[11px] text-slate-500 uppercase tracking-wider font-semibold block mb-2">Requirements</span>
                 <div className="flex items-center gap-2 flex-wrap">
-                  {test.tc_id && (
-                    <span className="text-xs px-2.5 py-1 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono font-semibold">
-                      {test.tc_id}
-                    </span>
-                  )}
                   {test.req_id && (
                     <button
                       onClick={(e) => { e.stopPropagation(); toggleBadge('req', test.req_id) }}
