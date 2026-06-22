@@ -121,6 +121,15 @@ jobs:
       - name: Generate report
         if: always()
         run: python scripts/generate_report.py
+        env:
+          RUNNER_OS: ${{ runner.os }}
+          RUNNER_NAME: ${{ runner.name }}
+          RUNNER_ARCH: ${{ runner.arch }}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_RUN_NUMBER: ${{ github.run_number }}
+          GITHUB_ACTOR: ${{ github.actor }}
 
       - name: Upload test screenshots
         if: always()

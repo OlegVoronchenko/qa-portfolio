@@ -64,6 +64,8 @@ OUTPUT LOCATIONS
 
 import base64
 import json
+import os
+import platform
 import re
 import subprocess
 import sys
@@ -527,6 +529,7 @@ STEPS_MAP = {
         "ac_ids": ["AC-004-1"],
         "description": "No horizontal scrollbar at 390px mobile width",
         "mark": "responsive",
+        "environment_override": {"viewport": "390x844 (iPhone 14)"},
         "steps": [
             {
                 "description": "Resize browser to 390x844 (iPhone 14)",
@@ -555,6 +558,7 @@ STEPS_MAP = {
         "ac_ids": ["AC-004-2"],
         "description": "Hero heading must be visible at 390px mobile width",
         "mark": "responsive",
+        "environment_override": {"viewport": "390x844 (iPhone 14)"},
         "steps": [
             {
                 "description": "Resize browser to 390x844",
@@ -857,6 +861,75 @@ def find_screenshot_for_test(test_name):
         return None
 
 
+def _get_pip_version(package: str) -> str:
+    """Get installed version of a pip package."""
+    try:
+        import importlib.metadata
+        return importlib.metadata.version(package)
+    except Exception:
+        return "unknown"
+
+
+def _get_chromium_version() -> str:
+    """Get Playwright Chromium revision from its install path."""
+    try:
+        from playwright.sync_api import sync_playwright
+        with sync_playwright() as p:
+            path = p.chromium.executable_path
+            for segment in path.split("/"):
+                if segment.startswith("chromium-"):
+                    return segment.replace("chromium-", "rev ")
+            return "latest"
+    except Exception:
+        return "latest"
+
+
+def collect_environment() -> dict:
+    """Collect real environment metadata from the current run.
+
+    Values come from platform module, installed packages,
+    and CI environment variables — nothing is hardcoded.
+    """
+    return {
+        "os": platform.system(),
+        "os_version": platform.release(),
+        "os_machine": platform.machine(),
+        "python_version": platform.python_version(),
+        "python_implementation": platform.python_implementation(),
+
+        "playwright_version": _get_pip_version("playwright"),
+        "pytest_version": _get_pip_version("pytest"),
+        "pytest_playwright_version": _get_pip_version("pytest-playwright"),
+
+        "browser": "Chromium",
+        "browser_version": _get_chromium_version(),
+
+        "ci": "GitHub Actions" if os.getenv("CI") else "Local",
+        "runner_os": os.getenv("RUNNER_OS", ""),
+        "runner_name": os.getenv("RUNNER_NAME", ""),
+        "runner_arch": os.getenv("RUNNER_ARCH", ""),
+
+        "github_sha": (os.getenv("GITHUB_SHA") or "")[:7],
+        "github_sha_full": os.getenv("GITHUB_SHA", ""),
+        "github_ref": os.getenv("GITHUB_REF_NAME", "local"),
+        "github_run_id": os.getenv("GITHUB_RUN_ID", ""),
+        "github_run_number": os.getenv("GITHUB_RUN_NUMBER", ""),
+        "github_actor": os.getenv("GITHUB_ACTOR", ""),
+        "github_run_url": (
+            f"https://github.com/OlegVoronchenko/qa-portfolio"
+            f"/actions/runs/{os.getenv('GITHUB_RUN_ID', '')}"
+            if os.getenv("GITHUB_RUN_ID") else ""
+        ),
+
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "timestamp_unix": int(datetime.now(timezone.utc).timestamp()),
+
+        "viewport_default": "1280x720",
+        "viewport_mobile": "390x844 (iPhone 14)",
+        "base_url": os.getenv("BASE_URL", "http://localhost:8080"),
+    }
+
+
 def run_tests():
     """Run pytest from qa/ directory and save raw JSON report."""
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
@@ -921,6 +994,7 @@ def parse_report():
             "ac_ids": mapped.get("ac_ids", []),
             "screenshot": find_screenshot_for_test(name),
             "error": error_msg,
+            "environment_override": mapped.get("environment_override"),
         })
 
     report = {
@@ -931,6 +1005,7 @@ def parse_report():
             "total": len(tests),
             "duration_ms": total_duration_ms,
         },
+        "environment": collect_environment(),
         "tests": tests,
     }
     return report

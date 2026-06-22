@@ -66,6 +66,19 @@ const getStatusDisplay = (status) =>
 const DEFAULT_DATA = {
   timestamp: 'not yet run',
   summary: { passed: 20, failed: 0, total: 20, duration_ms: 18450 },
+  environment: {
+    os: "Linux",
+    os_version: "6.5",
+    python_version: "3.12",
+    playwright_version: "1.44.0",
+    pytest_version: "8.2.0",
+    browser: "Chromium",
+    browser_version: "latest",
+    ci: "GitHub Actions",
+    runner_os: "ubuntu-22.04",
+    viewport_default: "1280x720",
+    viewport_mobile: "390x844",
+  },
   tests: [
     { name: 'test_page_loads_with_correct_title', status: 'pass', duration_ms: 150, mark: 'smoke', description: 'Page must load and title must identify the QA engineer', steps: [{ name: 'Navigate to base URL', status: 'pass' }, { name: 'Wait for page load state', status: 'pass' }, { name: 'Get page title', status: 'pass' }, { name: 'Assert title contains name', status: 'pass' }, { name: 'Assert title contains QA role', status: 'pass' }], error: null },
     { name: 'test_hero_heading_displays_name', status: 'pass', duration_ms: 120, mark: 'smoke', description: 'Hero section h1 must contain the engineer name', steps: [{ name: 'Navigate to page', status: 'pass' }, { name: 'Locate heading level 1 by role', status: 'pass' }, { name: 'Get heading inner text', status: 'pass' }, { name: 'Assert name present in heading', status: 'pass' }], error: null },
@@ -126,7 +139,7 @@ function StepRow({ step, index }) {
   )
 }
 
-function TestRow({ test, isOpen, onToggle, onScreenshot }) {
+function TestRow({ test, isOpen, onToggle, onScreenshot, environment }) {
   const [activeBadge, setActiveBadge] = useState(null)
 
   const toggleBadge = (type, id) => {
@@ -305,6 +318,19 @@ function TestRow({ test, isOpen, onToggle, onScreenshot }) {
               </div>
             )}
 
+            {(test.environment_override || environment) && (
+              <div className="mb-3">
+                <span className="text-[11px] text-slate-500 uppercase tracking-wider font-semibold block mb-2">Environment</span>
+                <div className="text-xs text-gray-400 font-mono">
+                  {test.environment_override?.viewport || environment?.viewport_default}
+                  {' · '}
+                  {environment?.browser || 'Chromium'}
+                  {' · '}
+                  {environment?.runner_os || environment?.os}
+                </div>
+              </div>
+            )}
+
             {test.error && (
               <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3">
                 <span className="text-[11px] text-red-400 uppercase tracking-wider font-semibold">Error</span>
@@ -425,6 +451,78 @@ export default function TestResults() {
         ))}
       </div>
 
+      {data.environment && (
+        <div className="mb-6 p-4 rounded-lg bg-gray-800/40 border border-white/5">
+          <div className="flex items-center gap-2 mb-3">
+            <svg className="w-4 h-4 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <path d="M9 9h6v6H9z"/>
+            </svg>
+            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Test Environment</span>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+            <div>
+              <span className="text-gray-500 block">Runner</span>
+              <span className="text-gray-300 font-mono">{data.environment.runner_os || data.environment.os}</span>
+            </div>
+            <div>
+              <span className="text-gray-500 block">Browser</span>
+              <span className="text-gray-300 font-mono">Chromium {data.environment.browser_version}</span>
+            </div>
+            <div>
+              <span className="text-gray-500 block">Python</span>
+              <span className="text-gray-300 font-mono">{data.environment.python_version}</span>
+            </div>
+            <div>
+              <span className="text-gray-500 block">Playwright</span>
+              <span className="text-gray-300 font-mono">v{data.environment.playwright_version}</span>
+            </div>
+            <div>
+              <span className="text-gray-500 block">pytest</span>
+              <span className="text-gray-300 font-mono">v{data.environment.pytest_version}</span>
+            </div>
+            <div>
+              <span className="text-gray-500 block">Branch</span>
+              <span className="text-gray-300 font-mono">{data.environment.github_ref || 'local'}</span>
+            </div>
+            {data.environment.github_sha && (
+              <div>
+                <span className="text-gray-500 block">Commit</span>
+                <a
+                  href={`https://github.com/OlegVoronchenko/qa-portfolio/commit/${data.environment.github_sha_full}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-emerald-400 font-mono hover:text-emerald-300 transition-colors"
+                >
+                  {data.environment.github_sha}
+                </a>
+              </div>
+            )}
+            {data.environment.github_run_number && (
+              <div>
+                <span className="text-gray-500 block">Run</span>
+                <a
+                  href={data.environment.github_run_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-emerald-400 font-mono hover:text-emerald-300 transition-colors"
+                >
+                  #{data.environment.github_run_number}
+                </a>
+              </div>
+            )}
+          </div>
+          {data.environment.timestamp && (
+            <div className="mt-3 pt-3 border-t border-white/5 text-xs text-gray-500">
+              Last executed:{' '}
+              <span className="text-gray-400 font-mono">
+                {new Date(data.environment.timestamp).toLocaleString()}
+              </span>
+            </div>
+          )}
+        </div>
+      )}
+
       <div className="flex items-center justify-between mb-4">
         <span className="text-xs text-slate-600 font-mono">
           {data.timestamp && data.timestamp !== 'not yet run' ? `Last run: ${data.timestamp}` : 'Showing default data'}
@@ -478,6 +576,7 @@ export default function TestResults() {
             isOpen={expanded.has(t.name)}
             onToggle={() => toggleExpand(t.name)}
             onScreenshot={setFullScreenshot}
+            environment={data.environment}
           />
         ))}
       </div>
