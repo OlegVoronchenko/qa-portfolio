@@ -27,6 +27,7 @@ export default {
         'bounce-slow': 'bounce 2s infinite',
         'fade-in': 'fadeIn 0.6s ease-out',
         'slide-up': 'slideUp 0.6s ease-out',
+        'fadeIn': 'badgeFadeIn 0.2s ease-out',
       },
       keyframes: {
         'pulse-ring': {
@@ -43,6 +44,10 @@ export default {
         slideUp: {
           from: { opacity: '0', transform: 'translateY(24px)' },
           to: { opacity: '1', transform: 'translateY(0)' },
+        },
+        badgeFadeIn: {
+          '0%': { opacity: '0', transform: 'translateY(-4px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
         },
       },
     },

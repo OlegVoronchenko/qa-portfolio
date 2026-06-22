@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useLastRun } from '../hooks/useLastRun'
+import { getRequirement, getAcceptanceCriterion } from '../hooks/useRequirements'
 import {
   CheckCircle2,
   XCircle,
@@ -108,6 +109,28 @@ function StepRow({ step, index }) {
 }
 
 function TestRow({ test, isOpen, onToggle, onScreenshot }) {
+  const [activeBadge, setActiveBadge] = useState(null)
+
+  const toggleBadge = (type, id) => {
+    setActiveBadge(prev =>
+      prev?.type === type && prev?.id === id
+        ? null
+        : { type, id }
+    )
+  }
+
+  const getBadgeContent = () => {
+    if (!activeBadge) return null
+    if (activeBadge.type === 'req') {
+      const req = getRequirement(activeBadge.id)
+      if (!req) return null
+      return { title: `${req.id} — ${req.title}`, body: req.requirement }
+    }
+    const ac = getAcceptanceCriterion(test.req_id, activeBadge.id)
+    if (!ac) return null
+    return { title: `${ac.id} — ${ac.title}`, body: ac.description }
+  }
+
   return (
     <div className={`border-b border-dark-600/50 last:border-b-0 ${isOpen ? 'bg-dark-800/40' : 'hover:bg-dark-800/30'} transition-colors`}>
       <div
@@ -148,16 +171,55 @@ function TestRow({ test, isOpen, onToggle, onScreenshot }) {
               )}
             </div>
 
-            {test.req_id && (
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-xs px-2 py-0.5 rounded bg-gray-800 border border-white/10 text-gray-400 font-mono">
-                  {test.req_id}
-                </span>
-                {test.ac_ids?.map((ac) => (
-                  <span key={ac} className="text-xs px-2 py-0.5 rounded bg-gray-800/60 border border-white/5 text-gray-500 font-mono">
-                    {ac}
-                  </span>
-                ))}
+            {(test.req_id || test.ac_ids?.length > 0) && (
+              <div className="mb-3">
+                <span className="text-[11px] text-slate-500 uppercase tracking-wider font-semibold block mb-2">Requirements</span>
+                <div className="flex items-center gap-2 flex-wrap">
+                  {test.req_id && (
+                    <button
+                      onClick={(e) => { e.stopPropagation(); toggleBadge('req', test.req_id) }}
+                      className={`text-xs px-2.5 py-1 rounded border font-mono transition-all duration-200 cursor-pointer ${
+                        activeBadge?.id === test.req_id && activeBadge?.type === 'req'
+                          ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300'
+                          : 'bg-gray-800 border-white/10 text-gray-400 hover:border-emerald-500/30 hover:text-emerald-400'
+                      }`}
+                    >
+                      {test.req_id}
+                    </button>
+                  )}
+                  {test.ac_ids?.map((acId) => (
+                    <button
+                      key={acId}
+                      onClick={(e) => { e.stopPropagation(); toggleBadge('ac', acId) }}
+                      className={`text-xs px-2.5 py-1 rounded border font-mono transition-all duration-200 cursor-pointer ${
+                        activeBadge?.id === acId && activeBadge?.type === 'ac'
+                          ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300'
+                          : 'bg-gray-800/60 border-white/5 text-gray-500 hover:border-emerald-500/30 hover:text-emerald-400'
+                      }`}
+                    >
+                      {acId}
+                    </button>
+                  ))}
+                </div>
+
+                {activeBadge && (() => {
+                  const content = getBadgeContent()
+                  if (!content) return null
+                  return (
+                    <div className="mt-3 p-4 rounded-lg bg-gray-900/60 border border-emerald-500/20 animate-fadeIn">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs font-semibold text-emerald-400 font-mono">{content.title}</span>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setActiveBadge(null) }}
+                          className="text-gray-500 hover:text-gray-300 text-sm leading-none"
+                        >
+                          &times;
+                        </button>
+                      </div>
+                      <p className="text-sm text-gray-300 leading-relaxed">{content.body}</p>
+                    </div>
+                  )
+                })()}
               </div>
             )}
 

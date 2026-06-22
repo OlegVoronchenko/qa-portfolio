@@ -49,7 +49,7 @@ jobs:
           fi
 
       - name: Install Node dependencies
-        run: npm install
+        run: npm ci
 
       # ── Code Quality Gates ────────────────────────────
 
@@ -97,6 +97,9 @@ jobs:
           print('✓ profile.json schema is valid')
           print(f'  Keys present: {list(profile.keys())}')
           "
+
+      - name: Generate requirements JSON from markdown
+        run: python scripts/build_requirements_json.py
 
       - name: Build Vite app
         run: npm run build

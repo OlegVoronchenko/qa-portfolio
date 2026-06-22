@@ -6,6 +6,7 @@ __pycache__/
 *.pyc
 .env.local
 src/data/profile.json
+src/data/requirements.json
 cv/parsed_profile.json
 qa/screenshots/*.png
 qa/screenshots/*.jpg
