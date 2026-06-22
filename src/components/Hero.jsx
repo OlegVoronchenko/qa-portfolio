@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { ArrowRight, Mail, ChevronDown } from 'lucide-react'
 import { useProfile } from '../hooks/useProfile'
+import { AnimatedStat } from './AnimatedStat'
 
 const EXTRA_ROLES = [
   'Mobile & Web QA Architect',
@@ -39,10 +40,10 @@ export default function Hero() {
   }, [charIdx, deleting, roleIdx])
 
   const stats = [
-    { value: profile.stats.years_experience, label: 'Years Experience' },
-    { value: profile.stats.projects, label: 'Projects Delivered' },
-    { value: profile.stats.tests_written, label: 'Tests Written' },
-    { value: profile.stats.suite_stability, label: 'Suite Stability' },
+    { value: 15, suffix: '+', label: 'Years Experience', duration: 1500 },
+    { value: 9, suffix: '+', label: 'Projects Delivered', duration: 1200 },
+    { value: 10000, suffix: '+', label: 'Tests Written', duration: 2000 },
+    { value: 98, suffix: '%', label: 'Suite Stability', duration: 1800 },
   ]
 
   return (
@@ -106,14 +107,13 @@ export default function Hero() {
 
         <div className="flex justify-center gap-8 sm:gap-14">
           {stats.map((s) => (
-            <div key={s.label} className="text-center">
-              <div className="text-2xl sm:text-3xl font-bold font-mono text-accent">
-                {s.value}
-              </div>
-              <div className="text-xs text-slate-500 uppercase tracking-wider mt-1">
-                {s.label}
-              </div>
-            </div>
+            <AnimatedStat
+              key={s.label}
+              value={s.value}
+              suffix={s.suffix}
+              label={s.label}
+              duration={s.duration}
+            />
           ))}
         </div>
 
