@@ -114,11 +114,16 @@ jobs:
         working-directory: qa
         run: python -m playwright install --with-deps
 
-      - name: Run tests
+      - name: Run Playwright tests
         working-directory: qa
-        run: pytest tests/ -v --tb=short
+        run: |
+          mkdir -p reports
+          python -m pytest tests/ -v --tb=short \
+            --json-report \
+            --json-report-file=reports/raw.json \
+            || true
 
-      - name: Generate report
+      - name: Generate enriched test report
         if: always()
         run: python scripts/generate_report.py
         env:
@@ -130,6 +135,20 @@ jobs:
           GITHUB_RUN_ID: ${{ github.run_id }}
           GITHUB_RUN_NUMBER: ${{ github.run_number }}
           GITHUB_ACTOR: ${{ github.actor }}
+
+      - name: Fail if any tests failed
+        if: always()
+        run: |
+          python3 -c "
+          import json, sys
+          with open('dist/test_report.json') as f:
+              data = json.load(f)
+          failed = data['summary'].get('failed', 0)
+          if failed > 0:
+              print(f'  {failed} test(s) failed')
+              sys.exit(1)
+          print('All tests passed')
+          "
 
       - name: Upload test screenshots
         if: always()

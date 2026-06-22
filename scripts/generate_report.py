@@ -1012,9 +1012,21 @@ def parse_report():
 
 
 def main():
+    """Read pytest JSON output and generate enriched test_report.json.
+
+    Does NOT run pytest — that must happen in a separate step.
+    For local development, run pytest first:
+        cd qa && python -m pytest tests/ -v --json-report --json-report-file=reports/raw.json
+    """
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
-    print("Running tests...")
-    run_tests()
+
+    raw_path = REPORTS_DIR / "raw.json"
+    if not raw_path.exists():
+        print(f"ERROR: {raw_path} not found")
+        print("Run pytest first with:")
+        print("  cd qa && python -m pytest tests/ -v "
+              "--json-report --json-report-file=reports/raw.json")
+        sys.exit(1)
 
     print("Generating report...")
     report = parse_report()
