@@ -189,6 +189,13 @@ function TestRow({ test, isOpen, onToggle, onScreenshot }) {
               )}
             </div>
 
+            {test.description && (
+              <div className="pb-3 border-b border-white/5">
+                <span className="text-[11px] text-slate-500 uppercase tracking-wider font-semibold">Description</span>
+                <p className="text-sm text-slate-300 mt-1">{test.description}</p>
+              </div>
+            )}
+
             {test.tc_id && (
               <div className="mb-3">
                 <span className="text-[11px] text-slate-500 uppercase tracking-wider font-semibold block mb-2">Test ID</span>
@@ -252,12 +259,14 @@ function TestRow({ test, isOpen, onToggle, onScreenshot }) {
               </div>
             )}
 
-            {test.description && (
-              <div className="pb-3 border-b border-white/5">
-                <span className="text-[11px] text-slate-500 uppercase tracking-wider font-semibold">Description</span>
-                <p className="text-sm text-slate-300 mt-1">{test.description}</p>
+            <div>
+              <span className="text-[11px] text-slate-500 uppercase tracking-wider">Steps</span>
+              <div className="mt-1.5 space-y-1">
+                {test.steps?.map((step, i) => (
+                  <StepRow key={i} step={step} index={i} />
+                ))}
               </div>
-            )}
+            </div>
 
             {test.coverage && test.coverage.length > 0 && (
               <div>
@@ -289,21 +298,12 @@ function TestRow({ test, isOpen, onToggle, onScreenshot }) {
               </div>
             )}
 
-            <div>
-              <span className="text-[11px] text-slate-500 uppercase tracking-wider">Steps</span>
-              <div className="mt-1.5 space-y-1">
-                {test.steps?.map((step, i) => (
-                  <StepRow key={i} step={step} index={i} />
-                ))}
+            {test.duration_ms !== undefined && (
+              <div className="mb-3">
+                <span className="text-[11px] text-slate-500 uppercase tracking-wider font-semibold block mb-2">Duration</span>
+                <span className="text-sm text-gray-300 font-mono">{test.duration_ms}ms</span>
               </div>
-            </div>
-
-            <div className="flex items-center gap-4 pt-1">
-              <div>
-                <span className="text-[11px] text-slate-500 uppercase tracking-wider">Duration</span>
-                <p className="text-xs font-mono text-slate-300 mt-0.5">{formatMs(test.duration_ms)}</p>
-              </div>
-            </div>
+            )}
 
             {test.error && (
               <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3">
