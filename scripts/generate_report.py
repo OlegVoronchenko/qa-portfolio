@@ -915,6 +915,11 @@ def collect_environment() -> dict:
         "github_run_id": os.getenv("GITHUB_RUN_ID", ""),
         "github_run_number": os.getenv("GITHUB_RUN_NUMBER", ""),
         "github_actor": os.getenv("GITHUB_ACTOR", ""),
+        "github_commit_url": (
+            f"https://github.com/OlegVoronchenko/qa-portfolio"
+            f"/commit/{os.getenv('GITHUB_SHA', '')}"
+            if os.getenv("GITHUB_SHA") else ""
+        ),
         "github_run_url": (
             f"https://github.com/OlegVoronchenko/qa-portfolio"
             f"/actions/runs/{os.getenv('GITHUB_RUN_ID', '')}"

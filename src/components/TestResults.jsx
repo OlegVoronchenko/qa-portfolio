@@ -489,7 +489,7 @@ export default function TestResults() {
               <div>
                 <span className="text-gray-500 block">Commit</span>
                 <a
-                  href={`https://github.com/OlegVoronchenko/qa-portfolio/commit/${data.environment.github_sha_full}`}
+                  href={data.environment.github_commit_url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-emerald-400 font-mono hover:text-emerald-300 transition-colors"
