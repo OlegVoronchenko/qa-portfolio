@@ -1,7 +1,39 @@
-"""Assertion error message templates — consistent, descriptive failure output."""
+"""
+Assertion Error Messages
+========================
+
+PURPOSE
+-------
+All assertion failure messages used by tests.
+Templated with format placeholders for actual values.
+
+WHY THIS EXISTS
+---------------
+Generic 'assert True' messages waste debugging time.
+Detailed messages with expected vs actual values
+let you diagnose failures from CI logs alone — no
+need to rerun locally with a debugger.
+
+PATTERN
+-------
+Every message follows this structure:
+    'What was expected, what was found, where, what to check'
+
+Example:
+    NAV_LINK_WRONG_HREF: str = (
+        "Nav link '{name}' href should be '{expected}', "
+        "got '{actual}'. Check Navbar component anchor links."
+    )
+"""
 
 
 class Messages:
+    """str.format() templates for all assertion error messages.
+
+    Each attribute is a template string with named placeholders.
+    Tests call Msg.TEMPLATE_NAME.format(key=value) to produce
+    the final error message shown in CI logs.
+    """
     # Smoke
     TITLE_MISSING_NAME = "Page title should contain engineer name, got: '{title}'"
     TITLE_MISSING_ROLE = "Page title should contain '{expected}', got: '{actual}'"

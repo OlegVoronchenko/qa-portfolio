@@ -1,4 +1,37 @@
-"""Portfolio test suite — smoke, navigation, content, responsive, performance, a11y."""
+"""
+Portfolio Test Suite — Functional & Non-Functional Verification
+================================================================
+
+PURPOSE
+-------
+End-to-end Playwright tests verifying that the portfolio site
+renders correctly, navigates properly, displays profile data,
+responds to mobile viewports, loads within performance budget,
+and meets WCAG accessibility standards.
+
+TEST CATEGORIES
+---------------
+  Smoke (REQ-001)         — page loads, title, hero, nav, no JS errors, React hydration
+  Navigation (REQ-002)    — each nav link visible with correct anchor href
+  Content (REQ-003)       — skills tags, project cards, contact links, test results section
+  Responsive (REQ-004)    — no horizontal scroll at 390px, hero visible on mobile
+  Performance (REQ-005)   — page load time under 3000ms budget
+  Accessibility (REQ-006) — all images have alt text, heading hierarchy is correct
+
+REQUIREMENTS TRACEABILITY
+-------------------------
+Every test method has a comment above its definition linking it
+to a requirement ID (REQ-XXX) and acceptance criteria (AC-XXX-N).
+These IDs match docs/requirements/REQ-*.md and are displayed as
+clickable badges in the Test Results section of the live site.
+
+FIXTURES
+--------
+  portfolio       — desktop page navigated and hydrated via POM
+  mobile_portfolio — mobile (390x844) page navigated via POM
+  page / base_url  — raw Playwright page + server URL for custom navigation
+  hydrated_page    — desktop page with React hydration confirmed
+"""
 
 import sys
 from pathlib import Path
@@ -36,6 +69,12 @@ def mobile_portfolio(mobile_page: Page, base_url: str) -> PortfolioPage:
 # ── Smoke ──
 
 class TestSmoke:
+    """Smoke tests — critical path verification.
+
+    Covers REQ-001 (Page Load & Core Rendering).
+    Runs first in CI. If any smoke test fails, the build
+    is considered broken and subsequent tests are skipped.
+    """
 
     # REQ-001 | AC-001-1, AC-001-2, AC-001-3
     @pytest.mark.smoke
@@ -182,6 +221,12 @@ class TestSmoke:
 # ── Navigation ──
 
 class TestNavigation:
+    """Navigation tests — header link verification.
+
+    Covers REQ-002 (Navigation Links).
+    Parametrized across all four nav items to keep test
+    code DRY while ensuring full coverage.
+    """
 
     # REQ-002 | AC-002-1, AC-002-2 (and per parametrize)
     @pytest.mark.navigation
@@ -213,6 +258,12 @@ class TestNavigation:
 # ── Content ──
 
 class TestContent:
+    """Content tests — section data and rendering.
+
+    Covers REQ-003 (Page Content & Data Rendering).
+    Verifies that profile.json data is correctly displayed
+    in Skills, Projects, Contact, and Test Results sections.
+    """
 
     # REQ-003 | AC-003-1, AC-003-2, AC-003-3
     @pytest.mark.content
@@ -356,6 +407,12 @@ class TestContent:
 # ── Responsive ──
 
 class TestResponsive:
+    """Responsive tests — mobile viewport behavior.
+
+    Covers REQ-004 (Responsive Layout).
+    Tests at 390x844 (iPhone 14) — the most common
+    mobile device size to verify no horizontal overflow.
+    """
 
     # REQ-004 | AC-004-1
     @pytest.mark.responsive
@@ -407,6 +464,12 @@ class TestResponsive:
 # ── Performance ──
 
 class TestPerformance:
+    """Performance tests — page load timing.
+
+    Covers REQ-005 (Page Load Performance).
+    Uses browser Navigation Timing API to measure
+    real load duration, not synthetic metrics.
+    """
 
     # REQ-005 | AC-005-1
     @pytest.mark.performance
@@ -438,6 +501,12 @@ class TestPerformance:
 # ── Accessibility ──
 
 class TestAccessibility:
+    """Accessibility tests — WCAG 2.1 Level AA basics.
+
+    Covers REQ-006 (Accessibility).
+    Verifies image alt text and heading hierarchy —
+    the two most common WCAG violations on portfolio sites.
+    """
 
     # REQ-006 | AC-006-1
     @pytest.mark.accessibility

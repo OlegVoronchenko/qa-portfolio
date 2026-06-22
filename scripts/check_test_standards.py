@@ -1,7 +1,32 @@
 #!/usr/bin/env python3
 """
-Test standards checker for qa/ module.
-Verifies tests follow project conventions.
+Test Standards Checker
+======================
+
+PURPOSE
+-------
+CI quality gate that enforces test code conventions:
+- Every test function has a docstring
+- Every test function has a @pytest.mark decorator
+- No hardcoded URLs in test code (must use CONFIG.base_url)
+
+WHY THIS EXISTS
+---------------
+Tests are themselves a deliverable in this portfolio.
+Inconsistent or undocumented tests undermine the entire
+point of demonstrating QA discipline.
+
+ENFORCEMENT RULES
+-----------------
+For every function starting with 'test_':
+1. Must have a docstring as the first statement
+2. Must have at least one @pytest.mark.{category} decorator
+3. Must not contain 'localhost:8080' or 'localhost:5173'
+
+EXIT CODE
+---------
+0 — all tests meet standards
+1 — at least one violation (CI blocks deploy)
 """
 
 import ast
@@ -17,6 +42,13 @@ REQUIRED_MARKS = {'smoke', 'navigation', 'content',
 
 
 class TestStandardsChecker(ast.NodeVisitor):
+    """AST visitor that collects convention violations from test files.
+
+    Walks the syntax tree of each test file, inspecting every
+    test_* function for required docstrings, pytest marks, and
+    absence of hardcoded URLs.
+    """
+
     def __init__(self, filepath: str):
         self.filepath = filepath
         self.violations = []

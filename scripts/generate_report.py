@@ -1,5 +1,66 @@
 #!/usr/bin/env python3
-"""Generate test_report.json from pytest results for the portfolio site."""
+"""
+Test Report Generator
+=====================
+
+PURPOSE
+-------
+Reads pytest JSON output and produces test_report.json
+that the React app fetches to display live test results
+on the portfolio site.
+
+WHY THIS EXISTS
+---------------
+pytest's native JSON output is too low-level for UI display.
+This script enriches each test with:
+- Test Case ID (TC-XXX-N)
+- Requirement and AC IDs (REQ-XXX, AC-XXX-N)
+- Human-readable descriptions and step-by-step explanations
+- Code snippets showing what each step does
+- Coverage tags (UI, Accessibility, Performance, etc.)
+- Locator strategy used (get_by_role, get_by_text, etc.)
+- Screenshot embedded as base64
+
+HOW IT WORKS
+------------
+1. Runs pytest from qa/ directory with --json-report plugin
+2. Reads the raw JSON report from qa/reports/raw.json
+3. Maps each test to its STEPS_MAP entry for human-readable
+   step descriptions, code snippets, and metadata
+4. Detects locator strategies (role, text, CSS, JS evaluate)
+5. Attaches coverage tags, requirement IDs, and test case IDs
+6. Resizes and base64-encodes screenshots for inline display
+7. Writes final report to qa/reports/ and dist/ directories
+
+OUTPUT SCHEMA
+-------------
+{
+  "timestamp": "2024-01-15 14:30 UTC",
+  "summary": { "passed": 20, "failed": 0, "total": 20, ... },
+  "tests": [
+    {
+      "name": "test_page_loads_with_correct_title",
+      "status": "pass",
+      "duration_ms": 1234,
+      "mark": "smoke",
+      "description": "Browser tab title must identify...",
+      "steps": [...],
+      "locator_strategy": "get_by_role",
+      "coverage": ["UI", "SEO", "Page Load"],
+      "tc_id": "TC-001-1",
+      "req_id": "REQ-001",
+      "ac_ids": ["AC-001-1", "AC-001-2", "AC-001-3"],
+      "screenshot": "data:image/png;base64,...",
+      "error": null
+    }
+  ]
+}
+
+OUTPUT LOCATIONS
+----------------
+- dist/test_report.json     → deployed to GitHub Pages
+- qa/reports/test_report.json → kept as CI artifact
+"""
 
 import base64
 import json
@@ -14,6 +75,33 @@ QA_DIR = PROJECT_ROOT / "qa"
 REPORTS_DIR = QA_DIR / "reports"
 SCREENSHOTS_DIR = QA_DIR / "screenshots"
 DIST_DIR = PROJECT_ROOT / "dist"
+
+
+TC_ID_MAP = {
+    "test_page_loads_with_correct_title": "TC-001-1",
+    "test_hero_heading_displays_name": "TC-001-2",
+    "test_navigation_is_present": "TC-001-3",
+    "test_page_has_no_javascript_errors": "TC-001-4",
+    "test_react_app_hydrated_successfully": "TC-001-5",
+    "test_nav_link_is_visible_with_correct_href[About-#about]": "TC-002-1",
+    "test_nav_link_is_visible_with_correct_href[Skills-#skills]": "TC-002-2",
+    "test_nav_link_is_visible_with_correct_href[Projects-#projects]": "TC-002-3",
+    "test_nav_link_is_visible_with_correct_href[Contact-#contact]": "TC-002-4",
+    "test_skills_section_contains_core_stack[Python]": "TC-003-1",
+    "test_skills_section_contains_core_stack[Playwright]": "TC-003-2",
+    "test_skills_section_contains_core_stack[pytest]": "TC-003-3",
+    "test_projects_section_has_expected_cards": "TC-003-4",
+    "test_contact_section_has_required_channels": "TC-003-5",
+    "test_test_results_section_renders": "TC-003-6",
+    "test_mobile_viewport_no_horizontal_scroll": "TC-004-1",
+    "test_mobile_hero_section_visible": "TC-004-2",
+    "test_page_load_time_within_budget": "TC-005-1",
+    "test_images_have_alt_text": "TC-006-1",
+    "test_headings_hierarchy_is_correct": "TC-006-2",
+    "test_assets_load_on_github_pages": "TC-007-1",
+    "test_base_path_is_correct": "TC-007-2",
+    "test_no_console_errors_on_production": "TC-007-3",
+}
 
 
 COVERAGE_MAP = {
@@ -828,6 +916,7 @@ def parse_report():
             "steps": steps,
             "locator_strategy": detect_locator_strategy(mapped["steps"]),
             "coverage": get_coverage_tags(name),
+            "tc_id": TC_ID_MAP.get(name, "TC-???"),
             "req_id": mapped.get("req_id"),
             "ac_ids": mapped.get("ac_ids", []),
             "screenshot": find_screenshot_for_test(name),

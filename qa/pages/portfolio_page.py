@@ -1,4 +1,27 @@
-"""Page Object Model for the QA portfolio SPA — locators, actions, queries."""
+"""
+Page Object Model — Portfolio Page
+====================================
+
+PURPOSE
+-------
+Encapsulates all Playwright locators and actions for the QA
+portfolio single-page application. Tests interact with the
+page exclusively through this class, never using raw selectors.
+
+WHY POM
+-------
+Centralizing locators here means that when the React component
+markup changes (e.g., a CSS class rename or DOM restructure),
+only this file needs updating — not every test that touches
+that element. This is critical for maintaining 20+ tests.
+
+LOCATOR STRATEGY
+----------------
+All locators prefer ARIA roles (get_by_role, get_by_text) over
+CSS selectors. This aligns with Playwright best practices and
+makes tests resilient to styling changes while also verifying
+accessibility semantics.
+"""
 
 import sys
 from pathlib import Path
@@ -14,7 +37,41 @@ SCREENSHOTS_DIR = Path(__file__).resolve().parent.parent / "screenshots"
 
 
 class PortfolioPage:
-    """Page Object for the QA portfolio single-page application."""
+    """Page Object Model for the portfolio site.
+
+    PURPOSE
+    -------
+    Encapsulates all element locators and navigation actions
+    for the portfolio page. Tests interact with this class
+    instead of using raw Playwright selectors directly.
+
+    WHY USE PAGE OBJECT MODEL
+    -------------------------
+    If a CSS class or DOM structure changes, only this file
+    needs updating — all tests continue to work unchanged.
+    This is the standard pattern for maintainable UI tests.
+
+    LOCATOR STRATEGY
+    ----------------
+    Locators are defined as properties that return Playwright
+    Locator objects. They use the recommended priority order:
+    1. get_by_role()    — for interactive and landmark elements
+    2. get_by_text()    — for visible text content
+    3. get_by_label()   — for form fields
+    4. CSS id (#xxx)    — only for section landmarks
+
+    NO ASSERTIONS IN POM
+    --------------------
+    This class only locates and acts. All assertions live
+    in the test files for clear separation of concerns.
+
+    USAGE
+    -----
+        portfolio = PortfolioPage(page, base_url)
+        portfolio.navigate()
+        link = portfolio.nav_link("About")
+        assert link.is_visible()
+    """
 
     def __init__(self, page: Page, base_url: str) -> None:
         self._page = page

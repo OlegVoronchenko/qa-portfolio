@@ -1,4 +1,29 @@
-"""Expected values and test data — separated from test logic."""
+"""
+Test Constants
+==============
+
+PURPOSE
+-------
+All expected values used in test assertions.
+Frozen dataclasses prevent accidental mutation.
+
+WHY THIS EXISTS
+---------------
+A test that compares against the literal string 'Oleg' in
+20 places becomes a maintenance trap. Centralized constants
+mean changing the expected name happens in ONE location.
+
+ORGANIZATION
+------------
+- PageTitle           expected title substrings
+- HeroContent         expected hero section text
+- NavLinks            navigation link names and hrefs
+- CoreSkills          must-have skill tags
+- ExpectedCounts      element counts (cards, links, h1)
+- PerformanceBudget   timing thresholds in ms
+- Viewport            screen sizes for responsive tests
+- DeploymentConfig    asset extensions and 404 exclusions
+"""
 
 from dataclasses import dataclass
 from typing import Tuple

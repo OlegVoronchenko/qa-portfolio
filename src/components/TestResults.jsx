@@ -1,3 +1,21 @@
+/**
+ * TestResults Component
+ *
+ * Displays live results from the Playwright test suite.
+ * Data sourced from dist/test_report.json which is
+ * regenerated on every CI run.
+ *
+ * Features:
+ * - Summary cards (passed/failed/total/duration)
+ * - Expandable test rows with full details
+ * - Per-step code snippets
+ * - TC/REQ/AC badges with clickable detail panels
+ * - Screenshot thumbnails with fullscreen modal
+ * - Coverage tags and locator strategy badges
+ *
+ * If test_report.json fails to load, falls back to
+ * DEFAULT_DATA so the section never appears broken.
+ */
 import { useState, useEffect, useCallback } from 'react'
 import { useLastRun } from '../hooks/useLastRun'
 import { getRequirement, getAcceptanceCriterion } from '../hooks/useRequirements'
@@ -171,10 +189,15 @@ function TestRow({ test, isOpen, onToggle, onScreenshot }) {
               )}
             </div>
 
-            {(test.req_id || test.ac_ids?.length > 0) && (
+            {(test.tc_id || test.req_id || test.ac_ids?.length > 0) && (
               <div className="mb-3">
-                <span className="text-[11px] text-slate-500 uppercase tracking-wider font-semibold block mb-2">Requirements</span>
+                <span className="text-[11px] text-slate-500 uppercase tracking-wider font-semibold block mb-2">Test ID & Requirements</span>
                 <div className="flex items-center gap-2 flex-wrap">
+                  {test.tc_id && (
+                    <span className="text-xs px-2.5 py-1 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono font-semibold">
+                      {test.tc_id}
+                    </span>
+                  )}
                   {test.req_id && (
                     <button
                       onClick={(e) => { e.stopPropagation(); toggleBadge('req', test.req_id) }}

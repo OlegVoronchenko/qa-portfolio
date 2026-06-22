@@ -1,4 +1,38 @@
-"""Shared fixtures — HTTP server, browser, page contexts, hydration helpers, screenshots."""
+"""
+Pytest Configuration & Shared Fixtures
+=======================================
+
+PURPOSE
+-------
+Defines fixtures and configuration shared across all
+tests in the qa/ module. Independent of React/Node.js.
+
+KEY FIXTURES
+------------
+- base_url            session-scoped, from CONFIG.base_url
+- page                function-scoped Playwright Page
+- mobile_page         function-scoped, 390x844 viewport
+- hydrated_page       page with React fully loaded
+- portfolio           pre-navigated PortfolioPage POM
+- mobile_portfolio    pre-navigated POM at mobile size
+
+Session-scoped (created once, shared across all tests):
+  - _http_server: serves the Vite dist/ build on localhost:8080
+  - _browser: headless Chromium instance via Playwright
+
+Auto-use fixtures:
+  - capture_screenshot: saves a PNG after every test for debugging
+
+STEP LOGGING
+------------
+The step() context manager prints test progress to stdout.
+Use with -s flag in pytest to see live step output:
+    pytest -v -s
+
+Example:
+    with step("Open the portfolio page"):
+        portfolio.navigate()
+"""
 
 import contextlib
 import http.server

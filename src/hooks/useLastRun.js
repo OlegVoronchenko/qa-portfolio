@@ -1,7 +1,19 @@
+/**
+ * Last CI Run Hook
+ *
+ * Fetches the most recent completed workflow run from the GitHub
+ * Actions API and returns its timestamp (as relative "X ago" text),
+ * conclusion (success/failure), and URL. Used in the TestResults
+ * header to show when tests last ran in CI.
+ *
+ * Fails silently on network errors or rate limiting — returns null
+ * so the UI gracefully hides the indicator.
+ */
 import { useState, useEffect } from 'react'
 
 const GITHUB_API = 'https://api.github.com/repos/OlegVoronchenko/qa-portfolio/actions/workflows/test-and-deploy.yml/runs?per_page=1&status=completed'
 
+/** @param {string} dateStr - ISO date string from GitHub API */
 function timeAgo(dateStr) {
   const date = new Date(dateStr)
   const now = new Date()

@@ -1,3 +1,17 @@
+/**
+ * Animated Counter Hook
+ *
+ * Counts from 0 to a target value using requestAnimationFrame
+ * with ease-out cubic easing (starts fast, decelerates at end).
+ * Designed to be paired with IntersectionObserver — call start()
+ * when the element scrolls into view.
+ *
+ * @param {object} options
+ * @param {number} options.end - Target value to count up to
+ * @param {number} [options.duration=2000] - Animation duration in ms
+ * @param {boolean} [options.startOnMount=false] - If true, counts immediately
+ * @returns {{ count: number, start: () => void }}
+ */
 import { useState, useEffect, useRef } from 'react'
 
 export function useCountUp({ end, duration = 2000, startOnMount = false }) {

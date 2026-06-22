@@ -1,7 +1,38 @@
 #!/usr/bin/env python3
 """
-Hardcoded string detector for React components.
-Fails CI if personal data is found hardcoded in src/.
+Hardcoded String Detector
+=========================
+
+PURPOSE
+-------
+CI quality gate that fails the build if personal data
+(name, email, stats) is hardcoded in React components
+instead of read from profile.json via useProfile() hook.
+
+WHY THIS EXISTS
+---------------
+Updating the portfolio should require changing ONE file
+(the CV) not chasing hardcoded strings across 20+ React
+components. This script enforces that discipline.
+
+ENFORCEMENT RULES
+-----------------
+Forbidden in src/ JSX/TSX files:
+- Engineer name, email, LinkedIn, GitHub URLs
+- Hardcoded stats ('15+ years', '10K+ tests', '98%')
+- Tool names in static <span> elements
+- Company names as text
+
+Allowed locations:
+- profile.default.json (the actual data source)
+- CV_TEMPLATE.md (the template)
+- ARCHITECTURE.md (documentation)
+- Generated files (parsed_profile.json, test_report.json)
+
+EXIT CODE
+---------
+0 — no violations found
+1 — at least one hardcoded string found (CI blocks deploy)
 """
 
 import re

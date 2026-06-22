@@ -1,6 +1,39 @@
-"""Parse a CV file (PDF or DOCX) into structured profile JSON using regex patterns.
+"""
+CV Parser — Resume to JSON Converter
+=====================================
 
-Works 100% locally — no external API or AI service required.
+PURPOSE
+-------
+Reads PDF or DOCX resume files from cv/ folder and extracts
+structured data into src/data/profile.json which feeds the
+React portfolio site.
+
+WHY THIS EXISTS
+---------------
+Allows updating the portfolio by simply replacing the CV file.
+No need to edit JSON manually or touch React components.
+The site automatically reflects the latest CV on the next
+push to main.
+
+HOW IT WORKS
+------------
+1. Detects CV file format (PDF or DOCX) by extension
+2. Extracts raw text using pdfplumber or python-docx
+3. Splits text into sections by detecting headers
+4. Applies regex patterns to extract structured fields
+5. Maps results to profile.json schema with sensible defaults
+6. Saves output to both src/data/profile.json and cv/parsed_profile.json
+
+NO EXTERNAL API REQUIRED
+------------------------
+Pure local processing — no Anthropic API key, no internet
+needed. Works offline and in any CI environment.
+
+FALLBACK BEHAVIOR
+-----------------
+If parsing fails or any section returns empty, the script
+falls back to defaults defined in profile.default.json.
+The site never crashes due to missing CV data.
 """
 
 import json
@@ -64,7 +97,23 @@ SECTION_PATTERNS = {
 
 
 class CVParser:
+    """Extracts structured profile data from PDF/DOCX resume files.
+
+    Uses regex-based heuristics to identify sections (experience,
+    skills, education, etc.) and extract fields into a JSON schema
+    that the React portfolio app consumes via useProfile() hook.
+    """
+
     def parse(self, file_path):
+        """Parse a CV file and return a structured profile dict.
+
+        Args:
+            file_path: Path to PDF or DOCX file.
+
+        Returns:
+            dict matching profile.json schema with personal info,
+            experience, skills, education, and contact fields.
+        """
         path = Path(file_path)
         if not path.exists():
             print(f"ERROR: File not found: {path}")
@@ -78,6 +127,12 @@ class CVParser:
         return profile
 
     def save(self, profile):
+        """Write profile JSON to src/data/ and a backup to cv/.
+
+        Two copies are saved so that the build always has profile.json
+        available, and the cv/ folder retains the parsed output for
+        debugging or manual inspection.
+        """
         OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
         content = json.dumps(profile, indent=2, ensure_ascii=False) + "\n"
         OUTPUT_PATH.write_text(content)

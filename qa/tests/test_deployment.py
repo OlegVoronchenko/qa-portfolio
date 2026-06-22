@@ -1,6 +1,30 @@
-"""Deployment verification tests — run only in CI against the live GitHub Pages URL.
+"""
+Deployment Verification Tests (REQ-007)
+========================================
 
-Skipped locally when GITHUB_PAGES_URL is not set.
+PURPOSE
+-------
+Validates the live production deployment on GitHub Pages after
+the CI pipeline deploys the built site. These tests run ONLY
+in CI when GITHUB_PAGES_URL is set — they are automatically
+skipped during local development.
+
+WHAT THEY VERIFY
+----------------
+  test_assets_load_on_github_pages  — no 404s on JS/CSS/image assets,
+      navigation and h1 are visible (AC-007-1, AC-007-2, AC-007-3)
+  test_base_path_is_correct — all asset paths include /qa-portfolio/
+      prefix required by GitHub Pages (AC-007-4)
+  test_no_console_errors_on_production — no uncaught JavaScript
+      exceptions on the live site (AC-007-5)
+
+WHY SEPARATE FROM test_portfolio.py
+------------------------------------
+These tests hit the real deployed URL over the internet, not a
+local HTTP server. They must run AFTER deployment completes and
+the CDN cache refreshes. The CI workflow has a polling step that
+waits for GitHub Pages to respond with HTTP 200 before running
+these tests.
 """
 
 import sys
@@ -31,6 +55,18 @@ def deploy_page(page: Page) -> Page:
 
 
 class TestDeployment:
+    """Deployment tests — production URL verification.
+
+    Covers REQ-007 (Deployment Verification).
+    Runs ONLY in CI after the deploy step completes.
+    Skipped locally when GITHUB_PAGES_URL is not set.
+
+    Catches deployment-specific issues that local tests miss:
+    - Wrong Vite base path
+    - Missing assets in dist/
+    - CDN caching of stale versions
+    - Production-only JS errors
+    """
 
     # REQ-007 | AC-007-1, AC-007-2, AC-007-3
     @pytest.mark.deployment

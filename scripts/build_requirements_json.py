@@ -1,7 +1,34 @@
 #!/usr/bin/env python3
 """
-Parse docs/requirements/REQ-*.md files into a single
-requirements.json bundle for the React app.
+Requirements JSON Builder
+=========================
+
+PURPOSE
+-------
+Parses docs/requirements/REQ-*.md markdown files into a single
+src/data/requirements.json bundle that the React app imports
+at build time. This enables clickable requirement and acceptance
+criteria badges in the Test Results section without runtime
+API calls.
+
+HOW IT WORKS
+------------
+1. Scans docs/requirements/ for REQ-*.md files
+2. Extracts requirement ID, title, and description from each
+3. Parses all AC (Acceptance Criteria) entries with their
+   ID, title, and description text
+4. Writes a flat JSON object keyed by REQ ID
+
+WHEN TO RUN
+-----------
+Runs automatically in CI before npm run build (see workflow).
+Run manually after editing any docs/requirements/*.md file:
+    python scripts/build_requirements_json.py
+
+GENERATED OUTPUT
+----------------
+src/data/requirements.json — gitignored, regenerated
+in CI and consumed by useRequirements() hook.
 """
 
 import json

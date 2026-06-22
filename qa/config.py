@@ -1,4 +1,31 @@
-"""Centralized test configuration — all environment and infra settings in one place."""
+"""
+Test Configuration
+==================
+
+PURPOSE
+-------
+Single source of truth for all test configuration values.
+Environment variables override defaults — making the test
+suite portable between local development and CI.
+
+WHY THIS EXISTS
+---------------
+Hardcoded URLs, timeouts, and viewport sizes scattered
+across test files create maintenance nightmares. This
+file centralizes everything into a frozen dataclass.
+
+USAGE
+-----
+    from config import CONFIG
+    page.goto(CONFIG.base_url)
+    page.set_viewport_size({'width': CONFIG.mobile_width, ...})
+
+ENVIRONMENT VARIABLES
+---------------------
+- BASE_URL              local dev/CI URL (default: http://localhost:8080)
+- GITHUB_PAGES_URL      production URL (deployment tests only)
+- TIMEOUT_NAVIGATION    page goto timeout in ms (default: 30000)
+"""
 
 import os
 from dataclasses import dataclass
@@ -6,7 +33,11 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class TestConfig:
-    """Immutable test configuration resolved from environment variables."""
+    """Immutable test configuration resolved from environment variables.
+
+    All timeouts are in milliseconds. Viewport sizes match real
+    devices: desktop is a standard 720p monitor, mobile is iPhone 14.
+    """
 
     base_url: str
     github_pages_url: str

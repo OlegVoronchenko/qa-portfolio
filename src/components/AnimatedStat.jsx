@@ -1,3 +1,19 @@
+/**
+ * AnimatedStat — Scroll-triggered counter for hero stats.
+ *
+ * Uses IntersectionObserver (threshold 0.3) to start a count-up
+ * animation when the stat scrolls into view. Fires once — the
+ * observer disconnects after triggering. Values >= 1000 display
+ * in "XK" format during animation. Uses tabular-nums to prevent
+ * layout shift as digits change.
+ *
+ * @param {object} props
+ * @param {number} props.value - Numeric target to count up to
+ * @param {string} [props.suffix] - Text after number ('+', '%', 'K+')
+ * @param {string} [props.prefix] - Text before number
+ * @param {string} props.label - Description below the number
+ * @param {number} [props.duration=2000] - Animation duration in ms
+ */
 import { useEffect, useRef } from 'react'
 import { useCountUp } from '../hooks/useCountUp'
 
