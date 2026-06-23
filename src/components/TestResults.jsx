@@ -451,78 +451,6 @@ export default function TestResults() {
         ))}
       </div>
 
-      {data.environment && (
-        <div className="mb-6 p-4 rounded-lg bg-gray-800/40 border border-white/5">
-          <div className="flex items-center gap-2 mb-3">
-            <svg className="w-4 h-4 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <rect x="3" y="3" width="18" height="18" rx="2"/>
-              <path d="M9 9h6v6H9z"/>
-            </svg>
-            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Test Environment</span>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
-            <div>
-              <span className="text-gray-500 block">Runner</span>
-              <span className="text-gray-300 font-mono">{data.environment.runner_os || data.environment.os}</span>
-            </div>
-            <div>
-              <span className="text-gray-500 block">Browser</span>
-              <span className="text-gray-300 font-mono">Chromium {data.environment.browser_version}</span>
-            </div>
-            <div>
-              <span className="text-gray-500 block">Python</span>
-              <span className="text-gray-300 font-mono">{data.environment.python_version}</span>
-            </div>
-            <div>
-              <span className="text-gray-500 block">Playwright</span>
-              <span className="text-gray-300 font-mono">v{data.environment.playwright_version}</span>
-            </div>
-            <div>
-              <span className="text-gray-500 block">pytest</span>
-              <span className="text-gray-300 font-mono">v{data.environment.pytest_version}</span>
-            </div>
-            <div>
-              <span className="text-gray-500 block">Branch</span>
-              <span className="text-gray-300 font-mono">{data.environment.github_ref || 'local'}</span>
-            </div>
-            {data.environment.github_sha && (
-              <div>
-                <span className="text-gray-500 block">Commit</span>
-                <a
-                  href={data.environment.github_commit_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-emerald-400 font-mono hover:text-emerald-300 transition-colors"
-                >
-                  {data.environment.github_sha}
-                </a>
-              </div>
-            )}
-            {data.environment.github_run_number && (
-              <div>
-                <span className="text-gray-500 block">Run</span>
-                <a
-                  href={data.environment.github_run_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-emerald-400 font-mono hover:text-emerald-300 transition-colors"
-                >
-                  #{data.environment.github_run_number}
-                </a>
-              </div>
-            )}
-          </div>
-          {data.environment.timestamp && (
-            <div className="mt-3 pt-3 border-t border-white/5 text-xs text-gray-500">
-              Last executed:{' '}
-              <span className="text-gray-400 font-mono">
-                {new Date(data.environment.timestamp).toLocaleString()}
-              </span>
-            </div>
-          )}
-        </div>
-      )}
-
       <div className="flex items-center justify-between mb-4">
         <span className="text-xs text-slate-600 font-mono">
           {data.timestamp && data.timestamp !== 'not yet run' ? `Last run: ${data.timestamp}` : 'Showing default data'}
@@ -579,6 +507,80 @@ export default function TestResults() {
             environment={data.environment}
           />
         ))}
+      </div>
+
+      <div className="mt-8 pt-6 border-t border-white/5">
+        {data.environment && (
+          <div className="p-4 rounded-lg bg-gray-800/40 border border-white/5">
+            <div className="flex items-center gap-2 mb-3">
+              <svg className="w-4 h-4 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <path d="M9 9h6v6H9z"/>
+              </svg>
+              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Test Environment</span>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+              <div>
+                <span className="text-gray-500 block">Runner</span>
+                <span className="text-gray-300 font-mono">{data.environment.runner_os || data.environment.os}</span>
+              </div>
+              <div>
+                <span className="text-gray-500 block">Browser</span>
+                <span className="text-gray-300 font-mono">Chromium {data.environment.browser_version}</span>
+              </div>
+              <div>
+                <span className="text-gray-500 block">Python</span>
+                <span className="text-gray-300 font-mono">{data.environment.python_version}</span>
+              </div>
+              <div>
+                <span className="text-gray-500 block">Playwright</span>
+                <span className="text-gray-300 font-mono">v{data.environment.playwright_version}</span>
+              </div>
+              <div>
+                <span className="text-gray-500 block">pytest</span>
+                <span className="text-gray-300 font-mono">v{data.environment.pytest_version}</span>
+              </div>
+              <div>
+                <span className="text-gray-500 block">Branch</span>
+                <span className="text-gray-300 font-mono">{data.environment.github_ref || 'local'}</span>
+              </div>
+              {data.environment.github_sha && (
+                <div>
+                  <span className="text-gray-500 block">Commit</span>
+                  <a
+                    href={data.environment.github_commit_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-emerald-400 font-mono hover:text-emerald-300 transition-colors"
+                  >
+                    {data.environment.github_sha}
+                  </a>
+                </div>
+              )}
+              {data.environment.github_run_number && (
+                <div>
+                  <span className="text-gray-500 block">Run</span>
+                  <a
+                    href={data.environment.github_run_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-emerald-400 font-mono hover:text-emerald-300 transition-colors"
+                  >
+                    #{data.environment.github_run_number}
+                  </a>
+                </div>
+              )}
+            </div>
+            {data.environment.timestamp && (
+              <div className="mt-3 pt-3 border-t border-white/5 text-xs text-gray-500">
+                Last executed:{' '}
+                <span className="text-gray-400 font-mono">
+                  {new Date(data.environment.timestamp).toLocaleString()}
+                </span>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {fullScreenshot && (
