@@ -122,11 +122,11 @@ STEPS_MAP = {
             },
             {
                 "description": "Assert title contains role 'Automation'",
-                "code": "assert PAGE_TITLE.CONTAINS_ROLE in title, \\\n    Msg.TITLE_MISSING_ROLE.format(\n        expected=PAGE_TITLE.CONTAINS_ROLE,\n        actual=title\n    )",
+                "code": "assert PAGE_TITLE.CONTAINS_ROLE in title, \\\n    Msg.TITLE_MISSING_ROLE.format(\n        expected=PAGE_TITLE.CONTAINS_ROLE, actual=title,\n    )",
             },
             {
                 "description": "Assert title contains type 'Engineer'",
-                "code": "assert PAGE_TITLE.CONTAINS_TYPE in title, \\\n    Msg.TITLE_MISSING_ROLE.format(\n        expected=PAGE_TITLE.CONTAINS_TYPE,\n        actual=title\n    )",
+                "code": "assert PAGE_TITLE.CONTAINS_TYPE in title, \\\n    Msg.TITLE_MISSING_ROLE.format(\n        expected=PAGE_TITLE.CONTAINS_TYPE, actual=title,\n    )",
             },
         ],
     },
@@ -147,7 +147,7 @@ STEPS_MAP = {
             },
             {
                 "description": "Assert heading contains 'Oleg'",
-                "code": "assert HERO.CONTAINS_NAME in text, \\\n    Msg.HERO_NAME_MISSING.format(\n        expected=HERO.CONTAINS_NAME,\n        actual=text\n    )",
+                "code": "assert HERO.CONTAINS_NAME in text, Msg.HERO_NAME_MISSING.format(\n    expected=HERO.CONTAINS_NAME, actual=text,\n)",
             },
         ],
     },
@@ -168,7 +168,7 @@ STEPS_MAP = {
             },
             {
                 "description": "Assert navigation is visible",
-                "code": "assert nav.is_visible(), \\\n    Msg.NAV_NOT_VISIBLE.format(\n        url=portfolio._page.url,\n        count=nav_count\n    )",
+                "code": "url = portfolio._page.url\nassert nav.is_visible(), Msg.NAV_NOT_VISIBLE.format(\n    url=url, count=nav_count,\n)",
             },
         ],
     },
@@ -181,15 +181,15 @@ STEPS_MAP = {
         "steps": [
             {
                 "description": "Attach JavaScript error listener",
-                "code": "js_errors: list[str] = []\npage.on('pageerror',\n    lambda err: js_errors.append(str(err)))",
+                "code": "page.on(\"pageerror\", lambda err: js_errors.append(str(err)))",
             },
             {
                 "description": "Navigate to base URL and wait for network idle",
-                "code": "page.goto(base_url, wait_until='networkidle')",
+                "code": "page.goto(base_url, wait_until=\"networkidle\")",
             },
             {
                 "description": "Assert no JavaScript errors were captured",
-                "code": "assert js_errors == [], \\\n    Msg.JS_ERRORS_FOUND.format(errors=js_errors)",
+                "code": "assert js_errors == [], Msg.JS_ERRORS_FOUND.format(errors=js_errors)",
             },
         ],
     },
@@ -202,23 +202,23 @@ STEPS_MAP = {
         "steps": [
             {
                 "description": "Count #root child elements",
-                "code": "child_count = hydrated_page.evaluate(\n    \"document.querySelector('#root')\"\n    \".children.length\"\n)",
+                "code": "child_count = hydrated_page.evaluate(\n    \"document.querySelector('#root').children.length\"\n)",
             },
             {
                 "description": "Get #root innerHTML preview for diagnostics",
-                "code": "preview = hydrated_page.evaluate(\n    \"document.querySelector('#root')\"\n    \".innerHTML.slice(0, 200)\"\n)\nurl = hydrated_page.url",
+                "code": "preview = hydrated_page.evaluate(\n    \"document.querySelector('#root').innerHTML.slice(0, 200)\"\n)\nurl = hydrated_page.url",
             },
             {
                 "description": "Assert #root has children",
-                "code": "assert child_count > 0, \\\n    Msg.HYDRATION_FAILED.format(\n        actual=child_count,\n        url=url, preview=preview\n    )",
+                "code": "assert child_count > 0, Msg.HYDRATION_FAILED.format(\n    actual=child_count, url=url, preview=preview,\n)",
             },
             {
                 "description": "Check for React error boundary",
-                "code": "error_boundary = hydrated_page.locator(\n    '[data-reactroot] .error-boundary, '\n    '#root > [class*=\"error\"]'\n)\nboundary_count = error_boundary.count()",
+                "code": "error_boundary = hydrated_page.locator(\n    '[data-reactroot] .error-boundary, #root > [class*=\"error\"]'\n)\nboundary_count = error_boundary.count()",
             },
             {
                 "description": "Assert no error boundary rendered",
-                "code": "assert boundary_count == 0, \\\n    Msg.ERROR_BOUNDARY_RENDERED.format(\n        count=boundary_count, url=url\n    )",
+                "code": "assert boundary_count == 0, Msg.ERROR_BOUNDARY_RENDERED.format(\n    count=boundary_count, url=url,\n)",
             },
         ],
     },
@@ -231,15 +231,15 @@ STEPS_MAP = {
         "steps": [
             {
                 "description": "Locate nav link 'About'",
-                "code": "link = portfolio.nav_link('About')",
+                "code": "link = portfolio.nav_link(label)",
             },
             {
                 "description": "Assert 'About' link is visible",
-                "code": "assert link.is_visible(), \\\n    Msg.NAV_LINK_NOT_VISIBLE.format(name='About')",
+                "code": "assert link.is_visible(), Msg.NAV_LINK_NOT_VISIBLE.format(name=label)",
             },
             {
                 "description": "Assert 'About' href equals '#about'",
-                "code": "actual_href = link.get_attribute('href')\nassert actual_href == '#about', \\\n    Msg.NAV_LINK_WRONG_HREF.format(\n        name='About',\n        expected='#about',\n        actual=actual_href\n    )",
+                "code": "actual_href = link.get_attribute(\"href\")\nassert actual_href == href, Msg.NAV_LINK_WRONG_HREF.format(\n    name=label, expected=href, actual=actual_href,\n)",
             },
         ],
     },
@@ -252,15 +252,15 @@ STEPS_MAP = {
         "steps": [
             {
                 "description": "Locate nav link 'Skills'",
-                "code": "link = portfolio.nav_link('Skills')",
+                "code": "link = portfolio.nav_link(label)",
             },
             {
                 "description": "Assert 'Skills' link is visible",
-                "code": "assert link.is_visible(), \\\n    Msg.NAV_LINK_NOT_VISIBLE.format(name='Skills')",
+                "code": "assert link.is_visible(), Msg.NAV_LINK_NOT_VISIBLE.format(name=label)",
             },
             {
                 "description": "Assert 'Skills' href equals '#skills'",
-                "code": "actual_href = link.get_attribute('href')\nassert actual_href == '#skills', \\\n    Msg.NAV_LINK_WRONG_HREF.format(\n        name='Skills',\n        expected='#skills',\n        actual=actual_href\n    )",
+                "code": "actual_href = link.get_attribute(\"href\")\nassert actual_href == href, Msg.NAV_LINK_WRONG_HREF.format(\n    name=label, expected=href, actual=actual_href,\n)",
             },
         ],
     },
@@ -273,15 +273,15 @@ STEPS_MAP = {
         "steps": [
             {
                 "description": "Locate nav link 'Projects'",
-                "code": "link = portfolio.nav_link('Projects')",
+                "code": "link = portfolio.nav_link(label)",
             },
             {
                 "description": "Assert 'Projects' link is visible",
-                "code": "assert link.is_visible(), \\\n    Msg.NAV_LINK_NOT_VISIBLE.format(name='Projects')",
+                "code": "assert link.is_visible(), Msg.NAV_LINK_NOT_VISIBLE.format(name=label)",
             },
             {
                 "description": "Assert 'Projects' href equals '#projects'",
-                "code": "actual_href = link.get_attribute('href')\nassert actual_href == '#projects', \\\n    Msg.NAV_LINK_WRONG_HREF.format(\n        name='Projects',\n        expected='#projects',\n        actual=actual_href\n    )",
+                "code": "actual_href = link.get_attribute(\"href\")\nassert actual_href == href, Msg.NAV_LINK_WRONG_HREF.format(\n    name=label, expected=href, actual=actual_href,\n)",
             },
         ],
     },
@@ -294,15 +294,15 @@ STEPS_MAP = {
         "steps": [
             {
                 "description": "Locate nav link 'Contact'",
-                "code": "link = portfolio.nav_link('Contact')",
+                "code": "link = portfolio.nav_link(label)",
             },
             {
                 "description": "Assert 'Contact' link is visible",
-                "code": "assert link.is_visible(), \\\n    Msg.NAV_LINK_NOT_VISIBLE.format(name='Contact')",
+                "code": "assert link.is_visible(), Msg.NAV_LINK_NOT_VISIBLE.format(name=label)",
             },
             {
                 "description": "Assert 'Contact' href equals '#contact'",
-                "code": "actual_href = link.get_attribute('href')\nassert actual_href == '#contact', \\\n    Msg.NAV_LINK_WRONG_HREF.format(\n        name='Contact',\n        expected='#contact',\n        actual=actual_href\n    )",
+                "code": "actual_href = link.get_attribute(\"href\")\nassert actual_href == href, Msg.NAV_LINK_WRONG_HREF.format(\n    name=label, expected=href, actual=actual_href,\n)",
             },
         ],
     },
@@ -315,15 +315,15 @@ STEPS_MAP = {
         "steps": [
             {
                 "description": "Locate skill tag with exact text 'Python'",
-                "code": "tag = portfolio.skill_text('Python')",
+                "code": "tag = portfolio.skill_text(skill)",
             },
             {
                 "description": "Capture screenshot of skills section",
-                "code": "portfolio.take_screenshot('assert_skill_python')",
+                "code": "portfolio.take_screenshot(f\"assert_skill_{skill.lower()}\")",
             },
             {
                 "description": "Assert 'Python' tag is visible",
-                "code": "assert tag.first.is_visible(), \\\n    Msg.SKILL_NOT_VISIBLE.format(name='Python')",
+                "code": "assert tag.first.is_visible(), Msg.SKILL_NOT_VISIBLE.format(name=skill)",
             },
         ],
     },
@@ -336,15 +336,15 @@ STEPS_MAP = {
         "steps": [
             {
                 "description": "Locate skill tag with exact text 'Playwright'",
-                "code": "tag = portfolio.skill_text('Playwright')",
+                "code": "tag = portfolio.skill_text(skill)",
             },
             {
                 "description": "Capture screenshot of skills section",
-                "code": "portfolio.take_screenshot('assert_skill_playwright')",
+                "code": "portfolio.take_screenshot(f\"assert_skill_{skill.lower()}\")",
             },
             {
                 "description": "Assert 'Playwright' tag is visible",
-                "code": "assert tag.first.is_visible(), \\\n    Msg.SKILL_NOT_VISIBLE.format(name='Playwright')",
+                "code": "assert tag.first.is_visible(), Msg.SKILL_NOT_VISIBLE.format(name=skill)",
             },
         ],
     },
@@ -357,15 +357,15 @@ STEPS_MAP = {
         "steps": [
             {
                 "description": "Locate skill tag with exact text 'pytest'",
-                "code": "tag = portfolio.skill_text('pytest')",
+                "code": "tag = portfolio.skill_text(skill)",
             },
             {
                 "description": "Capture screenshot of skills section",
-                "code": "portfolio.take_screenshot('assert_skill_pytest')",
+                "code": "portfolio.take_screenshot(f\"assert_skill_{skill.lower()}\")",
             },
             {
                 "description": "Assert 'pytest' tag is visible",
-                "code": "assert tag.first.is_visible(), \\\n    Msg.SKILL_NOT_VISIBLE.format(name='pytest')",
+                "code": "assert tag.first.is_visible(), Msg.SKILL_NOT_VISIBLE.format(name=skill)",
             },
         ],
     },
@@ -386,7 +386,7 @@ STEPS_MAP = {
             },
             {
                 "description": "Assert project card count matches expected",
-                "code": "assert count == COUNTS.PROJECT_CARDS, \\\n    Msg.WRONG_PROJECT_COUNT.format(\n        expected=COUNTS.PROJECT_CARDS,\n        actual=count\n    )",
+                "code": "assert count == COUNTS.PROJECT_CARDS, Msg.WRONG_PROJECT_COUNT.format(\n    expected=COUNTS.PROJECT_CARDS, actual=count,\n)",
             },
         ],
     },
@@ -407,7 +407,7 @@ STEPS_MAP = {
             },
             {
                 "description": "Assert contact link count matches expected",
-                "code": "assert count == COUNTS.CONTACT_LINKS, \\\n    Msg.WRONG_CONTACT_COUNT.format(\n        expected=COUNTS.CONTACT_LINKS,\n        actual=count\n    )",
+                "code": "assert count == COUNTS.CONTACT_LINKS, Msg.WRONG_CONTACT_COUNT.format(\n    expected=COUNTS.CONTACT_LINKS, actual=count,\n)",
             },
         ],
     },
@@ -424,7 +424,7 @@ STEPS_MAP = {
             },
             {
                 "description": "Locate the test results section",
-                "code": "section = page.locator('#test-results')\nassert section.is_visible(), \\\n    'Test results section #test-results '\n    'is not visible on page'",
+                "code": "section = page.locator(\"#test-results\")\nassert section.is_visible(), (\n    \"Test results section #test-results is not visible on page\"\n)",
             },
             {
                 "description": "Wait for test data to load from test_report.json",
@@ -432,15 +432,15 @@ STEPS_MAP = {
             },
             {
                 "description": "Verify summary cards show numeric values",
-                "code": "section_text = section.inner_text()\nhas_numbers = any(\n    char.isdigit()\n    for char in section_text\n)\nassert has_numbers, \\\n    f'No numeric values in section. '\n    f'Text: {section_text[:200]}'",
+                "code": "summary_cards = section.locator(\n    \"[class*='summary'], [class*='stat'], [class*='count']\"\n)\ncard_count = summary_cards.count()\nsection_text = section.inner_text()\nhas_numbers = any(\n    char.isdigit() for char in section_text\n)\nassert has_numbers, (\n    f\"Test results section has no numeric values. \"\n    f\"Section text: '{section_text[:200]}'. \"\n    f\"Likely test_report.json failed to load.\"\n)",
             },
             {
                 "description": "Verify at least one test row is rendered",
-                "code": "row_count = page.evaluate(\"\"\"\n    () => {\n        const section = document.querySelector(\n            '#test-results'\n        );\n        return section\n            ? section.querySelectorAll(\n                'div[class*=\"cursor-pointer\"]'\n            ).length\n            : 0;\n    }\n\"\"\")\nassert row_count > 0",
+                "code": "row_count = page.evaluate(\"\"\"\n    () => {\n        const section = document.querySelector('#test-results');\n        if (!section) return 0;\n        return section.querySelectorAll(\n            'div[class*=\"cursor-pointer\"]'\n        ).length;\n    }\n\"\"\")\nassert row_count > 0, (\n    f\"No test rows found in results section. \"\n    f\"Expected at least 1 row from test_report.json. \"\n    f\"Found {row_count} rows. \"\n    f\"Check that test_report.json is deployed to dist/ \"\n    f\"and fetch URL uses import.meta.env.BASE_URL prefix.\"\n)",
             },
             {
                 "description": "Take screenshot showing test results",
-                "code": "page.screenshot(\n    path='screenshots/assert_test_results.png',\n    full_page=False\n)",
+                "code": "from datetime import datetime\nts = datetime.now().strftime(\"%Y%m%d_%H%M%S\")\npage.screenshot(\n    path=f\"screenshots/assert_test_results_{ts}.png\",\n    full_page=False\n)",
             },
         ],
     },
@@ -462,11 +462,11 @@ STEPS_MAP = {
             },
             {
                 "description": "Capture screenshot at 390px viewport",
-                "code": "mobile_portfolio.take_screenshot(\n    'assert_mobile_no_scroll'\n)",
+                "code": "mobile_portfolio.take_screenshot(\"assert_mobile_no_scroll\")",
             },
             {
                 "description": "Assert no overflow",
-                "code": "assert scroll_w <= viewport_w, \\\n    Msg.HORIZONTAL_OVERFLOW.format(\n        scroll_w=scroll_w,\n        viewport_w=viewport_w\n    )",
+                "code": "assert scroll_w <= viewport_w, Msg.HORIZONTAL_OVERFLOW.format(\n    scroll_w=scroll_w, viewport_w=viewport_w,\n)",
             },
         ],
     },
@@ -480,11 +480,11 @@ STEPS_MAP = {
         "steps": [
             {
                 "description": "Capture screenshot of mobile hero",
-                "code": "mobile_portfolio.take_screenshot(\n    'assert_mobile_hero'\n)",
+                "code": "mobile_portfolio.take_screenshot(\"assert_mobile_hero\")",
             },
             {
                 "description": "Assert hero heading visible at mobile width",
-                "code": "assert mobile_portfolio.hero_heading\\\n    .is_visible(), \\\n    Msg.MOBILE_HERO_NOT_VISIBLE.format(\n        width=CONFIG.mobile_width\n    )",
+                "code": "assert mobile_portfolio.hero_heading.is_visible(), (\n    Msg.MOBILE_HERO_NOT_VISIBLE.format(width=CONFIG.mobile_width)\n)",
             },
         ],
     },
@@ -497,15 +497,15 @@ STEPS_MAP = {
         "steps": [
             {
                 "description": "Navigate to base URL and wait for load event",
-                "code": "page.goto(base_url, wait_until='load')",
+                "code": "page.goto(base_url, wait_until=\"load\")",
             },
             {
                 "description": "Measure load time via Navigation Timing API",
-                "code": "load_ms = page.evaluate(\n    'performance.timing.loadEventEnd '\n    '- performance.timing.navigationStart'\n)",
+                "code": "load_ms = page.evaluate(\n    \"performance.timing.loadEventEnd \"\n    \"- performance.timing.navigationStart\"\n)",
             },
             {
                 "description": "Assert load time is under budget",
-                "code": "assert load_ms < PERF.MAX_LOAD_TIME_MS, \\\n    Msg.SLOW_PAGE_LOAD.format(\n        actual=load_ms,\n        budget=PERF.MAX_LOAD_TIME_MS\n    )",
+                "code": "assert load_ms < PERF.MAX_LOAD_TIME_MS, Msg.SLOW_PAGE_LOAD.format(\n    actual=load_ms, budget=PERF.MAX_LOAD_TIME_MS,\n)",
             },
         ],
     },
@@ -522,15 +522,15 @@ STEPS_MAP = {
             },
             {
                 "description": "Evaluate all images via JavaScript",
-                "code": "violations = page.evaluate(\"\"\"\n    () => Array.from(\n        document.querySelectorAll('img')\n    )\n    .filter(img =>\n        img.getAttribute('aria-hidden')\n            !== 'true'\n        && (!img.alt\n            || img.alt.trim() === '')\n    )\n    .map((img, i) => ({\n        index: i,\n        src: (img.src || '').slice(0, 80)\n    }))\n\"\"\")",
+                "code": "violations: list[dict] = page.evaluate(\"\"\"\n    () => Array.from(document.querySelectorAll('img'))\n        .filter(img =>\n            img.getAttribute('aria-hidden') !== 'true'\n            && (!img.alt || img.alt.trim() === '')\n        )\n        .map((img, i) => ({\n            index: i,\n            src: (img.src || '').slice(0, 80)\n        }))\n\"\"\")",
             },
             {
                 "description": "Take screenshot at assertion point",
-                "code": "page.screenshot(\n    path='screenshots/assert_images_alt.png',\n    full_page=False\n)",
+                "code": "from datetime import datetime\nts = datetime.now().strftime(\"%Y%m%d_%H%M%S\")\npage.screenshot(\n    path=f\"screenshots/assert_images_alt_{ts}.png\",\n    full_page=False\n)",
             },
             {
                 "description": "Verify no images are missing alt text",
-                "code": "assert violations == [], \\\n    f'Found {len(violations)} image(s) '\n    f'without alt text: {violations}'",
+                "code": "assert violations == [], (\n    f\"Found {len(violations)} image(s) without alt text: \"\n    + str(violations)\n)",
             },
         ],
     },
@@ -543,19 +543,19 @@ STEPS_MAP = {
         "steps": [
             {
                 "description": "Collect all heading elements and their tag names",
-                "code": "headings = portfolio.all_headings.all()\ntags = [\n    h.evaluate(\n        'el => el.tagName.toLowerCase()'\n    )\n    for h in headings\n]",
+                "code": "headings = portfolio.all_headings.all()\ntags = [h.evaluate(\"el => el.tagName.toLowerCase()\") for h in headings]",
             },
             {
                 "description": "Assert exactly 1 h1 heading exists",
-                "code": "h1_count = tags.count('h1')\nassert h1_count == COUNTS.H1_HEADINGS, \\\n    Msg.WRONG_H1_COUNT.format(\n        expected=COUNTS.H1_HEADINGS,\n        actual=h1_count\n    )",
+                "code": "h1_count = tags.count(\"h1\")\nassert h1_count == COUNTS.H1_HEADINGS, Msg.WRONG_H1_COUNT.format(\n    expected=COUNTS.H1_HEADINGS, actual=h1_count,\n)",
             },
             {
                 "description": "Assert h1 appears before first h2",
-                "code": "h1_idx = tags.index('h1')\nh2_indices = [\n    i for i, t in enumerate(tags)\n    if t == 'h2'\n]\nif h2_indices:\n    assert h1_idx < h2_indices[0], \\\n        Msg.H1_NOT_FIRST",
+                "code": "h1_idx = tags.index(\"h1\")\nh2_indices = [i for i, t in enumerate(tags) if t == \"h2\"]\nif h2_indices:\n    assert h1_idx < h2_indices[0], Msg.H1_NOT_FIRST",
             },
             {
                 "description": "Assert no heading levels are skipped",
-                "code": "levels = [int(t[1]) for t in tags]\nfor i in range(1, len(levels)):\n    gap = levels[i] - levels[i - 1]\n    assert gap <= 1, \\\n        Msg.HEADING_LEVEL_SKIPPED.format(\n            prev=levels[i-1],\n            next=levels[i], pos=i\n        )",
+                "code": "levels = [int(t[1]) for t in tags]\nfor i in range(1, len(levels)):\n    gap = levels[i] - levels[i - 1]\n    assert gap <= 1, Msg.HEADING_LEVEL_SKIPPED.format(\n        prev=levels[i - 1], next=levels[i], pos=i,\n    )",
             },
         ],
     },
@@ -568,27 +568,27 @@ STEPS_MAP = {
         "steps": [
             {
                 "description": "Attach network response monitor for 404s",
-                "code": "failed_requests: list[str] = []\ndeploy_page.on('response',\n    lambda r: failed_requests.append(r.url)\n    if r.status == 404 else None\n)",
+                "code": "deploy_page.on(\n    \"response\",\n    lambda r: failed_requests.append(r.url)\n    if r.status == 404\n    else None,\n)",
             },
             {
                 "description": "Navigate to production URL and wait for network idle",
-                "code": "deploy_page.goto(\n    _PAGES_URL,\n    wait_until='networkidle',\n    timeout=CONFIG.timeout_navigation\n)",
+                "code": "deploy_page.goto(\n    _PAGES_URL,\n    wait_until=\"networkidle\",\n    timeout=CONFIG.timeout_navigation,\n)",
             },
             {
                 "description": "Filter asset 404s from captured responses",
-                "code": "asset_404s = [\n    url for url in failed_requests\n    if any(\n        ext in url\n        for ext in\n        DEPLOYMENT.CHECKED_ASSET_EXTENSIONS\n    )\n    and not any(\n        exc in url\n        for exc in\n        DEPLOYMENT.EXCLUDED_404_PATHS\n    )\n]",
+                "code": "asset_404s = [\n    url\n    for url in failed_requests\n    if any(ext in url for ext in DEPLOYMENT.CHECKED_ASSET_EXTENSIONS)\n    and not any(\n        exc in url for exc in DEPLOYMENT.EXCLUDED_404_PATHS\n    )\n]",
             },
             {
                 "description": "Assert no asset 404s",
-                "code": "assert not asset_404s, \\\n    Msg.ASSET_404.format(urls=asset_404s)",
+                "code": "assert not asset_404s, Msg.ASSET_404.format(urls=asset_404s)",
             },
             {
                 "description": "Verify navigation landmark exists and is visible",
-                "code": "nav = deploy_page.get_by_role('navigation')\nnav_count = nav.count()\nassert nav_count > 0, \\\n    Msg.DEPLOY_NAV_NOT_FOUND.format(\n        url=_PAGES_URL, count=nav_count\n    )\nassert nav.is_visible(), \\\n    Msg.DEPLOY_NAV_HIDDEN.format(\n        count=nav_count, url=_PAGES_URL\n    )",
+                "code": "nav = deploy_page.get_by_role(\"navigation\")\nnav_count = nav.count()\nassert nav_count > 0, Msg.DEPLOY_NAV_NOT_FOUND.format(\n    url=_PAGES_URL, count=nav_count,\n)\nassert nav.is_visible(), Msg.DEPLOY_NAV_HIDDEN.format(\n    count=nav_count, url=_PAGES_URL,\n)",
             },
             {
                 "description": "Verify h1 heading exists with content",
-                "code": "h1 = deploy_page.get_by_role(\n    'heading', level=1\n)\nh1_count = h1.count()\nassert h1_count == 1, \\\n    Msg.DEPLOY_H1_WRONG_COUNT.format(\n        actual=h1_count, url=_PAGES_URL\n    )\nassert h1.inner_text().strip(), \\\n    Msg.DEPLOY_H1_EMPTY.format(\n        url=_PAGES_URL\n    )",
+                "code": "h1 = deploy_page.get_by_role(\"heading\", level=1)\nh1_count = h1.count()\nassert h1_count == 1, Msg.DEPLOY_H1_WRONG_COUNT.format(\n    actual=h1_count, url=_PAGES_URL,\n)\nh1_text = h1.inner_text()\nassert h1_text.strip(), Msg.DEPLOY_H1_EMPTY.format(url=_PAGES_URL)",
             },
         ],
     },
@@ -601,15 +601,15 @@ STEPS_MAP = {
         "steps": [
             {
                 "description": "Navigate to production URL",
-                "code": "deploy_page.goto(\n    _PAGES_URL,\n    wait_until='networkidle'\n)",
+                "code": "deploy_page.goto(_PAGES_URL, wait_until=\"networkidle\")",
             },
             {
                 "description": "Scan script and link elements for wrong base path",
-                "code": "bad_paths = deploy_page.evaluate(\"\"\"\n    () => {\n        const bad = [];\n        document.querySelectorAll(\n            'script[src], link[href]'\n        ).forEach(el => {\n            const val =\n                el.getAttribute('src')\n                || el.getAttribute('href');\n            if (val\n                && val.startsWith('/assets/'))\n                bad.push(val);\n        });\n        return bad;\n    }\n\"\"\")",
+                "code": "bad_paths = deploy_page.evaluate(\"\"\"() => {\n    const bad = [];\n    document.querySelectorAll('script[src], link[href]').forEach(el => {\n        const val = el.getAttribute('src') || el.getAttribute('href');\n        if (val && val.startsWith('/assets/')) {\n            bad.push(val);\n        }\n    });\n    return bad;\n}\"\"\")",
             },
             {
                 "description": "Assert no '/assets/' paths found",
-                "code": "assert bad_paths == [], \\\n    Msg.DEPLOY_WRONG_BASE_PATH.format(\n        paths=bad_paths\n    )",
+                "code": "assert bad_paths == [], Msg.DEPLOY_WRONG_BASE_PATH.format(\n    paths=bad_paths,\n)",
             },
         ],
     },
@@ -622,15 +622,15 @@ STEPS_MAP = {
         "steps": [
             {
                 "description": "Attach JavaScript error listener",
-                "code": "js_errors: list[str] = []\ndeploy_page.on('pageerror',\n    lambda err: js_errors.append(str(err)))",
+                "code": "deploy_page.on(\"pageerror\", lambda err: js_errors.append(str(err)))",
             },
             {
                 "description": "Navigate to production URL and wait for network idle",
-                "code": "deploy_page.goto(\n    _PAGES_URL,\n    wait_until='networkidle'\n)",
+                "code": "deploy_page.goto(_PAGES_URL, wait_until=\"networkidle\")",
             },
             {
                 "description": "Assert no JS errors",
-                "code": "assert js_errors == [], \\\n    Msg.DEPLOY_JS_ERRORS.format(\n        errors=js_errors\n    )",
+                "code": "assert js_errors == [], Msg.DEPLOY_JS_ERRORS.format(errors=js_errors)",
             },
         ],
     },
@@ -649,6 +649,20 @@ def get_steps_for_test(test_name):
             {"description": "Assert expected result", "code": ""},
         ],
     }
+
+
+def filter_phantom_steps(steps: list[dict]) -> list[dict]:
+    """Remove steps whose code is only a comment."""
+    filtered = []
+    for step in steps:
+        code = step.get('code', '').strip()
+        if not code:
+            continue
+        lines = [l.strip() for l in code.split('\n') if l.strip()]
+        if all(l.startswith('#') for l in lines):
+            continue
+        filtered.append(step)
+    return filtered
 
 
 def build_steps(step_defs, test_passed):
@@ -870,7 +884,8 @@ def parse_report():
         mapped = get_steps_for_test(name)
         description = mapped["description"]
         mark = mapped["mark"]
-        steps = build_steps(mapped["steps"], test_passed)
+        clean_steps = filter_phantom_steps(mapped["steps"])
+        steps = build_steps(clean_steps, test_passed)
 
         error_msg = None
         if not test_passed:
@@ -884,7 +899,7 @@ def parse_report():
             "mark": mark,
             "description": description,
             "steps": steps,
-            "locator_strategy": detect_locator_strategy(mapped["steps"]),
+            "locator_strategy": detect_locator_strategy(clean_steps),
             "coverage": get_coverage_tags(name),
             "tc_id": mapped.get("tc_id", "TC-???"),
             "req_id": mapped.get("req_id"),
