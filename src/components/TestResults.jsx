@@ -17,7 +17,6 @@
  * DEFAULT_DATA so the section never appears broken.
  */
 import { useState, useEffect, useCallback } from 'react'
-import { useLastRun } from '../hooks/useLastRun'
 import { getRequirement, getAcceptanceCriterion } from '../hooks/useRequirements'
 import {
   CheckCircle2,
@@ -106,6 +105,27 @@ const DEFAULT_DATA = {
 function formatMs(ms) {
   if (ms >= 1000) return `${(ms / 1000).toFixed(2)}s`
   return `${ms}ms`
+}
+
+function formatTimestamp(iso) {
+  const d = new Date(iso)
+  const yyyy = d.getUTCFullYear()
+  const mm = String(d.getUTCMonth() + 1).padStart(2, '0')
+  const dd = String(d.getUTCDate()).padStart(2, '0')
+  const hh = String(d.getUTCHours()).padStart(2, '0')
+  const min = String(d.getUTCMinutes()).padStart(2, '0')
+  return `${yyyy}-${mm}-${dd} ${hh}:${min} UTC`
+}
+
+function timeAgo(iso) {
+  const diff = Date.now() - new Date(iso).getTime()
+  const mins = Math.floor(diff / 60000)
+  const hours = Math.floor(mins / 60)
+  const days = Math.floor(hours / 24)
+  if (mins < 1) return 'just now'
+  if (mins < 60) return `${mins}m ago`
+  if (hours < 24) return `${hours}h ago`
+  return `${days}d ago`
 }
 
 function StepRow({ step, index }) {
@@ -351,7 +371,6 @@ export default function TestResults() {
   const [runProgress, setRunProgress] = useState(0)
   const [expanded, setExpanded] = useState(new Set())
   const [fullScreenshot, setFullScreenshot] = useState(null)
-  const lastRun = useLastRun()
 
   const fetchReport = useCallback(() => {
     setLoading(true)
@@ -420,16 +439,11 @@ export default function TestResults() {
         <h2 className="font-mono text-2xl sm:text-3xl font-bold">
           <span className="text-accent">#</span> Test Results
         </h2>
-        {lastRun && (
-          <a
-            href={lastRun.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-300 transition-colors duration-200"
-          >
-            <span className={`w-1.5 h-1.5 rounded-full ${lastRun.conclusion === 'success' ? 'bg-emerald-400' : 'bg-red-400'}`} />
-            Last run: {lastRun.time}
-          </a>
+        {data.environment?.timestamp && (
+          <span className="flex items-center gap-1.5 text-xs text-slate-500">
+            <span className={`w-1.5 h-1.5 rounded-full ${summary.failed > 0 ? 'bg-red-400' : 'bg-emerald-400'}`} />
+            Last run: {formatTimestamp(data.environment.timestamp)} ({timeAgo(data.environment.timestamp)})
+          </span>
         )}
       </div>
       <p className="text-slate-500 mb-10 text-sm sm:text-base">
@@ -453,7 +467,7 @@ export default function TestResults() {
 
       <div className="flex items-center justify-between mb-4">
         <span className="text-xs text-slate-600 font-mono">
-          {data.timestamp && data.timestamp !== 'not yet run' ? `Last run: ${data.timestamp}` : 'Showing default data'}
+          {data.environment?.timestamp ? `Last run: ${formatTimestamp(data.environment.timestamp)}` : 'Showing default data'}
         </span>
         <div className="flex items-center gap-3">
           <button
@@ -575,7 +589,7 @@ export default function TestResults() {
               <div className="mt-3 pt-3 border-t border-white/5 text-xs text-gray-500">
                 Last executed:{' '}
                 <span className="text-gray-400 font-mono">
-                  {new Date(data.environment.timestamp).toLocaleString()}
+                  {formatTimestamp(data.environment.timestamp)}
                 </span>
               </div>
             )}
