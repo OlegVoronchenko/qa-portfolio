@@ -117,8 +117,8 @@ jobs:
       - name: Run Playwright tests
         working-directory: qa
         run: |
-          mkdir -p reports
-          python -m pytest tests/ -v --tb=short \
+          mkdir -p reports screenshots
+          python -m pytest tests/ -v -s --tb=short \
             --json-report \
             --json-report-file=reports/raw.json \
             || true

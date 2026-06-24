@@ -93,19 +93,58 @@ class PortfolioPage:
         self,
         name: str,
         full_page: bool = False,
-        verify_not_blank: bool = True,
     ) -> str:
-        """Capture screenshot and verify it has visible content."""
+        """Capture screenshot with CI diagnostics."""
         SCREENSHOTS_DIR.mkdir(exist_ok=True)
         ts = datetime.now().strftime("%Y%m%d_%H%M%S")
         path = SCREENSHOTS_DIR / f"{name}_{ts}.png"
+
+        if os.getenv("CI"):
+            diag = self._page.evaluate("""() => ({
+                url: location.href,
+                title: document.title,
+                viewport: {
+                    w: window.innerWidth,
+                    h: window.innerHeight
+                },
+                root_children: document.querySelector('#root')?.children?.length ?? 0,
+                root_html_length: document.querySelector('#root')?.innerHTML?.length ?? 0,
+                h1_count: document.querySelectorAll('h1').length,
+                h1_text: document.querySelector('h1')?.innerText?.slice(0, 50) ?? '',
+                h1_visible: (() => {
+                    const h1 = document.querySelector('h1')
+                    if (!h1) return false
+                    const rect = h1.getBoundingClientRect()
+                    const style = getComputedStyle(h1)
+                    return rect.width > 0 && rect.height > 0
+                        && style.display !== 'none'
+                        && style.visibility !== 'hidden'
+                        && parseFloat(style.opacity) > 0
+                })(),
+                body_bg: getComputedStyle(document.body).backgroundColor,
+                scroll_y: window.scrollY,
+                ready_state: document.readyState,
+            })""")
+            print(f"\n[CI DIAG] Before screenshot for '{name}':")
+            for key, val in diag.items():
+                print(f"  {key}: {val}")
+
         self._page.screenshot(
             path=str(path),
             full_page=full_page,
             animations="disabled",
         )
-        if verify_not_blank:
-            self._verify_screenshot_not_blank(path)
+
+        if os.getenv("CI"):
+            size_kb = path.stat().st_size / 1024
+            print(f"[CI DIAG] Screenshot saved: {path.name} ({size_kb:.1f} KB)")
+            if size_kb < 10:
+                print(
+                    f"[CI DIAG] WARNING: Screenshot suspiciously small "
+                    f"({size_kb:.1f} KB) — likely blank!"
+                )
+
+        self._verify_screenshot_not_blank(path)
         return str(path)
 
     def _verify_screenshot_not_blank(self, path: Path) -> None:
