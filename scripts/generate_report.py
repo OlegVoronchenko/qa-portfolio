@@ -448,10 +448,18 @@ STEPS_MAP = {
         "tc_id": "TC-004-1",
         "req_id": "REQ-004",
         "ac_ids": ["AC-004-1"],
-        "description": "No horizontal scrollbar at 390px mobile width",
+        "description": "Page must not overflow horizontally on 390px mobile viewport. Measures document.scrollWidth against window.innerWidth to detect any content wider than screen.",
         "mark": "responsive",
         "environment_override": {"viewport": "390x844 (iPhone 14)"},
         "steps": [
+            {
+                "description": "Wait for hero heading to render",
+                "code": "mobile_portfolio.hero_heading.wait_for(\n    state=\"visible\", timeout=10000\n)",
+            },
+            {
+                "description": "Wait for network idle to ensure full render",
+                "code": "mobile_portfolio._page.wait_for_load_state(\"networkidle\")",
+            },
             {
                 "description": "Measure document scroll width",
                 "code": "scroll_w = mobile_portfolio.get_scroll_width()",
@@ -461,12 +469,12 @@ STEPS_MAP = {
                 "code": "viewport_w = mobile_portfolio.get_viewport_width()",
             },
             {
-                "description": "Capture screenshot at 390px viewport",
-                "code": "mobile_portfolio.take_screenshot(\"assert_mobile_no_scroll\")",
+                "description": "Capture full-page screenshot at 390px viewport",
+                "code": "mobile_portfolio._page.screenshot(\n    path=\"screenshots/assert_mobile_no_scroll.png\",\n    full_page=True,\n)",
             },
             {
-                "description": "Assert no overflow",
-                "code": "assert scroll_w <= viewport_w, Msg.HORIZONTAL_OVERFLOW.format(\n    scroll_w=scroll_w, viewport_w=viewport_w,\n)",
+                "description": "Assert scroll_w <= viewport_w (no overflow)",
+                "code": "assert scroll_w <= viewport_w, \\\n    Msg.HORIZONTAL_OVERFLOW.format(\n        scroll_w=scroll_w,\n        viewport_w=viewport_w,\n    )",
             },
         ],
     },
@@ -479,8 +487,12 @@ STEPS_MAP = {
         "environment_override": {"viewport": "390x844 (iPhone 14)"},
         "steps": [
             {
+                "description": "Wait for hero heading to render",
+                "code": "mobile_portfolio.hero_heading.wait_for(\n    state=\"visible\", timeout=10000\n)",
+            },
+            {
                 "description": "Capture screenshot of mobile hero",
-                "code": "mobile_portfolio.take_screenshot(\"assert_mobile_hero\")",
+                "code": "mobile_portfolio._page.screenshot(\n    path=\"screenshots/assert_mobile_hero.png\",\n    full_page=True,\n)",
             },
             {
                 "description": "Assert hero heading visible at mobile width",

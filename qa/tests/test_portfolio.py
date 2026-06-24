@@ -421,25 +421,42 @@ class TestResponsive:
     ):
         """Verify no horizontal overflow at 390px mobile viewport.
 
-        Compares document.scrollWidth against the viewport width.
-        scrollWidth > viewportWidth means content overflows.
-
-        Failure means: an element is wider than the viewport —
-        check for fixed-width containers or unresponsive images.
+        Measures document.scrollWidth and compares against
+        window.innerWidth (390px). Any scroll_w > viewport_w
+        means content overflows horizontally — broken mobile UX.
         """
+        with step("Wait for hero heading to render"):
+            mobile_portfolio.hero_heading.wait_for(
+                state="visible", timeout=10000
+            )
+
+        with step("Wait for network idle to ensure full render"):
+            mobile_portfolio._page.wait_for_load_state("networkidle")
+
         with step("Measure document scroll width"):
             scroll_w = mobile_portfolio.get_scroll_width()
 
         with step("Get viewport width"):
             viewport_w = mobile_portfolio.get_viewport_width()
 
-        with step("Capture screenshot at 390px viewport"):
-            mobile_portfolio.take_screenshot("assert_mobile_no_scroll")
-
-        with step(f"Assert no overflow (scroll={scroll_w}, viewport={viewport_w})"):
-            assert scroll_w <= viewport_w, Msg.HORIZONTAL_OVERFLOW.format(
-                scroll_w=scroll_w, viewport_w=viewport_w,
+        with step(
+            f"Capture full-page screenshot at 390px viewport "
+            f"(scroll_w={scroll_w}, viewport_w={viewport_w})"
+        ):
+            mobile_portfolio._page.screenshot(
+                path="screenshots/assert_mobile_no_scroll.png",
+                full_page=True,
             )
+
+        with step(
+            f"Assert no overflow: "
+            f"scroll_w={scroll_w} <= viewport_w={viewport_w}"
+        ):
+            assert scroll_w <= viewport_w, \
+                Msg.HORIZONTAL_OVERFLOW.format(
+                    scroll_w=scroll_w,
+                    viewport_w=viewport_w,
+                )
 
     # REQ-004 | AC-004-2
     @pytest.mark.responsive
@@ -452,8 +469,16 @@ class TestResponsive:
         Failure means: CSS media queries or layout changes are
         hiding the hero at small viewport sizes.
         """
+        with step("Wait for hero heading to render"):
+            mobile_portfolio.hero_heading.wait_for(
+                state="visible", timeout=10000
+            )
+
         with step("Capture screenshot of mobile hero"):
-            mobile_portfolio.take_screenshot("assert_mobile_hero")
+            mobile_portfolio._page.screenshot(
+                path="screenshots/assert_mobile_hero.png",
+                full_page=True,
+            )
 
         with step(f"Assert hero heading visible at {CONFIG.mobile_width}px"):
             assert mobile_portfolio.hero_heading.is_visible(), (

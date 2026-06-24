@@ -222,13 +222,6 @@ function TestRow({ test, isOpen, onToggle, onScreenshot, environment }) {
               )}
             </div>
 
-            {test.description && (
-              <div className="pb-3 border-b border-white/5">
-                <span className="text-[11px] text-slate-500 uppercase tracking-wider font-semibold">Description</span>
-                <p className="text-sm text-slate-300 mt-1">{test.description}</p>
-              </div>
-            )}
-
             {test.tc_id && (
               <div className="mb-3">
                 <span className="text-[11px] text-slate-500 uppercase tracking-wider font-semibold block mb-2">Test ID</span>
@@ -289,6 +282,13 @@ function TestRow({ test, isOpen, onToggle, onScreenshot, environment }) {
                     </div>
                   )
                 })()}
+              </div>
+            )}
+
+            {test.description && (
+              <div className="pb-3 border-b border-white/5">
+                <span className="text-[11px] text-slate-500 uppercase tracking-wider font-semibold">Description</span>
+                <p className="text-sm text-slate-300 mt-1">{test.description}</p>
               </div>
             )}
 
