@@ -26,7 +26,7 @@ accessibility semantics.
 import sys
 from pathlib import Path
 
-from playwright.sync_api import Page, Locator
+from playwright.sync_api import Page, Locator, TimeoutError
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -87,13 +87,23 @@ class PortfolioPage:
             timeout=CONFIG.timeout_hydration,
         )
 
-    def take_screenshot(self, name: str) -> None:
+    def take_screenshot(self, name: str, full_page: bool = False) -> None:
         """Capture a named screenshot at the current state."""
         SCREENSHOTS_DIR.mkdir(exist_ok=True)
         self._page.screenshot(
             path=str(SCREENSHOTS_DIR / f"{name}.png"),
-            full_page=False,
+            full_page=full_page,
         )
+
+    def wait_for_content_ready(self, timeout: int = 15000) -> None:
+        """Wait until real page content is visible, not just DOM loaded."""
+        self._page.wait_for_load_state("networkidle", timeout=timeout)
+        self.hero_heading.wait_for(state="visible", timeout=timeout)
+        h1_text = self.hero_heading.inner_text(timeout=5000)
+        if not h1_text.strip():
+            raise TimeoutError(
+                "Hero heading is visible but has empty text"
+            )
 
     # ── Section locators ──
 

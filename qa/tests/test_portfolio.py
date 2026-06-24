@@ -419,29 +419,31 @@ class TestResponsive:
     def test_mobile_viewport_no_horizontal_scroll(
         self, mobile_portfolio: PortfolioPage,
     ):
-        """Verify no horizontal overflow at 390px mobile viewport."""
-        with step("Wait for hero heading to be visible (proves render)"):
-            mobile_portfolio.hero_heading.wait_for(
-                state="visible", timeout=10000
-            )
+        """No horizontal overflow at 390x844 mobile viewport.
 
-        with step("Wait for network idle"):
-            mobile_portfolio._page.wait_for_load_state("networkidle")
-
-        with step("Capture full-page screenshot at 390px viewport"):
-            mobile_portfolio._page.screenshot(
-                path="screenshots/assert_mobile_no_scroll.png",
-                full_page=True,
-            )
+        Measures document.scrollWidth vs window.innerWidth.
+        Screenshot captures real rendered mobile layout.
+        """
+        with step("Wait for mobile page content to be ready"):
+            mobile_portfolio.wait_for_content_ready()
 
         with step("Measure document scroll width"):
             scroll_w = mobile_portfolio.get_scroll_width()
 
-        with step("Get viewport width"):
+        with step("Get viewport width (390px iPhone 14)"):
             viewport_w = mobile_portfolio.get_viewport_width()
 
         with step(
-            f"Assert no overflow: scroll={scroll_w} <= viewport={viewport_w}"
+            f"Capture full-page screenshot "
+            f"(scroll_w={scroll_w}, viewport_w={viewport_w})"
+        ):
+            mobile_portfolio.take_screenshot(
+                "assert_mobile_no_scroll", full_page=True
+            )
+
+        with step(
+            f"Assert no overflow: "
+            f"scroll_w={scroll_w} <= viewport_w={viewport_w}"
         ):
             assert scroll_w <= viewport_w, \
                 Msg.HORIZONTAL_OVERFLOW.format(
@@ -450,30 +452,37 @@ class TestResponsive:
 
     # REQ-004 | AC-004-2
     @pytest.mark.responsive
-    def test_mobile_hero_section_visible(self, mobile_portfolio: PortfolioPage):
-        """Verify the hero h1 heading is visible at mobile viewport.
+    def test_mobile_hero_section_visible(
+        self, mobile_portfolio: PortfolioPage,
+    ):
+        """Hero h1 must be visible on 390px mobile viewport."""
+        with step("Wait for mobile page content to be ready"):
+            mobile_portfolio.wait_for_content_ready()
 
-        Checks that the main heading is not hidden or pushed
-        off-screen at 390px width.
+        with step("Locate hero heading"):
+            heading = mobile_portfolio.hero_heading
 
-        Failure means: CSS media queries or layout changes are
-        hiding the hero at small viewport sizes.
-        """
-        with step("Wait for hero heading to render"):
-            mobile_portfolio.hero_heading.wait_for(
-                state="visible", timeout=10000
+        with step("Get heading text to verify it rendered"):
+            heading_text = heading.inner_text()
+
+        with step(
+            f"Capture screenshot showing rendered mobile hero "
+            f"(h1 text: '{heading_text[:30]}...')"
+        ):
+            mobile_portfolio.take_screenshot(
+                "assert_mobile_hero", full_page=False
             )
 
-        with step("Capture screenshot of mobile hero"):
-            mobile_portfolio._page.screenshot(
-                path="screenshots/assert_mobile_hero.png",
-                full_page=True,
-            )
-
-        with step(f"Assert hero heading visible at {CONFIG.mobile_width}px"):
-            assert mobile_portfolio.hero_heading.is_visible(), (
-                Msg.MOBILE_HERO_NOT_VISIBLE.format(width=CONFIG.mobile_width)
-            )
+        with step(
+            f"Assert hero heading visible at {CONFIG.mobile_width}px "
+            f"with non-empty text"
+        ):
+            assert heading.is_visible(), \
+                Msg.MOBILE_HERO_NOT_VISIBLE.format(
+                    width=CONFIG.mobile_width,
+                )
+            assert heading_text.strip(), \
+                "Hero heading is visible but text is empty"
 
 
 # ── Performance ──

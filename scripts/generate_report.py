@@ -448,32 +448,28 @@ STEPS_MAP = {
         "tc_id": "TC-004-1",
         "req_id": "REQ-004",
         "ac_ids": ["AC-004-1"],
-        "description": "Page must not overflow horizontally on 390px mobile viewport. Measures document.scrollWidth against window.innerWidth to detect any content wider than screen.",
+        "description": "No horizontal overflow at 390x844 mobile viewport",
         "mark": "responsive",
         "environment_override": {"viewport": "390x844 (iPhone 14)"},
         "steps": [
             {
-                "description": "Wait for hero heading to be visible (proves render)",
-                "code": "mobile_portfolio.hero_heading.wait_for(\n    state=\"visible\", timeout=10000\n)",
-            },
-            {
-                "description": "Wait for network idle",
-                "code": "mobile_portfolio._page.wait_for_load_state(\"networkidle\")",
-            },
-            {
-                "description": "Capture full-page screenshot at 390px viewport",
-                "code": "mobile_portfolio._page.screenshot(\n    path=\"screenshots/assert_mobile_no_scroll.png\",\n    full_page=True,\n)",
+                "description": "Wait for mobile page content to be ready",
+                "code": "mobile_portfolio.wait_for_content_ready()",
             },
             {
                 "description": "Measure document scroll width",
                 "code": "scroll_w = mobile_portfolio.get_scroll_width()",
             },
             {
-                "description": "Get viewport width",
+                "description": "Get viewport width (390px iPhone 14)",
                 "code": "viewport_w = mobile_portfolio.get_viewport_width()",
             },
             {
-                "description": "Assert no overflow",
+                "description": "Capture full-page screenshot showing rendered layout",
+                "code": "mobile_portfolio.take_screenshot(\n    \"assert_mobile_no_scroll\", full_page=True\n)",
+            },
+            {
+                "description": "Assert scroll_w <= viewport_w (no overflow)",
                 "code": "assert scroll_w <= viewport_w, \\\n    Msg.HORIZONTAL_OVERFLOW.format(\n        scroll_w=scroll_w, viewport_w=viewport_w,\n    )",
             },
         ],
@@ -482,21 +478,29 @@ STEPS_MAP = {
         "tc_id": "TC-004-2",
         "req_id": "REQ-004",
         "ac_ids": ["AC-004-2"],
-        "description": "Hero heading must be visible at 390px mobile width",
+        "description": "Hero h1 must be visible on mobile viewport with text",
         "mark": "responsive",
         "environment_override": {"viewport": "390x844 (iPhone 14)"},
         "steps": [
             {
-                "description": "Wait for hero heading to render",
-                "code": "mobile_portfolio.hero_heading.wait_for(\n    state=\"visible\", timeout=10000\n)",
+                "description": "Wait for mobile page content to be ready",
+                "code": "mobile_portfolio.wait_for_content_ready()",
             },
             {
-                "description": "Capture screenshot of mobile hero",
-                "code": "mobile_portfolio._page.screenshot(\n    path=\"screenshots/assert_mobile_hero.png\",\n    full_page=True,\n)",
+                "description": "Locate hero heading",
+                "code": "heading = mobile_portfolio.hero_heading",
             },
             {
-                "description": "Assert hero heading visible at mobile width",
-                "code": "assert mobile_portfolio.hero_heading.is_visible(), (\n    Msg.MOBILE_HERO_NOT_VISIBLE.format(width=CONFIG.mobile_width)\n)",
+                "description": "Get heading text to verify it rendered",
+                "code": "heading_text = heading.inner_text()",
+            },
+            {
+                "description": "Capture screenshot showing rendered mobile hero",
+                "code": "mobile_portfolio.take_screenshot(\n    \"assert_mobile_hero\", full_page=False\n)",
+            },
+            {
+                "description": "Assert heading is visible and has non-empty text",
+                "code": "assert heading.is_visible(), \\\n    Msg.MOBILE_HERO_NOT_VISIBLE.format(\n        width=CONFIG.mobile_width,\n    )\nassert heading_text.strip(), \\\n    \"Hero heading is visible but text is empty\"",
             },
         ],
     },
