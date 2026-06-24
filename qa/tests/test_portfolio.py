@@ -60,9 +60,17 @@ def portfolio(page: Page, base_url: str) -> PortfolioPage:
 
 @pytest.fixture()
 def mobile_portfolio(mobile_page: Page, base_url: str) -> PortfolioPage:
-    """Navigated PortfolioPage at mobile viewport."""
+    """Mobile-sized PortfolioPage with extra stabilization for CI."""
+    import os
+
+    mobile_page.set_viewport_size(
+        {"width": CONFIG.mobile_width, "height": CONFIG.mobile_height}
+    )
     pom = PortfolioPage(mobile_page, base_url)
     pom.navigate()
+    if os.getenv("CI"):
+        mobile_page.wait_for_load_state("networkidle", timeout=30000)
+        mobile_page.wait_for_timeout(1000)
     return pom
 
 

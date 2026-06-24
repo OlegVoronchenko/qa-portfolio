@@ -23,7 +23,9 @@ makes tests resilient to styling changes while also verifying
 accessibility semantics.
 """
 
+import os
 import sys
+from datetime import datetime
 from pathlib import Path
 
 from playwright.sync_api import Page, Locator, TimeoutError
@@ -87,16 +89,50 @@ class PortfolioPage:
             timeout=CONFIG.timeout_hydration,
         )
 
-    def take_screenshot(self, name: str, full_page: bool = False) -> None:
-        """Capture a named screenshot at the current state."""
+    def take_screenshot(
+        self,
+        name: str,
+        full_page: bool = False,
+        verify_not_blank: bool = True,
+    ) -> str:
+        """Capture screenshot and verify it has visible content."""
         SCREENSHOTS_DIR.mkdir(exist_ok=True)
+        ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+        path = SCREENSHOTS_DIR / f"{name}_{ts}.png"
         self._page.screenshot(
-            path=str(SCREENSHOTS_DIR / f"{name}.png"),
+            path=str(path),
             full_page=full_page,
+            animations="disabled",
+        )
+        if verify_not_blank:
+            self._verify_screenshot_not_blank(path)
+        return str(path)
+
+    def _verify_screenshot_not_blank(self, path: Path) -> None:
+        """Fail if screenshot is >95% white — page didn't render."""
+        try:
+            from PIL import Image
+        except ImportError:
+            return
+
+        pixels = Image.open(path).convert("RGB").getdata()
+        total = len(pixels)
+        if total == 0:
+            return
+        white_count = sum(
+            1 for r, g, b in pixels
+            if r > 240 and g > 240 and b > 240
+        )
+        white_ratio = white_count / total
+        assert white_ratio < 0.95, (
+            f"Screenshot is {white_ratio:.1%} white pixels — "
+            f"page did not render. Path: {path}"
         )
 
-    def wait_for_content_ready(self, timeout: int = 15000) -> None:
+    def wait_for_content_ready(self, timeout: int = None) -> None:
         """Wait until real page content is visible, not just DOM loaded."""
+        if timeout is None:
+            timeout = 30000 if os.getenv("CI") else 15000
         self._page.wait_for_load_state("networkidle", timeout=timeout)
         self.hero_heading.wait_for(state="visible", timeout=timeout)
         h1_text = self.hero_heading.inner_text(timeout=5000)
