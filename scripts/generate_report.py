@@ -453,12 +453,16 @@ STEPS_MAP = {
         "environment_override": {"viewport": "390x844 (iPhone 14)"},
         "steps": [
             {
-                "description": "Wait for hero heading to render",
+                "description": "Wait for hero heading to be visible (proves render)",
                 "code": "mobile_portfolio.hero_heading.wait_for(\n    state=\"visible\", timeout=10000\n)",
             },
             {
-                "description": "Wait for network idle to ensure full render",
+                "description": "Wait for network idle",
                 "code": "mobile_portfolio._page.wait_for_load_state(\"networkidle\")",
+            },
+            {
+                "description": "Capture full-page screenshot at 390px viewport",
+                "code": "mobile_portfolio._page.screenshot(\n    path=\"screenshots/assert_mobile_no_scroll.png\",\n    full_page=True,\n)",
             },
             {
                 "description": "Measure document scroll width",
@@ -469,12 +473,8 @@ STEPS_MAP = {
                 "code": "viewport_w = mobile_portfolio.get_viewport_width()",
             },
             {
-                "description": "Capture full-page screenshot at 390px viewport",
-                "code": "mobile_portfolio._page.screenshot(\n    path=\"screenshots/assert_mobile_no_scroll.png\",\n    full_page=True,\n)",
-            },
-            {
-                "description": "Assert scroll_w <= viewport_w (no overflow)",
-                "code": "assert scroll_w <= viewport_w, \\\n    Msg.HORIZONTAL_OVERFLOW.format(\n        scroll_w=scroll_w,\n        viewport_w=viewport_w,\n    )",
+                "description": "Assert no overflow",
+                "code": "assert scroll_w <= viewport_w, \\\n    Msg.HORIZONTAL_OVERFLOW.format(\n        scroll_w=scroll_w, viewport_w=viewport_w,\n    )",
             },
         ],
     },

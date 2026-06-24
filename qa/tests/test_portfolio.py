@@ -419,19 +419,20 @@ class TestResponsive:
     def test_mobile_viewport_no_horizontal_scroll(
         self, mobile_portfolio: PortfolioPage,
     ):
-        """Verify no horizontal overflow at 390px mobile viewport.
-
-        Measures document.scrollWidth and compares against
-        window.innerWidth (390px). Any scroll_w > viewport_w
-        means content overflows horizontally — broken mobile UX.
-        """
-        with step("Wait for hero heading to render"):
+        """Verify no horizontal overflow at 390px mobile viewport."""
+        with step("Wait for hero heading to be visible (proves render)"):
             mobile_portfolio.hero_heading.wait_for(
                 state="visible", timeout=10000
             )
 
-        with step("Wait for network idle to ensure full render"):
+        with step("Wait for network idle"):
             mobile_portfolio._page.wait_for_load_state("networkidle")
+
+        with step("Capture full-page screenshot at 390px viewport"):
+            mobile_portfolio._page.screenshot(
+                path="screenshots/assert_mobile_no_scroll.png",
+                full_page=True,
+            )
 
         with step("Measure document scroll width"):
             scroll_w = mobile_portfolio.get_scroll_width()
@@ -440,22 +441,11 @@ class TestResponsive:
             viewport_w = mobile_portfolio.get_viewport_width()
 
         with step(
-            f"Capture full-page screenshot at 390px viewport "
-            f"(scroll_w={scroll_w}, viewport_w={viewport_w})"
-        ):
-            mobile_portfolio._page.screenshot(
-                path="screenshots/assert_mobile_no_scroll.png",
-                full_page=True,
-            )
-
-        with step(
-            f"Assert no overflow: "
-            f"scroll_w={scroll_w} <= viewport_w={viewport_w}"
+            f"Assert no overflow: scroll={scroll_w} <= viewport={viewport_w}"
         ):
             assert scroll_w <= viewport_w, \
                 Msg.HORIZONTAL_OVERFLOW.format(
-                    scroll_w=scroll_w,
-                    viewport_w=viewport_w,
+                    scroll_w=scroll_w, viewport_w=viewport_w,
                 )
 
     # REQ-004 | AC-004-2
