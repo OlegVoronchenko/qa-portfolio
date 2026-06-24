@@ -39,7 +39,6 @@ import http.server
 import re
 import sys
 import threading
-from datetime import datetime
 from pathlib import Path
 
 import pytest
@@ -50,7 +49,6 @@ sys.path.insert(0, str(Path(__file__).parent))
 from config import CONFIG
 
 DIST_DIR = str(Path(__file__).resolve().parent.parent / "dist")
-SCREENSHOTS_DIR = Path(__file__).parent / "screenshots"
 
 
 def _detect_base_path() -> str:
@@ -174,22 +172,6 @@ def hydrated_mobile_page(mobile_page: Page, base_url: str) -> Page:
     """Mobile page navigated to base URL with React hydration confirmed."""
     _wait_for_hydration(mobile_page, base_url)
     return mobile_page
-
-
-# ── Auto-screenshot after each test ──
-
-@pytest.fixture(autouse=True)
-def capture_screenshot(request, page: Page):
-    """Capture a screenshot after every test completes."""
-    yield
-    SCREENSHOTS_DIR.mkdir(exist_ok=True)
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    safe_name = re.sub(r"[^\w\-_]", "_", request.node.name)
-    path = SCREENSHOTS_DIR / f"{safe_name}_{timestamp}.png"
-    try:
-        page.screenshot(path=str(path), full_page=False)
-    except Exception:
-        pass
 
 
 # ── Step logging ──
