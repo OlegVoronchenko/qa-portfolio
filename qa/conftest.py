@@ -49,6 +49,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from config import CONFIG
 
 DIST_DIR = str(Path(__file__).resolve().parent.parent / "dist")
+SCREENSHOTS_DIR = Path(__file__).parent / "screenshots"
 
 
 def _detect_base_path() -> str:
@@ -172,6 +173,46 @@ def hydrated_mobile_page(mobile_page: Page, base_url: str) -> Page:
     """Mobile page navigated to base URL with React hydration confirmed."""
     _wait_for_hydration(mobile_page, base_url)
     return mobile_page
+
+
+# ── Auto-screenshot after each test ──
+
+@pytest.fixture(autouse=True)
+def auto_screenshot(request, page: Page):
+    """Capture screenshot after each test, with safety checks."""
+    yield
+
+    try:
+        if page.is_closed():
+            return
+
+        url = page.url
+        if not url or url == "about:blank":
+            return
+
+        has_content = page.evaluate("""
+            () => {
+                if (!document.body) return false
+                if (document.body.children.length === 0) return false
+                if (document.body.getBoundingClientRect().height < 100) return false
+                return true
+            }
+        """)
+        if not has_content:
+            return
+
+        from datetime import datetime
+        ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+        safe_name = re.sub(r"[^\w\-_]", "_", request.node.name)
+
+        SCREENSHOTS_DIR.mkdir(exist_ok=True)
+        page.screenshot(
+            path=str(SCREENSHOTS_DIR / f"{safe_name}_{ts}.png"),
+            full_page=False,
+            animations="disabled",
+        )
+    except Exception as e:
+        print(f"\n[auto_screenshot] Skipped due to: {e}")
 
 
 # ── Step logging ──
