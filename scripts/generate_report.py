@@ -465,8 +465,8 @@ STEPS_MAP = {
                 "code": "viewport_w = mobile_portfolio.get_viewport_width()",
             },
             {
-                "description": "Capture full-page screenshot showing rendered layout",
-                "code": "mobile_portfolio.take_screenshot(\n    \"assert_mobile_no_scroll\", full_page=True\n)",
+                "description": "Capture high-quality mobile screenshot",
+                "code": "mobile_portfolio.take_mobile_screenshot(\n    \"no_horizontal_scroll\", full_page=True\n)",
             },
             {
                 "description": "Assert scroll_w <= viewport_w (no overflow)",
@@ -478,7 +478,7 @@ STEPS_MAP = {
         "tc_id": "TC-004-2",
         "req_id": "REQ-004",
         "ac_ids": ["AC-004-2"],
-        "description": "Hero h1 must be visible on mobile viewport with text",
+        "description": "Hero h1 must be visible on 390px mobile viewport",
         "mark": "responsive",
         "environment_override": {"viewport": "390x844 (iPhone 14)"},
         "steps": [
@@ -487,20 +487,12 @@ STEPS_MAP = {
                 "code": "mobile_portfolio.wait_for_content_ready()",
             },
             {
-                "description": "Locate hero heading",
-                "code": "heading = mobile_portfolio.hero_heading",
+                "description": "Capture high-quality mobile hero screenshot",
+                "code": "mobile_portfolio.take_mobile_screenshot(\n    \"hero_visible\", full_page=False\n)",
             },
             {
-                "description": "Get heading text to verify it rendered",
-                "code": "heading_text = heading.inner_text()",
-            },
-            {
-                "description": "Capture screenshot showing rendered mobile hero",
-                "code": "mobile_portfolio.take_screenshot(\n    \"assert_mobile_hero\", full_page=False\n)",
-            },
-            {
-                "description": "Assert heading is visible and has non-empty text",
-                "code": "assert heading.is_visible(), \\\n    Msg.MOBILE_HERO_NOT_VISIBLE.format(\n        width=CONFIG.mobile_width,\n    )\nassert heading_text.strip(), \\\n    \"Hero heading is visible but text is empty\"",
+                "description": "Assert hero heading visible at mobile width",
+                "code": "assert mobile_portfolio.hero_heading.is_visible(), \\\n    Msg.MOBILE_HERO_NOT_VISIBLE.format(\n        width=CONFIG.mobile_width,\n    )",
             },
         ],
     },

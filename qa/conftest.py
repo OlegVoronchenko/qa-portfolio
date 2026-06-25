@@ -179,8 +179,16 @@ def hydrated_mobile_page(mobile_page: Page, base_url: str) -> Page:
 
 @pytest.fixture(autouse=True)
 def auto_screenshot(request, page: Page):
-    """Capture screenshot after each test, with safety checks."""
+    """Post-test screenshot for desktop tests only.
+
+    Mobile tests are skipped — they capture their own
+    screenshots via take_mobile_screenshot() while the
+    page is still in mobile viewport with content visible.
+    """
     yield
+
+    if "mobile" in request.node.name.lower():
+        return
 
     try:
         if page.is_closed():
@@ -191,12 +199,9 @@ def auto_screenshot(request, page: Page):
             return
 
         has_content = page.evaluate("""
-            () => {
-                if (!document.body) return false
-                if (document.body.children.length === 0) return false
-                if (document.body.getBoundingClientRect().height < 100) return false
-                return true
-            }
+            () => document.body
+                && document.body.children.length > 0
+                && document.body.getBoundingClientRect().height > 100
         """)
         if not has_content:
             return
@@ -212,7 +217,7 @@ def auto_screenshot(request, page: Page):
             animations="disabled",
         )
     except Exception as e:
-        print(f"\n[auto_screenshot] Skipped due to: {e}")
+        print(f"\n[auto_screenshot] Skipped: {e}")
 
 
 # ── Step logging ──

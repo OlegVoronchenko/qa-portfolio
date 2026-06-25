@@ -168,6 +168,49 @@ class PortfolioPage:
             f"page did not render. Path: {path}"
         )
 
+    def take_mobile_screenshot(
+        self,
+        test_name: str,
+        full_page: bool = True,
+    ) -> str:
+        """Take mobile screenshot with strict pre/post verification."""
+        self._page.wait_for_load_state("networkidle", timeout=30000)
+        self.hero_heading.wait_for(state="visible", timeout=30000)
+
+        h1_text = self.hero_heading.inner_text()
+        assert h1_text.strip(), (
+            "Cannot take mobile screenshot — hero h1 is empty"
+        )
+
+        body_height = self._page.evaluate(
+            "() => document.body.getBoundingClientRect().height"
+        )
+        assert body_height > 500, (
+            f"Cannot take mobile screenshot — body height "
+            f"is only {body_height}px, expected > 500px"
+        )
+
+        self._page.wait_for_timeout(500)
+
+        ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+        path = SCREENSHOTS_DIR / f"mobile_{test_name}_{ts}.png"
+        SCREENSHOTS_DIR.mkdir(exist_ok=True)
+
+        self._page.screenshot(
+            path=str(path),
+            full_page=full_page,
+            animations="disabled",
+        )
+
+        file_size = path.stat().st_size
+        assert file_size > 10_000, (
+            f"Mobile screenshot is {file_size} bytes — likely blank. "
+            f"Path: {path}"
+        )
+
+        self._verify_screenshot_not_blank(path)
+        return str(path)
+
     def wait_for_content_ready(self, timeout: int = None) -> None:
         """Wait until real page content is visible, not just DOM loaded."""
         if timeout is None:
