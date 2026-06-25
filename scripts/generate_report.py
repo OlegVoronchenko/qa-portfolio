@@ -726,30 +726,47 @@ def get_coverage_tags(test_name):
     return ["UI"]
 
 
-def _resize_screenshot(src_path, max_width=320):
-    """Resize a PNG to max_width using sips (macOS) or convert (Linux). Returns bytes."""
-    import shutil
-    import tempfile
-    tmp = tempfile.NamedTemporaryFile(suffix=".png", delete=False)
-    tmp.close()
-    tmp_path = tmp.name
+_MOBILE_SCREENSHOT_MAP = {
+    "test_mobile_hero_section_visible": "mobile_hero_visible",
+    "test_mobile_viewport_no_horizontal_scroll": "mobile_no_horizontal_scroll",
+}
+
+
+def _encode_screenshot(path: Path) -> str:
+    """Encode screenshot as base64, downscaling large images."""
+    size_kb = path.stat().st_size / 1024
+
+    if size_kb < 500:
+        try:
+            from PIL import Image
+            from io import BytesIO
+            img = Image.open(path)
+            if img.width > 800:
+                ratio = 800 / img.width
+                img = img.resize((800, int(img.height * ratio)), Image.LANCZOS)
+            buf = BytesIO()
+            img.save(buf, format="PNG", optimize=True)
+            b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
+            return f"data:image/png;base64,{b64}"
+        except ImportError:
+            pass
+        b64 = base64.b64encode(path.read_bytes()).decode("utf-8")
+        return f"data:image/png;base64,{b64}"
+
     try:
-        shutil.copy2(str(src_path), tmp_path)
-        if shutil.which("sips"):
-            subprocess.run(
-                ["sips", "--resampleWidth", str(max_width), tmp_path],
-                capture_output=True,
-            )
-        elif shutil.which("convert"):
-            subprocess.run(
-                ["convert", str(src_path), "-resize", f"{max_width}x", tmp_path],
-                capture_output=True,
-            )
-        else:
-            return src_path.read_bytes()
-        return Path(tmp_path).read_bytes()
-    finally:
-        Path(tmp_path).unlink(missing_ok=True)
+        from PIL import Image
+        from io import BytesIO
+        img = Image.open(path)
+        if img.width > 800:
+            ratio = 800 / img.width
+            img = img.resize((800, int(img.height * ratio)), Image.LANCZOS)
+        buf = BytesIO()
+        img.convert("RGB").save(buf, format="JPEG", quality=80)
+        b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
+        return f"data:image/jpeg;base64,{b64}"
+    except ImportError:
+        b64 = base64.b64encode(path.read_bytes()).decode("utf-8")
+        return f"data:image/png;base64,{b64}"
 
 
 def find_screenshot_for_test(test_name):
@@ -757,22 +774,30 @@ def find_screenshot_for_test(test_name):
     if not SCREENSHOTS_DIR.exists():
         return None
 
+    base_name = test_name.split("[")[0]
     safe_name = re.sub(r"[^\w-]", "_", test_name)
-    matches = list(SCREENSHOTS_DIR.glob(f"{safe_name}_*.png"))
+    short = re.sub(r"[^\w-]", "_", base_name.replace("test_", ""))
 
-    short = re.sub(r"[^\w-]", "_", test_name.replace("test_", ""))
-    matches += list(SCREENSHOTS_DIR.glob(f"assert_*{short}*.png"))
+    patterns = [
+        f"assert_{short}*.png",
+        f"assert_{'_'.join(short.split('_')[:2])}*.png",
+    ]
 
-    if not matches:
-        return None
+    if base_name in _MOBILE_SCREENSHOT_MAP:
+        patterns.insert(0, f"{_MOBILE_SCREENSHOT_MAP[base_name]}_*.png")
 
-    latest = max(matches, key=lambda p: p.stat().st_mtime)
-    try:
-        img_data = _resize_screenshot(latest)
-        b64 = base64.b64encode(img_data).decode("utf-8")
-        return f"data:image/png;base64,{b64}"
-    except Exception:
-        return None
+    patterns.append(f"{safe_name}_*.png")
+
+    for pattern in patterns:
+        matches = list(SCREENSHOTS_DIR.glob(pattern))
+        if matches:
+            latest = max(matches, key=lambda p: p.stat().st_mtime)
+            try:
+                return _encode_screenshot(latest)
+            except Exception:
+                return None
+
+    return None
 
 
 def _get_pip_version(package: str) -> str:

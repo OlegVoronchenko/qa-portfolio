@@ -185,14 +185,9 @@ def auto_screenshot(request, page: Page):
     screenshots via take_mobile_screenshot() while the
     page is still in mobile viewport with content visible.
     """
-    print(f"\n[AUTO_SCREENSHOT v2] Hook entered for: {request.node.name}")
-
     yield
 
-    print(f"[AUTO_SCREENSHOT v2] After test: {request.node.name}")
-
     if "mobile" in request.node.name.lower():
-        print("[AUTO_SCREENSHOT v2] SKIPPED — mobile test")
         return
 
     try:
