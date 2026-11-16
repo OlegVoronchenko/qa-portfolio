@@ -11,8 +11,19 @@
  * @param {number} [options.duration=2000] - Animation duration in ms
  * @param {boolean} [options.startOnMount=false] - If true, counts immediately
  * @returns {{ count: number, start: () => void }}
+ *
+ * Respects prefers-reduced-motion: jumps straight to the final
+ * value instead of animating, so the accessible end state is
+ * identical either way.
  */
 import { useState, useEffect, useRef } from 'react'
+
+function prefersReducedMotion() {
+  return (
+    typeof window !== 'undefined' &&
+    window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+  )
+}
 
 export function useCountUp({ end, duration = 2000, startOnMount = false }) {
   const [count, setCount] = useState(startOnMount ? 0 : end)
@@ -21,6 +32,11 @@ export function useCountUp({ end, duration = 2000, startOnMount = false }) {
 
   useEffect(() => {
     if (!hasStarted) return
+
+    if (prefersReducedMotion()) {
+      setCount(end)
+      return
+    }
 
     let startTime
 

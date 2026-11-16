@@ -238,6 +238,10 @@ class PortfolioPage:
         return self._page.get_by_role("navigation")
 
     @property
+    def experience_section(self) -> Locator:
+        return self._page.locator(SECTIONS.EXPERIENCE)
+
+    @property
     def skills_section(self) -> Locator:
         return self._page.locator(SECTIONS.SKILLS)
 
@@ -257,6 +261,10 @@ class PortfolioPage:
 
     def nav_link(self, name: str) -> Locator:
         return self.navigation.get_by_role("link", name=name)
+
+    @property
+    def experience_entries(self) -> Locator:
+        return self.experience_section.get_by_role("article")
 
     @property
     def project_cards(self) -> Locator:
@@ -287,6 +295,9 @@ class PortfolioPage:
 
     def count_project_cards(self) -> int:
         return self.project_cards.count()
+
+    def count_experience_entries(self) -> int:
+        return self.experience_entries.count()
 
     def count_contact_links(self) -> int:
         return self.contact_links.count()

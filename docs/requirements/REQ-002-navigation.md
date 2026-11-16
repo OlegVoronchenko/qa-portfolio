@@ -8,9 +8,10 @@
 
 ## Requirement
 
-The navigation bar must contain four visible links — About,
-Skills, Projects, and Contact — each pointing to the correct
-anchor section on the same page via an `href` attribute.
+The navigation bar must contain five visible links — About,
+Experience, Skills, Projects, and Contact — each pointing to
+the correct anchor section on the same page via an `href`
+attribute.
 
 ---
 
@@ -45,6 +46,14 @@ landmark must be visible on screen.
 ### AC-002-8 — "Contact" link href equals `#contact`
 The `href` attribute of the Contact link must equal `'#contact'`.
 
+### AC-002-9 — "Experience" link is visible in navbar
+A link with accessible name `'Experience'` inside the `navigation`
+landmark must be visible on screen.
+
+### AC-002-10 — "Experience" link href equals `#experience`
+The `href` attribute of the Experience link must equal
+`'#experience'` exactly.
+
 ---
 
 ## Linked Tests
@@ -55,6 +64,7 @@ The `href` attribute of the Contact link must equal `'#contact'`.
 | TC-002-2 | `test_nav_link_is_visible_with_correct_href[Skills-#skills]` | AC-002-3, AC-002-4 |
 | TC-002-3 | `test_nav_link_is_visible_with_correct_href[Projects-#projects]` | AC-002-5, AC-002-6 |
 | TC-002-4 | `test_nav_link_is_visible_with_correct_href[Contact-#contact]` | AC-002-7, AC-002-8 |
+| TC-002-5 | `test_nav_link_is_visible_with_correct_href[Experience-#experience]` | AC-002-9, AC-002-10 |
 
 ---
 

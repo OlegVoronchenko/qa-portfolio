@@ -1,17 +1,19 @@
 import { useState, useEffect } from 'react'
-import { ArrowRight, Mail, ChevronDown } from 'lucide-react'
+import { ArrowRight, Mail, ChevronDown, Download, Linkedin, Github, Briefcase } from 'lucide-react'
 import { useProfile } from '../hooks/useProfile'
 import { AnimatedStat } from './AnimatedStat'
 
-const EXTRA_ROLES = [
-  'Mobile & Web QA Architect',
-  'Healthcare QA Specialist',
-  'CI/CD Quality Guardian',
-]
+// Supporting positioning line below the primary role. Summarizes
+// capabilities already documented in profile.summary /
+// experience[].achievements (framework ownership, mentoring,
+// team leadership of 5-10 engineers) — not new claims.
+const SUPPORTING_POSITIONING = 'Senior SDET · QA Architecture · Engineering Leadership'
 
 export default function Hero() {
   const profile = useProfile()
-  const roles = [profile.personal.role, ...EXTRA_ROLES]
+  // Primary role comes from profile.personal.role (single source of
+  // truth) rather than being hardcoded here.
+  const roles = [profile.personal.role, SUPPORTING_POSITIONING]
   const [text, setText] = useState('')
   const [roleIdx, setRoleIdx] = useState(0)
   const [charIdx, setCharIdx] = useState(0)
@@ -78,17 +80,22 @@ export default function Hero() {
           </span>
         </h1>
 
-        <div data-testid="hero-typewriter" className="font-mono text-lg sm:text-xl text-accent mb-4 h-8">
+        <div data-testid="hero-typewriter" className="font-mono text-base sm:text-xl text-accent mb-4 min-h-[2rem] sm:min-h-[1.75rem] leading-snug px-2">
           {text}
           <span className="animate-typewriter-blink">|</span>
         </div>
 
-        <p className="text-slate-400 text-base sm:text-lg max-w-xl mx-auto mb-8 leading-relaxed">
-          {profile.stats.years_experience} years designing and scaling automation across Web, Mobile, API,
-          and Embedded systems in Healthcare and regulated environments.
+        <p className="text-slate-400 text-base sm:text-lg max-w-xl mx-auto mb-2 leading-relaxed">
+          Designing scalable test automation solutions, leading QA teams, and
+          improving engineering quality across healthcare, medical devices,
+          and mission-critical systems.
+        </p>
+        <p className="text-slate-500 text-sm max-w-xl mx-auto mb-8 leading-relaxed">
+          Combining hands-on engineering, automation architecture, technical
+          leadership, and AI-assisted development practices.
         </p>
 
-        <div className="flex flex-wrap gap-3 justify-center mb-14">
+        <div className="flex flex-wrap gap-3 justify-center mb-6">
           <a
             href="#projects"
             className="flex items-center gap-2 bg-accent hover:bg-accent/90 text-dark-900 font-semibold px-6 py-3 rounded-lg transition-colors"
@@ -102,6 +109,42 @@ export default function Hero() {
           >
             <Mail size={16} />
             Get in Touch
+          </a>
+        </div>
+
+        <div className="flex flex-wrap items-center justify-center gap-5 mb-14 text-sm">
+          <a
+            href="#experience"
+            className="flex items-center gap-1.5 text-slate-400 hover:text-accent transition-colors"
+          >
+            <Briefcase size={14} />
+            Experience
+          </a>
+          <a
+            href={`${import.meta.env.BASE_URL}cv/Oleg-Voronchenko-CV.md`}
+            download
+            className="flex items-center gap-1.5 text-slate-400 hover:text-accent transition-colors"
+          >
+            <Download size={14} />
+            Download CV
+          </a>
+          <a
+            href={profile.contact.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 text-slate-400 hover:text-accent transition-colors"
+          >
+            <Linkedin size={14} />
+            LinkedIn
+          </a>
+          <a
+            href={profile.contact.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 text-slate-400 hover:text-accent transition-colors"
+          >
+            <Github size={14} />
+            GitHub
           </a>
         </div>
 

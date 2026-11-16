@@ -296,6 +296,28 @@ class TestContent:
         with step(f"Assert '{skill}' tag is visible"):
             assert tag.first.is_visible(), Msg.SKILL_NOT_VISIBLE.format(name=skill)
 
+    # REQ-003 | AC-003-9
+    @pytest.mark.content
+    def test_experience_section_shows_all_roles(self, portfolio: PortfolioPage):
+        """Verify the Experience & Impact section renders every career entry.
+
+        Counts elements with role='article' inside #experience.
+        Expected: {COUNTS.EXPERIENCE_ENTRIES} entries from profile.json.
+
+        Failure means: a role was added or removed from
+        profile.json, or the Experience component changed markup.
+        """
+        with step("Count experience entries with role='article'"):
+            count = portfolio.count_experience_entries()
+
+        with step("Capture screenshot of experience section"):
+            portfolio.take_screenshot("assert_experience_entries")
+
+        with step(f"Assert {COUNTS.EXPERIENCE_ENTRIES} experience entries (found {count})"):
+            assert count == COUNTS.EXPERIENCE_ENTRIES, Msg.WRONG_EXPERIENCE_COUNT.format(
+                expected=COUNTS.EXPERIENCE_ENTRIES, actual=count,
+            )
+
     # REQ-003 | AC-003-4
     @pytest.mark.content
     def test_projects_section_has_expected_cards(self, portfolio: PortfolioPage):

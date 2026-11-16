@@ -10,9 +10,10 @@
 
 All portfolio sections must render data sourced from
 `profile.json`. The Skills section must display core
-technology tags. The Projects section must show exactly
-3 project cards. The Contact section must expose all
-required contact channels. The Test Results section
+technology tags. The Experience section must render every
+career entry from `profile.json`. The Projects section must
+show exactly 3 project cards. The Contact section must expose
+all required contact channels. The Test Results section
 must display loaded data from `test_report.json`.
 
 ---
@@ -59,6 +60,14 @@ At least one clickable row element must be rendered inside
 Rationale: Empty rows mean `test_report.json` was not deployed
 or the fetch URL is using the wrong base path.
 
+### AC-003-9 — Experience section renders all career entries
+Elements with `role='article'` inside `#experience` must
+number exactly the count of entries in `profile.json`'s
+`experience` array (currently 5).  
+Rationale: Every documented role must be visible — a mismatch
+means an entry was added or removed from `profile.json` without
+the component being updated, or vice versa.
+
 ---
 
 ## Linked Tests
@@ -71,6 +80,7 @@ or the fetch URL is using the wrong base path.
 | TC-003-4 | `test_projects_section_has_expected_cards` | AC-003-4 |
 | TC-003-5 | `test_contact_section_has_required_channels` | AC-003-5 |
 | TC-003-6 | `test_test_results_section_renders` | AC-003-6, AC-003-7, AC-003-8 |
+| TC-003-7 | `test_experience_section_shows_all_roles` | AC-003-9 |
 
 ---
 

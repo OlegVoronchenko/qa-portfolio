@@ -45,6 +45,7 @@ class HeroContent:
 class Sections:
     HERO: str = "#hero"
     ABOUT: str = "#about"
+    EXPERIENCE: str = "#experience"
     SKILLS: str = "#skills"
     PROJECTS: str = "#projects"
     TEST_RESULTS: str = "#test-results"
@@ -54,11 +55,13 @@ class Sections:
 @dataclass(frozen=True)
 class NavLinks:
     ABOUT: str = "About"
+    EXPERIENCE: str = "Experience"
     SKILLS: str = "Skills"
     PROJECTS: str = "Projects"
     CONTACT: str = "Contact"
     ALL_WITH_HREFS: Tuple[tuple, ...] = (
         ("About", "#about"),
+        ("Experience", "#experience"),
         ("Skills", "#skills"),
         ("Projects", "#projects"),
         ("Contact", "#contact"),
@@ -75,6 +78,7 @@ class ExpectedCounts:
     PROJECT_CARDS: int = 3
     CONTACT_LINKS: int = 3
     H1_HEADINGS: int = 1
+    EXPERIENCE_ENTRIES: int = 5
 
 
 @dataclass(frozen=True)

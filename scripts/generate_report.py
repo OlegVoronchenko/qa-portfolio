@@ -87,6 +87,7 @@ COVERAGE_MAP = {
     "test_react_app_hydrated_successfully": ["React", "Hydration", "SPA"],
     "test_nav_link_is_visible_with_correct_href": ["Navigation", "Links", "Anchors"],
     "test_skills_section_contains_core_stack": ["UI", "Content", "Data Binding"],
+    "test_experience_section_shows_all_roles": ["UI", "Content", "Career Timeline"],
     "test_projects_section_has_expected_cards": ["UI", "Content", "Count"],
     "test_contact_section_has_required_channels": ["UI", "Content", "Contact"],
     "test_test_results_section_renders": ["UI", "API", "Data Fetch"],
@@ -345,6 +346,48 @@ STEPS_MAP = {
             {
                 "description": "Assert 'Playwright' tag is visible",
                 "code": "assert tag.first.is_visible(), Msg.SKILL_NOT_VISIBLE.format(name=skill)",
+            },
+        ],
+    },
+    "test_nav_link_is_visible_with_correct_href[Experience-#experience]": {
+        "tc_id": "TC-002-5",
+        "req_id": "REQ-002",
+        "ac_ids": ["AC-002-9", "AC-002-10"],
+        "description": "Experience link must be visible in navbar and point to #experience",
+        "mark": "navigation",
+        "steps": [
+            {
+                "description": "Locate nav link 'Experience'",
+                "code": "link = portfolio.nav_link(label)",
+            },
+            {
+                "description": "Assert 'Experience' link is visible",
+                "code": "assert link.is_visible(), Msg.NAV_LINK_NOT_VISIBLE.format(name=label)",
+            },
+            {
+                "description": "Assert 'Experience' href equals '#experience'",
+                "code": "actual_href = link.get_attribute(\"href\")\nassert actual_href == href, Msg.NAV_LINK_WRONG_HREF.format(\n    name=label, expected=href, actual=actual_href,\n)",
+            },
+        ],
+    },
+    "test_experience_section_shows_all_roles": {
+        "tc_id": "TC-003-7",
+        "req_id": "REQ-003",
+        "ac_ids": ["AC-003-9"],
+        "description": "Experience & Impact section must display every career entry from profile.json",
+        "mark": "content",
+        "steps": [
+            {
+                "description": "Count experience entries with role='article'",
+                "code": "count = portfolio.count_experience_entries()",
+            },
+            {
+                "description": "Capture screenshot of experience section",
+                "code": "portfolio.take_screenshot('assert_experience_entries')",
+            },
+            {
+                "description": "Assert experience entry count matches expected",
+                "code": "assert count == COUNTS.EXPERIENCE_ENTRIES, Msg.WRONG_EXPERIENCE_COUNT.format(\n    expected=COUNTS.EXPERIENCE_ENTRIES, actual=count,\n)",
             },
         ],
     },
