@@ -645,10 +645,53 @@ STEPS_MAP = {
 }
 
 
+# Browser engine names that pytest-playwright's pytest_generate_tests hook
+# injects as a parametrize dimension on ANY test depending on a fixture
+# literally named page/context/browser/browser_type/new_context — including
+# this project's own qa/conftest.py fixtures of those exact names, even
+# though they don't use browser_name at all.
+# See: https://github.com/microsoft/playwright-pytest/issues/172
+# This turns "test_foo" into "test_foo[chromium]" and
+# "test_bar[About-#about]" into "test_bar[chromium-About-#about]"
+# at the pytest level, which STEPS_MAP keys below don't know about.
+_KNOWN_BROWSER_NAMES = ("chromium", "firefox", "webkit", "chrome", "msedge")
+
+
+def normalize_test_name(test_name: str) -> str:
+    """Strip a leading pytest-playwright browser_name parametrize segment.
+
+    "test_foo[chromium]" -> "test_foo"
+    "test_bar[chromium-About-#about]" -> "test_bar[About-#about]"
+    Anything else is returned unchanged.
+    """
+    if "[" not in test_name or not test_name.endswith("]"):
+        return test_name
+    base, _, bracket = test_name.partition("[")
+    parts = bracket[:-1].split("-")
+    if parts and parts[0] in _KNOWN_BROWSER_NAMES:
+        parts = parts[1:]
+    if not parts:
+        return base
+    return f"{base}[{'-'.join(parts)}]"
+
+
 def get_steps_for_test(test_name):
-    """Look up test metadata from STEPS_MAP. Falls back to generic only if not found."""
+    """Look up test metadata from STEPS_MAP.
+
+    Tries the raw nodeid first, then the browser-normalized nodeid
+    (see normalize_test_name), and only falls back to a generic
+    placeholder — which the caller must treat as a diagnostic, not
+    a silent success — if neither matches.
+
+    Returns (mapped_dict, matched: bool).
+    """
     if test_name in STEPS_MAP:
-        return STEPS_MAP[test_name]
+        return STEPS_MAP[test_name], True
+
+    normalized = normalize_test_name(test_name)
+    if normalized != test_name and normalized in STEPS_MAP:
+        return STEPS_MAP[normalized], True
+
     return {
         "description": f"Verify {test_name.replace('test_', '').replace('_', ' ')}",
         "mark": "unknown",
@@ -656,7 +699,7 @@ def get_steps_for_test(test_name):
             {"description": f"Execute {test_name}", "code": ""},
             {"description": "Assert expected result", "code": ""},
         ],
-    }
+    }, False
 
 
 def filter_phantom_steps(steps: list[dict]) -> list[dict]:
@@ -914,7 +957,17 @@ def parse_report():
         total_duration_ms += duration_ms
         test_passed = outcome == "passed"
 
-        mapped = get_steps_for_test(name)
+        mapped, matched = get_steps_for_test(name)
+        if not matched:
+            print(
+                f"WARNING: no STEPS_MAP entry for test '{name}' "
+                f"(also tried normalized form '{normalize_test_name(name)}'). "
+                f"Falling back to placeholder metadata: tc_id='TC-???', "
+                f"req_id=None, mark='unknown', steps=[]. "
+                f"Add a STEPS_MAP entry in scripts/generate_report.py if "
+                f"this is a real test.",
+                file=sys.stderr,
+            )
         description = mapped["description"]
         mark = mapped["mark"]
         clean_steps = filter_phantom_steps(mapped["steps"])

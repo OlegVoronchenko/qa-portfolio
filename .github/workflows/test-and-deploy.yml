@@ -136,6 +136,10 @@ jobs:
           GITHUB_RUN_NUMBER: ${{ github.run_number }}
           GITHUB_ACTOR: ${{ github.actor }}
 
+      - name: Validate test metadata contract
+        if: always()
+        run: python scripts/validate_test_metadata.py
+
       - name: Fail if any tests failed
         if: always()
         run: |

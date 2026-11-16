@@ -85,7 +85,7 @@ export default function Hero() {
 
         <p className="text-slate-400 text-base sm:text-lg max-w-xl mx-auto mb-8 leading-relaxed">
           {profile.stats.years_experience} years designing and scaling automation across Web, Mobile, API,
-          and Embedded systems in healthcare and regulated environments.
+          and Embedded systems in Healthcare and regulated environments.
         </p>
 
         <div className="flex flex-wrap gap-3 justify-center mb-14">

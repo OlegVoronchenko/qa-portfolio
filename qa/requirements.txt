@@ -1,6 +1,15 @@
 playwright>=1.44.0
 pytest>=8.2.0
-pytest-playwright>=0.5.0
+# Upper-bounded: pytest-playwright's pytest_generate_tests hook injects a
+# browser_name parametrize segment into any test using a fixture named
+# page/context/browser/browser_type/new_context, including this project's
+# own qa/conftest.py fixtures of those names. That changes every pytest
+# nodeid (e.g. "test_foo" -> "test_foo[chromium]"), which previously broke
+# STEPS_MAP lookups in scripts/generate_report.py when this floated to a
+# new version unpinned. The lookup is now normalized against that
+# (see normalize_test_name()), but keep this bounded so a future
+# behavior change gets evaluated instead of silently shipping.
+pytest-playwright>=0.5.0,<0.11
 pytest-json-report>=1.5.0
 pytest-html>=4.1.0
 Pillow>=10.0.0
