@@ -88,6 +88,8 @@ COVERAGE_MAP = {
     "test_nav_link_is_visible_with_correct_href": ["Navigation", "Links", "Anchors"],
     "test_skills_section_contains_core_stack": ["UI", "Content", "Data Binding"],
     "test_experience_section_shows_all_roles": ["UI", "Content", "Career Timeline"],
+    "test_experience_entry_can_expand_additional_achievements": ["UI", "Accessibility", "Interaction"],
+    "test_cv_download_link_matches_manifest": ["UI", "Content", "Build Artifact"],
     "test_projects_section_has_expected_cards": ["UI", "Content", "Count"],
     "test_contact_section_has_required_channels": ["UI", "Content", "Contact"],
     "test_test_results_section_renders": ["UI", "API", "Data Fetch"],
@@ -328,15 +330,15 @@ STEPS_MAP = {
             },
         ],
     },
-    "test_skills_section_contains_core_stack[Playwright]": {
+    "test_skills_section_contains_core_stack[Playwright (familiarity)]": {
         "tc_id": "TC-003-2",
         "req_id": "REQ-003",
         "ac_ids": ["AC-003-2"],
-        "description": "Playwright must appear as a visible skill tag in Skills section",
+        "description": "Playwright (familiarity) must appear as a visible skill tag in Skills section, matching the professional profile's actual experience level",
         "mark": "content",
         "steps": [
             {
-                "description": "Locate skill tag with exact text 'Playwright'",
+                "description": "Locate skill tag with exact text 'Playwright (familiarity)'",
                 "code": "tag = portfolio.skill_text(skill)",
             },
             {
@@ -344,7 +346,7 @@ STEPS_MAP = {
                 "code": "portfolio.take_screenshot(f\"assert_skill_{skill.lower()}\")",
             },
             {
-                "description": "Assert 'Playwright' tag is visible",
+                "description": "Assert 'Playwright (familiarity)' tag is visible",
                 "code": "assert tag.first.is_visible(), Msg.SKILL_NOT_VISIBLE.format(name=skill)",
             },
         ],
@@ -388,6 +390,52 @@ STEPS_MAP = {
             {
                 "description": "Assert experience entry count matches expected",
                 "code": "assert count == COUNTS.EXPERIENCE_ENTRIES, Msg.WRONG_EXPERIENCE_COUNT.format(\n    expected=COUNTS.EXPERIENCE_ENTRIES, actual=count,\n)",
+            },
+        ],
+    },
+    "test_experience_entry_can_expand_additional_achievements": {
+        "tc_id": "TC-003-9",
+        "req_id": "REQ-003",
+        "ac_ids": ["AC-003-11"],
+        "description": "An experience entry's 'Explore My Impact' control must expand additional achievements and report aria-expanded correctly",
+        "mark": "content",
+        "steps": [
+            {
+                "description": "Locate the first expand/collapse control",
+                "code": "button = portfolio.experience_toggle_buttons.first",
+            },
+            {
+                "description": "Assert control starts collapsed (aria-expanded=false)",
+                "code": "assert button.get_attribute(\"aria-expanded\") == \"false\"",
+            },
+            {
+                "description": "Click to expand",
+                "code": "button.click()",
+            },
+            {
+                "description": "Assert control reports expanded (aria-expanded=true)",
+                "code": "assert button.get_attribute(\"aria-expanded\") == \"true\"",
+            },
+        ],
+    },
+    "test_cv_download_link_matches_manifest": {
+        "tc_id": "TC-003-8",
+        "req_id": "REQ-003",
+        "ac_ids": ["AC-003-10"],
+        "description": "The Download CV link must match src/data/cv-manifest.json: absent when no PDF is selected, otherwise visible with the correct href and download filename",
+        "mark": "content",
+        "steps": [
+            {
+                "description": "Read the build-time CV manifest",
+                "code": "manifest = json.loads(manifest_path.read_text())",
+            },
+            {
+                "description": "Locate the Download CV link, if any",
+                "code": "link = portfolio._page.get_by_role(\"link\", name=\"Download CV\")",
+            },
+            {
+                "description": "Assert link absence or visibility/href/download matches the manifest",
+                "code": "assert link.count() == 0  # or href/download match manifest['url']/'filename'",
             },
         ],
     },

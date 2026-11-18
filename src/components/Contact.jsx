@@ -1,4 +1,4 @@
-import { Mail, Github, Linkedin, Send } from 'lucide-react'
+import { Mail, Github, Linkedin, Send, Globe } from 'lucide-react'
 import { useProfile } from '../hooks/useProfile'
 
 const iconMap = {
@@ -6,6 +6,7 @@ const iconMap = {
   github: <Github size={22} />,
   linkedin: <Linkedin size={22} />,
   telegram: <Send size={22} />,
+  portfolio: <Globe size={22} />,
 }
 
 const labelMap = {
@@ -13,6 +14,7 @@ const labelMap = {
   github: 'GitHub',
   linkedin: 'LinkedIn',
   telegram: 'Telegram',
+  portfolio: 'Portfolio',
 }
 
 function buildHref(key, value) {

@@ -33,6 +33,7 @@ FIXTURES
   hydrated_page    — desktop page with React hydration confirmed
 """
 
+import json
 import sys
 from pathlib import Path
 
@@ -317,6 +318,84 @@ class TestContent:
             assert count == COUNTS.EXPERIENCE_ENTRIES, Msg.WRONG_EXPERIENCE_COUNT.format(
                 expected=COUNTS.EXPERIENCE_ENTRIES, actual=count,
             )
+
+    # REQ-003 | AC-003-11
+    @pytest.mark.content
+    def test_experience_entry_can_expand_additional_achievements(
+        self, portfolio: PortfolioPage,
+    ):
+        """Verify an "Explore My Impact" control expands hidden achievements.
+
+        Checks native button semantics and the aria-expanded state
+        before and after a click, for the first entry that has one.
+
+        Failure means: the expand control lost its accessible state
+        wiring, or clicking it no longer reveals the rest of that
+        entry's achievements.
+
+        Uses a tag-based locator (not name-based) to hold a stable
+        reference to the SAME button across the click — its
+        accessible name changes from "Explore My Impact" to
+        "Show Less", which would make a name-based `.first` silently
+        re-match a different, still-collapsed button instead.
+        """
+        with step("Locate the first expand/collapse control"):
+            button = portfolio.experience_toggle_buttons.first
+
+        with step("Assert control starts collapsed (aria-expanded=false)"):
+            assert button.get_attribute("aria-expanded") == "false", (
+                "Expand control should start collapsed"
+            )
+
+        with step("Click to expand"):
+            button.click()
+
+        with step("Assert control reports expanded (aria-expanded=true)"):
+            assert button.get_attribute("aria-expanded") == "true", (
+                "Expand control should report aria-expanded=true after being clicked"
+            )
+
+    # REQ-003 | AC-003-10
+    @pytest.mark.content
+    def test_cv_download_link_matches_manifest(self, portfolio: PortfolioPage):
+        """Verify the Download CV link matches src/data/cv-manifest.json.
+
+        If the build-time CV manifest has no PDF selected, the link
+        must not render at all. If one is selected, the link must be
+        visible, point at the manifest's base-path-relative URL, and
+        download under the PDF's original filename.
+
+        Failure means: scripts/select-cv.mjs and Hero.jsx have drifted
+        out of sync, or a stale/placeholder CV link is being shown.
+        """
+        with step("Read the build-time CV manifest"):
+            manifest_path = (
+                Path(__file__).resolve().parent.parent.parent
+                / "src" / "data" / "cv-manifest.json"
+            )
+            manifest = json.loads(manifest_path.read_text())
+
+        with step("Locate the Download CV link, if any"):
+            link = portfolio._page.get_by_role("link", name="Download CV")
+
+        if manifest["filename"] is None:
+            with step("Assert no Download CV link renders when no PDF exists"):
+                assert link.count() == 0, (
+                    "Download CV link should be absent when cv-manifest.json "
+                    "has no PDF selected"
+                )
+        else:
+            with step(f"Assert Download CV link is visible for '{manifest['filename']}'"):
+                assert link.is_visible()
+
+            with step("Assert href includes the manifest's base-path-relative URL"):
+                href = link.get_attribute("href")
+                assert href.endswith(manifest["url"]), (
+                    f"Expected href to end with '{manifest['url']}', got '{href}'"
+                )
+
+            with step("Assert download attribute preserves the original filename"):
+                assert link.get_attribute("download") == manifest["filename"]
 
     # REQ-003 | AC-003-4
     @pytest.mark.content

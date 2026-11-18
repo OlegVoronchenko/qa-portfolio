@@ -70,13 +70,18 @@ class NavLinks:
 
 @dataclass(frozen=True)
 class CoreSkills:
-    ALL: Tuple[str, ...] = ("Python", "Playwright", "pytest")
+    # Professional skill-tag text as it literally appears in
+    # profile.json's skills.automation list — "Playwright (familiarity)"
+    # distinguishes commercial/professional experience level from
+    # "Playwright" the tool this very test suite is built with (see
+    # TestResults' environment panel for that separate, tooling claim).
+    ALL: Tuple[str, ...] = ("Python", "Playwright (familiarity)", "pytest")
 
 
 @dataclass(frozen=True)
 class ExpectedCounts:
     PROJECT_CARDS: int = 3
-    CONTACT_LINKS: int = 3
+    CONTACT_LINKS: int = 4
     H1_HEADINGS: int = 1
     EXPERIENCE_ENTRIES: int = 5
 

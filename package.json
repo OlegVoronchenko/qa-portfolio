@@ -4,6 +4,9 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "select:cv": "node scripts/select-cv.mjs",
+    "predev": "npm run select:cv",
+    "prebuild": "npm run select:cv",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"

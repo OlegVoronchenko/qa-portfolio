@@ -1,45 +1,49 @@
 import { useState, useEffect } from 'react'
 import { ArrowRight, Mail, ChevronDown, Download, Linkedin, Github, Briefcase } from 'lucide-react'
 import { useProfile } from '../hooks/useProfile'
+import { useCv } from '../hooks/useCv'
 import { AnimatedStat } from './AnimatedStat'
+import { prefersReducedMotion } from '../utils/motion'
 
 // Supporting positioning line below the primary role. Summarizes
 // capabilities already documented in profile.summary /
 // experience[].achievements (framework ownership, mentoring,
 // team leadership of 5-10 engineers) — not new claims.
+//
+// This is intentionally a separate, always-visible line rather than
+// an alternate value in the typewriter below: the primary job title
+// must stay stable and never appear to be replaced by it.
 const SUPPORTING_POSITIONING = 'Senior SDET · QA Architecture · Engineering Leadership'
 
 export default function Hero() {
   const profile = useProfile()
+  const cv = useCv()
   // Primary role comes from profile.personal.role (single source of
   // truth) rather than being hardcoded here.
-  const roles = [profile.personal.role, SUPPORTING_POSITIONING]
+  const primaryRole = profile.personal.role
   const [text, setText] = useState('')
-  const [roleIdx, setRoleIdx] = useState(0)
-  const [charIdx, setCharIdx] = useState(0)
-  const [deleting, setDeleting] = useState(false)
 
+  // Types the primary role out once on mount and stops — no cycling,
+  // no deleting, nothing ever replaces it. Skipped entirely (full
+  // text shown immediately) when the user prefers reduced motion.
   useEffect(() => {
-    const current = roles[roleIdx]
-    const speed = deleting ? 35 : 70
-
-    if (!deleting && charIdx === current.length) {
-      const t = setTimeout(() => setDeleting(true), 1800)
-      return () => clearTimeout(t)
-    }
-    if (deleting && charIdx === 0) {
-      setDeleting(false)
-      setRoleIdx((i) => (i + 1) % roles.length)
+    if (prefersReducedMotion()) {
+      setText(primaryRole)
       return
     }
 
-    const t = setTimeout(() => {
-      const next = deleting ? charIdx - 1 : charIdx + 1
-      setText(current.substring(0, next))
-      setCharIdx(next)
-    }, speed)
-    return () => clearTimeout(t)
-  }, [charIdx, deleting, roleIdx])
+    let charIdx = 0
+    let frame
+    const typeNext = () => {
+      charIdx += 1
+      setText(primaryRole.substring(0, charIdx))
+      if (charIdx < primaryRole.length) {
+        frame = setTimeout(typeNext, 55)
+      }
+    }
+    frame = setTimeout(typeNext, 55)
+    return () => clearTimeout(frame)
+  }, [primaryRole])
 
   const stats = [
     { value: 15, suffix: '+', label: 'Years Experience', duration: 1500 },
@@ -80,10 +84,13 @@ export default function Hero() {
           </span>
         </h1>
 
-        <div data-testid="hero-typewriter" className="font-mono text-base sm:text-xl text-accent mb-4 min-h-[2rem] sm:min-h-[1.75rem] leading-snug px-2">
+        <div data-testid="hero-typewriter" className="font-mono text-base sm:text-xl text-accent mb-1.5 min-h-[1.75rem] leading-snug px-2">
           {text}
           <span className="animate-typewriter-blink">|</span>
         </div>
+        <p data-testid="hero-supporting-positioning" className="text-slate-500 text-xs sm:text-sm font-mono mb-4 tracking-wide">
+          {SUPPORTING_POSITIONING}
+        </p>
 
         <p className="text-slate-400 text-base sm:text-lg max-w-xl mx-auto mb-2 leading-relaxed">
           Designing scalable test automation solutions, leading QA teams, and
@@ -120,14 +127,16 @@ export default function Hero() {
             <Briefcase size={14} />
             Experience
           </a>
-          <a
-            href={`${import.meta.env.BASE_URL}cv/Oleg-Voronchenko-CV.md`}
-            download
-            className="flex items-center gap-1.5 text-slate-400 hover:text-accent transition-colors"
-          >
-            <Download size={14} />
-            Download CV
-          </a>
+          {cv.filename && (
+            <a
+              href={`${import.meta.env.BASE_URL}${cv.url}`}
+              download={cv.filename}
+              className="flex items-center gap-1.5 text-slate-400 hover:text-accent transition-colors"
+            >
+              <Download size={14} />
+              Download CV
+            </a>
+          )}
           <a
             href={profile.contact.linkedin}
             target="_blank"

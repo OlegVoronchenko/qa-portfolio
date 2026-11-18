@@ -21,6 +21,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Full history (not the default depth-1 shallow clone) so
+          # scripts/select-cv.mjs can rank public/cv/*.pdf files by
+          # their real last-commit timestamp via `git log -- <path>`.
+          # With a shallow clone every file would resolve to the same
+          # single commit, making that ranking meaningless.
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v5

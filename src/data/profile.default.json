@@ -1,11 +1,12 @@
 {
   "personal": {
     "name": "Oleg Voronchenko",
-    "role": "Lead Senior Test Automation Engineer",
+    "role": "Lead Test Automation Engineer",
     "location": "Porto, Portugal - Hybrid / Remote",
     "email": "o.vorono@gmail.com",
     "linkedin": "https://www.linkedin.com/in/oleg-voronchenko",
-    "github": "https://olegvoronchenko.github.io/qa-portfolio",
+    "github": "https://github.com/OlegVoronchenko",
+    "portfolio": "https://olegvoronchenko.github.io/qa-portfolio",
     "availability": "Open to new opportunities"
   },
   "summary": "Test Automation Engineer with 15+ years of hands-on experience building automation solutions across Web, Mobile, API, Desktop, Embedded, and cloud systems — mostly in healthcare and medical device domains where quality is not optional. Led and mentored QA/AQA teams of 5–10 engineers. Drove suite stability to 98% and cut execution time by up to 50% through framework architecture, code reviews, and systematic flakiness elimination.",
@@ -156,6 +157,7 @@
   "contact": {
     "email": "o.vorono@gmail.com",
     "linkedin": "https://www.linkedin.com/in/oleg-voronchenko",
-    "github": "https://olegvoronchenko.github.io/qa-portfolio"
+    "github": "https://github.com/OlegVoronchenko",
+    "portfolio": "https://olegvoronchenko.github.io/qa-portfolio"
   }
 }

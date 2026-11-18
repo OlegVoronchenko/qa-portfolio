@@ -267,6 +267,20 @@ class PortfolioPage:
         return self.experience_section.get_by_role("article")
 
     @property
+    def experience_expand_buttons(self) -> Locator:
+        return self.experience_section.get_by_role("button", name="Explore My Impact")
+
+    @property
+    def experience_toggle_buttons(self) -> Locator:
+        """Expand/collapse controls, located by tag rather than accessible
+        name — the name-based locator above goes stale the moment a
+        button is clicked (its label changes to "Show Less"), which
+        would make `.first` silently re-match a different button on
+        the next query. Use this one when clicking and re-checking
+        the SAME button's state."""
+        return self.experience_section.locator("button")
+
+    @property
     def project_cards(self) -> Locator:
         return self.projects_section.get_by_role("article")
 

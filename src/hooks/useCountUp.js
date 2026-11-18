@@ -17,13 +17,7 @@
  * identical either way.
  */
 import { useState, useEffect, useRef } from 'react'
-
-function prefersReducedMotion() {
-  return (
-    typeof window !== 'undefined' &&
-    window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-  )
-}
+import { prefersReducedMotion } from '../utils/motion'
 
 export function useCountUp({ end, duration = 2000, startOnMount = false }) {
   const [count, setCount] = useState(startOnMount ? 0 : end)

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Mail, Github, Linkedin } from 'lucide-react'
+import { Mail, Github, Linkedin, Globe } from 'lucide-react'
 import { useProfile } from '../hooks/useProfile'
 
 const navLinks = [
@@ -26,6 +26,7 @@ export default function Footer() {
     { icon: <Mail size={18} />, href: `mailto:${profile.contact.email}`, label: 'Email' },
     { icon: <Linkedin size={18} />, href: profile.contact.linkedin, label: 'LinkedIn' },
     { icon: <Github size={18} />, href: profile.contact.github, label: 'GitHub' },
+    { icon: <Globe size={18} />, href: profile.contact.portfolio, label: 'Portfolio' },
   ]
 
   return (
