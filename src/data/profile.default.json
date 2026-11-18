@@ -82,7 +82,7 @@
     }
   ],
   "skills": {
-    "automation": ["Java", "Selenium", "Appium 2.x", "TestNG", "JUnit", "pytest", "NUnit", "Cucumber", "Python", "C#", "Playwright"],
+    "automation": ["Java", "Selenium", "Appium 2.x", "TestNG", "JUnit", "pytest", "NUnit", "Cucumber", "Python", "C#", "Playwright (familiarity)"],
     "api_testing": ["RESTAssured", "Postman", "REST API", "Swagger", "httpx", "requests"],
     "mobile": ["Android", "iOS", "Appium 2.x", "Cross-platform automation"],
     "cicd": ["Git", "GitHub Actions", "Maven", "Jenkins", "Docker"],
