@@ -25,7 +25,6 @@ import {
   Timer,
   Play,
   RotateCw,
-  ChevronDown,
   Code2,
 } from 'lucide-react'
 

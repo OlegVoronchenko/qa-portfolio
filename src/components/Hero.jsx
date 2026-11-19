@@ -1,19 +1,22 @@
-import { useState, useEffect } from 'react'
+import { useMemo } from 'react'
 import { ArrowRight, Mail, ChevronDown, Download, Linkedin, Github, Briefcase } from 'lucide-react'
 import { useProfile } from '../hooks/useProfile'
 import { useCv } from '../hooks/useCv'
+import { useTypewriter } from '../hooks/useTypewriter'
 import { AnimatedStat } from './AnimatedStat'
 import { prefersReducedMotion } from '../utils/motion'
 
-// Supporting positioning line below the primary role. Summarizes
-// capabilities already documented in profile.summary /
-// experience[].achievements (framework ownership, mentoring,
-// team leadership of 5-10 engineers) — not new claims.
-//
-// This is intentionally a separate, always-visible line rather than
-// an alternate value in the typewriter below: the primary job title
-// must stay stable and never appear to be replaced by it.
-const SUPPORTING_POSITIONING = 'Senior SDET · QA Architecture · Engineering Leadership'
+// Supporting specialization line, cycled by the typewriter below the
+// (permanently static) primary role. These summarize capabilities
+// already documented in profile.summary / experience[].achievements
+// (framework ownership, mentoring, team leadership, AI-assisted
+// engineering practice) — not new claims.
+const SUPPORTING_PHRASES = [
+  'Senior SDET',
+  'QA Architecture',
+  'Engineering Leadership',
+  'AI-Assisted Engineering',
+]
 
 export default function Hero() {
   const profile = useProfile()
@@ -21,29 +24,16 @@ export default function Hero() {
   // Primary role comes from profile.personal.role (single source of
   // truth) rather than being hardcoded here.
   const primaryRole = profile.personal.role
-  const [text, setText] = useState('')
 
-  // Types the primary role out once on mount and stops — no cycling,
-  // no deleting, nothing ever replaces it. Skipped entirely (full
-  // text shown immediately) when the user prefers reduced motion.
-  useEffect(() => {
-    if (prefersReducedMotion()) {
-      setText(primaryRole)
-      return
-    }
+  // Single-shot: types once and stops. Never cycles, never gets
+  // replaced by the supporting phrases — the primary job title must
+  // always remain visible exactly as typed.
+  const roleText = useTypewriter(useMemo(() => [primaryRole], [primaryRole]), { loop: false })
 
-    let charIdx = 0
-    let frame
-    const typeNext = () => {
-      charIdx += 1
-      setText(primaryRole.substring(0, charIdx))
-      if (charIdx < primaryRole.length) {
-        frame = setTimeout(typeNext, 55)
-      }
-    }
-    frame = setTimeout(typeNext, 55)
-    return () => clearTimeout(frame)
-  }, [primaryRole])
+  // Cycling: types, pauses, deletes, moves to the next phrase, loops.
+  const supportingText = useTypewriter(SUPPORTING_PHRASES)
+
+  const reducedMotion = prefersReducedMotion()
 
   const stats = [
     { value: 15, suffix: '+', label: 'Years Experience', duration: 1500 },
@@ -56,7 +46,7 @@ export default function Hero() {
     <section
       id="hero"
       data-testid="hero-section"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative min-h-screen overflow-hidden"
     >
       <div
         className="absolute inset-0 bg-cover bg-center"
@@ -68,14 +58,22 @@ export default function Hero() {
       <div className="absolute inset-0 bg-gradient-to-b from-dark-900/[0.93] via-dark-900/[0.88] to-dark-900" />
       <div className="absolute inset-0 dot-grid" />
 
-      <div className="relative z-10 text-center px-4 max-w-3xl mx-auto pt-16">
+      {/*
+        Top padding is deliberate, fixed spacing below the fixed navbar
+        (h-16 = 64px) rather than a side effect of vertical centering —
+        flex-centering alone produced wildly inconsistent gaps across
+        viewport heights (measured ~210px on a tall tablet viewport vs
+        ~24px on mobile). Values below target ~32px/48px/64px of visible
+        gap under the nav at mobile/tablet/desktop widths respectively.
+      */}
+      <div className="relative z-10 text-center px-4 max-w-3xl mx-auto pt-24 sm:pt-28 lg:pt-32 pb-16">
         <div className="inline-flex items-center gap-2 border border-accent/40 bg-accent-dim rounded-full px-4 py-1.5 mb-8 font-mono text-xs text-accent">
           <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
           {profile.personal.availability}
         </div>
 
         <p className="text-sm md:text-lg text-slate-400 font-normal mb-1 tracking-wide">
-          Hi, I'm
+          Hi, I&rsquo;m
         </p>
         <h1 data-testid="hero-name" className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-none mb-4">
           <span className="text-white">Oleg </span>
@@ -84,13 +82,19 @@ export default function Hero() {
           </span>
         </h1>
 
-        <div data-testid="hero-typewriter" className="font-mono text-base sm:text-xl text-accent mb-1.5 min-h-[1.75rem] leading-snug px-2">
-          {text}
-          <span className="animate-typewriter-blink">|</span>
+        <div data-testid="hero-typewriter" className="font-mono text-base sm:text-xl text-accent mb-1.5 h-7 sm:h-8 overflow-hidden whitespace-nowrap leading-snug px-2">
+          {roleText}
+          {!reducedMotion && <span className="animate-typewriter-blink">|</span>}
         </div>
-        <p data-testid="hero-supporting-positioning" className="text-slate-500 text-xs sm:text-sm font-mono mb-4 tracking-wide">
-          {SUPPORTING_POSITIONING}
-        </p>
+        <div
+          data-testid="hero-supporting-positioning"
+          className={`font-mono text-xs sm:text-sm text-slate-400 mb-4 tracking-wide ${
+            reducedMotion ? '' : 'h-5 sm:h-6 overflow-hidden whitespace-nowrap'
+          }`}
+        >
+          {supportingText}
+          {!reducedMotion && <span className="animate-typewriter-blink">|</span>}
+        </div>
 
         <p className="text-slate-400 text-base sm:text-lg max-w-xl mx-auto mb-2 leading-relaxed">
           Designing scalable test automation solutions, leading QA teams, and

@@ -1,0 +1,431 @@
+{
+  "personal": {
+    "name": "Oleg Voronchenko",
+    "role": "Lead Test Automation Engineer",
+    "location": "Porto, Portugal - Hybrid / Remote",
+    "email": "o.vorono@gmail.com",
+    "linkedin": "https://www.linkedin.com/in/oleg-voronchenko",
+    "github": "https://github.com/OlegVoronchenko",
+    "portfolio": "https://olegvoronchenko.github.io/qa-portfolio",
+    "availability": "Open to new opportunities"
+  },
+  "summary": "Lead Test Automation Engineer and Senior SDET with 15+ years of hands-on experience designing and scaling automation across mobile, web, API, desktop, embedded, and cloud systems. Experienced in automation architecture, CI/CD, risk-based testing, and quality engineering for healthcare, medical devices, and mission-critical software. Led and mentored QA/AQA teams of 5–10 engineers through technical interviews, onboarding, code reviews, coaching, and engineering standards. Improved test execution speed by up to 50% and achieved 98% suite stability through systematic automation improvements. Apply AI-assisted engineering with human review and iterative validation in independent software projects.",
+  "stats": {
+    "years_experience": "15+",
+    "projects": "9+",
+    "tests_written": "10K+",
+    "suite_stability": "98%"
+  },
+  "experience": [
+    {
+      "company": "GlobalLogic (Hitachi Group)",
+      "role": "Lead Test Automation Engineer",
+      "period": "March 2023 — Present",
+      "location": "Remote",
+      "description": "Lead mobile and API test automation for a native Android/iOS healthcare platform supporting Emergency Medical Services and hospital ePCR data transmission.",
+      "achievements": [
+        "Lead automation for mission-critical Android, iOS, and API workflows using Java, Appium, and REST Assured",
+        "Develop and maintain reusable automation framework components and integrate test execution into GitLab CI",
+        "Review automation code, investigate failures, and improve framework reliability and maintainability",
+        "Mentor engineers and strengthen test design and engineering practices"
+      ]
+    },
+    {
+      "company": "GlobalLogic (Hitachi Group)",
+      "role": "Senior Test Automation Engineer",
+      "period": "March 2020 — March 2023",
+      "location": "Remote",
+      "description": "Developed automated verification and validation for embedded cardiac rhythm management software in a regulated medical-device environment.",
+      "achievements": [
+        "Developed automated validation using C#, .NET, NUnit, and MSTest",
+        "Expanded coverage of critical cardiac workflows and reduced manual testing effort",
+        "Investigated software and hardware-integration failures",
+        "Supported FDA/ISO-related quality and compliance activities"
+      ]
+    },
+    {
+      "company": "GlobalLogic",
+      "role": "Senior / Lead Test Automation Engineer",
+      "period": "April 2017 — March 2020",
+      "location": "Remote",
+      "description": "Designed web, API, and integration automation for a cloud-based emergency response and ePCR platform with healthcare integrations.",
+      "achievements": [
+        "Designed and evolved automation using Python, Selenium WebDriver, and pytest",
+        "Automated regression and integration scenarios for critical medical-data workflows",
+        "Improved maintainability, execution feedback, and framework stability through code reviews and technical guidance"
+      ]
+    },
+    {
+      "company": "GlobalLogic",
+      "role": "Senior / Lead QA Automation Engineer",
+      "period": "2012 — 2017",
+      "location": "Kharkiv, Ukraine",
+      "description": "Delivered automation for healthcare and enterprise products, including medical imaging, medical data exchange, cardiac monitoring, enterprise security, and mobile payments.",
+      "achievements": [
+        "Built and maintained web, API, mobile, integration, and desktop automation",
+        "Contributed to QA/AQA team leadership, mentoring, onboarding, interviews, and code reviews",
+        "Improved regression coverage, engineering practices, and manual verification efficiency"
+      ]
+    },
+    {
+      "company": "GlobalLogic",
+      "role": "QA / Test Automation Engineer",
+      "period": "2010 — 2012",
+      "location": "Kharkiv, Ukraine",
+      "description": "Built foundational test automation experience across medical and financial software, including desktop healthcare applications and mobile payment workflows.",
+      "achievements": [
+        "Automated WPF-based medical applications and mobile payment workflows",
+        "Developed functional and regression coverage for complex systems",
+        "Contributed to QA team coordination and automation practices"
+      ]
+    }
+  ],
+  "skills": {
+    "automation": [
+      "Java",
+      "Python",
+      "C#/.NET",
+      "Groovy",
+      "Selenium WebDriver",
+      "Appium 2.x",
+      "TestNG",
+      "JUnit",
+      "pytest",
+      "NUnit",
+      "MSTest",
+      "Cucumber",
+      "Playwright (familiarity)"
+    ],
+    "api_testing": [
+      "REST Assured",
+      "REST API Testing",
+      "Postman",
+      "Swagger",
+      "Log Analysis",
+      "Test Data Validation"
+    ],
+    "mobile": [
+      "Android",
+      "iOS",
+      "Appium 2.x",
+      "Cross-platform automation"
+    ],
+    "cicd": [
+      "Git",
+      "GitLab CI",
+      "GitHub Actions",
+      "Maven",
+      "Jenkins",
+      "Docker"
+    ],
+    "reporting": [
+      "TestRail",
+      "Jira",
+      "Allure",
+      "Azure DevOps",
+      "Zephyr"
+    ],
+    "methodologies": [
+      "BDD",
+      "Risk-Based Testing",
+      "Verification & Validation (V&V)",
+      "Requirements Traceability",
+      "Agile/Scrum",
+      "Regulated Medical Software Testing",
+      "QA Team Leadership",
+      "Mentoring",
+      "Code Reviews"
+    ]
+  },
+  "tools": [
+    {
+      "category": "Test Automation",
+      "items": [
+        "Java",
+        "Python",
+        "C#/.NET",
+        "Selenium WebDriver",
+        "Appium 2.x",
+        "TestNG",
+        "pytest",
+        "NUnit",
+        "MSTest",
+        "Cucumber"
+      ]
+    },
+    {
+      "category": "API Testing",
+      "items": [
+        "REST Assured",
+        "Postman",
+        "REST API Testing",
+        "Swagger"
+      ]
+    },
+    {
+      "category": "Mobile Testing",
+      "items": [
+        "Appium 2.x",
+        "Android",
+        "iOS",
+        "BrowserStack"
+      ]
+    },
+    {
+      "category": "Bug Tracking",
+      "items": [
+        "Jira",
+        "Azure DevOps",
+        "TestRail"
+      ]
+    },
+    {
+      "category": "Version Control",
+      "items": [
+        "Git",
+        "GitHub",
+        "GitHub Actions"
+      ]
+    },
+    {
+      "category": "CI/CD",
+      "items": [
+        "GitLab CI",
+        "GitHub Actions",
+        "Jenkins",
+        "Maven",
+        "Docker"
+      ]
+    },
+    {
+      "category": "Reporting",
+      "items": [
+        "Allure",
+        "TestRail",
+        "Zephyr",
+        "Jira"
+      ]
+    },
+    {
+      "category": "Regulated Testing",
+      "items": [
+        "FDA 21 CFR Part 11",
+        "Verification & Validation (V&V)",
+        "Requirements Traceability",
+        "Audit participation"
+      ]
+    },
+    {
+      "category": "Engineering Leadership",
+      "items": [
+        "QA/AQA Team Leadership",
+        "Mentoring",
+        "Onboarding",
+        "Technical Interviews",
+        "Code Reviews",
+        "Performance Feedback",
+        "Task Planning"
+      ]
+    },
+    {
+      "category": "AI-Assisted Engineering",
+      "items": [
+        "ChatGPT",
+        "Claude Code",
+        "Prompt Engineering",
+        "LLM Output Evaluation",
+        "AI-Assisted Development",
+        "Flutter",
+        "Dart"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Healthcare ePCR Mobile Platform",
+      "type": "E2E Testing",
+      "domain": "EMS",
+      "domain_icon": "🚑",
+      "description": "Native Android/iOS automation for a healthcare platform supporting EMS workflows and hospital ePCR data transmission. Developed reusable Java/Appium automation and integrated execution into CI pipelines.",
+      "stack": [
+        "Java",
+        "Appium",
+        "REST Assured",
+        "TestNG",
+        "GitLab CI"
+      ],
+      "metrics": [
+        "Android + iOS coverage",
+        "CI/CD integrated",
+        "Reduced flaky failures"
+      ]
+    },
+    {
+      "name": "Cardiac Device Validation",
+      "type": "Embedded Software Validation",
+      "domain": "Medical Device",
+      "domain_icon": "💊",
+      "description": "Automated verification and validation of embedded cardiac rhythm management software in a regulated medical-device environment, including investigation of software and hardware-integration failures.",
+      "stack": [
+        "C#",
+        ".NET",
+        "NUnit",
+        "MSTest",
+        "V&V"
+      ],
+      "metrics": [
+        "Critical cardiac workflow coverage",
+        "FDA/ISO quality activities"
+      ]
+    },
+    {
+      "name": "Cloud Emergency Response",
+      "type": "Web, API & Integration Automation",
+      "domain": "Healthcare",
+      "domain_icon": "🏥",
+      "description": "Web, API, and integration automation for a cloud-based emergency response and ePCR platform. Designed and maintained Python/Selenium/pytest automation for critical medical-data workflows.",
+      "stack": [
+        "Python",
+        "Selenium WebDriver",
+        "pytest",
+        "API Testing"
+      ],
+      "metrics": [
+        "Critical medical workflow coverage",
+        "Regression and integration automation"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "institution": "KhPI — Kharkiv Polytechnic University",
+      "degree": "Master's Degree — Mathematician Analyst Engineer",
+      "period": "2001 — 2007",
+      "location": "Kharkiv, Ukraine"
+    },
+    {
+      "institution": "KhPI — Kharkiv Polytechnic University",
+      "degree": "Specialist's Degree — Project Management and Program Professional",
+      "period": "2005 — 2007",
+      "location": "Kharkiv, Ukraine"
+    }
+  ],
+  "certifications": [
+    {
+      "name": "ISTQB Certified Tester — Foundation Level",
+      "issuer": "ISTQB",
+      "year": "2018"
+    }
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Professional"
+    },
+    {
+      "language": "Ukrainian",
+      "level": "Native"
+    },
+    {
+      "language": "Russian",
+      "level": "Native"
+    }
+  ],
+  "contact": {
+    "email": "o.vorono@gmail.com",
+    "linkedin": "https://www.linkedin.com/in/oleg-voronchenko",
+    "github": "https://github.com/OlegVoronchenko",
+    "portfolio": "https://olegvoronchenko.github.io/qa-portfolio"
+  },
+  "selected_achievements": [
+    {
+      "metric": "Up to 85%",
+      "label": "Regression automation",
+      "description": "Automated up to 85% of regression testing across relevant initiatives."
+    },
+    {
+      "metric": "~40%",
+      "label": "Faster release cycles",
+      "description": "Helped accelerate release cycles by approximately 40% through automation improvements."
+    },
+    {
+      "metric": "Up to 50%",
+      "label": "Faster test execution",
+      "description": "Reduced test execution time through systematic UI automation code reviews and engineering improvements."
+    },
+    {
+      "metric": "30%",
+      "label": "Faster mobile automation",
+      "description": "Reduced mobile automation execution time through improved synchronization and wait strategies."
+    },
+    {
+      "metric": "98%",
+      "label": "Suite stability",
+      "description": "Improved automation suite stability through framework and review practices."
+    },
+    {
+      "metric": "Up to 10",
+      "label": "Engineers led and mentored",
+      "description": "Led and mentored QA/AQA teams, including onboarding, interviews, code reviews, and performance feedback."
+    },
+    {
+      "metric": null,
+      "label": "Critical API defect discovery",
+      "description": "Identified a critical API issue that had remained undetected for two months through log analysis and API validation."
+    }
+  ],
+  "leadership": {
+    "summary": "Technical leadership of QA/AQA teams of 5–10 engineers, combining hands-on automation engineering with mentoring, code reviews, interviews, onboarding, planning, and quality process improvement.",
+    "capabilities": [
+      "QA/AQA team leadership",
+      "Task planning and prioritization",
+      "Mentoring and onboarding",
+      "Technical interviews and candidate evaluation",
+      "Automation code reviews and engineering standards",
+      "Performance feedback and coaching",
+      "Cross-team collaboration and release readiness"
+    ]
+  },
+  "independent_projects": [
+    {
+      "name": "AI-Assisted Software Engineering & Quality Engineering",
+      "period": "2025 — Present",
+      "context": "Independent projects alongside full-time employment",
+      "description": "Developing multilingual educational applications using Flutter/Dart and AI-assisted development workflows, with structured testing and validation of generated code and content.",
+      "activities": [
+        "Use ChatGPT and Claude Code for requirements analysis, coding, debugging, and refactoring",
+        "Design structured prompts and review AI-generated outputs for accuracy, consistency, and quality",
+        "Apply iterative testing, feedback, and correction workflows",
+        "Validate multilingual educational content and localization quality"
+      ],
+      "stack": [
+        "Flutter",
+        "Dart",
+        "ChatGPT",
+        "Claude Code",
+        "Prompt Engineering",
+        "LLM Output Evaluation",
+        "Git"
+      ]
+    }
+  ],
+  "positioning": {
+    "primary_role": "Lead Test Automation Engineer",
+    "secondary_roles": [
+      "Senior SDET",
+      "QA Automation Architecture",
+      "Engineering Leadership"
+    ],
+    "domains": [
+      "Healthcare",
+      "Medical Devices",
+      "Mission-Critical Systems"
+    ],
+    "focus": [
+      "Automation Architecture",
+      "Hands-on Engineering",
+      "Technical Leadership",
+      "AI-Assisted Engineering"
+    ]
+  }
+}

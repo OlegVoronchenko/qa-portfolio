@@ -38,7 +38,7 @@ export default function Contact() {
         <span className="text-accent">#</span> Contact
       </h2>
       <p className="text-slate-500 mb-10 text-sm sm:text-base">
-        Let's connect and discuss quality engineering
+        Let&rsquo;s connect and discuss quality engineering
       </p>
 
       <div className="flex flex-wrap justify-center gap-4">

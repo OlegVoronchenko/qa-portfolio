@@ -79,15 +79,15 @@ export default function About() {
           <div>
             <h3 className="text-lg font-bold mb-3">Why Quality Matters</h3>
             <p className="text-slate-400 text-sm leading-relaxed mb-3">
-              I've spent 15 years watching the same failure modes repeat across
+              I&rsquo;ve spent 15 years watching the same failure modes repeat across
               different companies and domains: test suites that nobody trusts,
-              automation that breaks faster than it's written, and releases that
-              go out on hope rather than evidence. That's what I actually work against.
+              automation that breaks faster than it&rsquo;s written, and releases that
+              go out on hope rather than evidence. That&rsquo;s what I actually work against.
             </p>
             <p className="text-slate-400 text-sm leading-relaxed mb-3">
               I focus on building automation that stays stable — not impressive
               coverage numbers that collapse under the first refactor. In medical
-              device software this wasn't a preference, it was a requirement.
+              device software this wasn&rsquo;t a preference, it was a requirement.
               FDA-regulated environments taught me that a flaky test is worse than
               no test — it creates noise, erodes confidence, and eventually gets skipped.
             </p>

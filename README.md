@@ -2,6 +2,10 @@
 
 React + Vite + Tailwind portfolio website with a comprehensive Playwright test suite demonstrating QA automation best practices.
 
+**Live site:** https://olegvoronchenko.github.io/qa-portfolio/
+**LinkedIn:** https://www.linkedin.com/in/oleg-voronchenko
+**GitHub:** https://github.com/OlegVoronchenko
+
 ## Quick Start
 
 ```bash

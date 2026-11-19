@@ -78,6 +78,8 @@ export default function Footer() {
             src="https://visitor-badge.laobi.icu/badge?page_id=OlegVoronchenko.qa-portfolio"
             alt="Visitor count badge"
             aria-hidden="true"
+            loading="lazy"
+            decoding="async"
             className="opacity-30 hover:opacity-70 transition-opacity duration-500"
             style={{ height: '16px' }}
             onError={(e) => {

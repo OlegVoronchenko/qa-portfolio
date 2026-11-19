@@ -28,16 +28,21 @@ GITHUB_PAGES_URL=https://olegvoronchenko.github.io/qa-portfolio/ pytest tests/ -
 
 ## Profile Data Source
 
-| Situation | Data Source |
-|-----------|-------------|
-| CV file in cv/ folder | Parsed from CV via AI |
-| No CV file | profile.default.json |
-| Local development | profile.default.json |
+`src/data/profile.json` is the single, Git-tracked, canonical source
+of professional profile data — used identically by local development,
+automated tests, CI, and production builds. There is no separate
+fallback/default file; see `scripts/validate_profile.py`.
+
+| Situation | Behavior |
+|-----------|----------|
+| CV file in `cv/` folder | `scripts/parse_cv.py` (regex-based, local-only — no external API) re-parses it and updates `profile.json` in place |
+| No CV file in `cv/` folder | `profile.json` is used exactly as committed |
+| Local development | Same `profile.json`, read directly — no copy/fallback step |
 
 To update your portfolio:
 1. Put your CV in `cv/` folder (PDF or DOCX)
 2. Push to main
-3. CI automatically parses CV and rebuilds site
+3. CI automatically re-parses the CV and updates `profile.json`
 
 ## Screenshots
 

@@ -3,9 +3,9 @@
  *
  * Returns the parsed profile.json object containing all personal,
  * experience, skills, and contact data that drives every section
- * of the portfolio site. Data originates from either the CV parser
- * or profile.default.json — components should never hardcode
- * personal information.
+ * of the portfolio site. src/data/profile.json is the single,
+ * Git-tracked canonical source (see scripts/validate_profile.py) —
+ * components should never hardcode personal information.
  */
 import profileData from '../data/profile.json'
 

@@ -80,6 +80,7 @@ export default function Skills() {
       </p>
 
       {/* QA Practices */}
+      {/* eslint-disable-next-line react/jsx-no-comment-textnodes -- visible "//" is intentional stylized text, not a stray JS comment */}
       <h3 className="font-mono text-sm text-accent mb-4">// QA Practices</h3>
 
       {/* Desktop grid */}
@@ -170,6 +171,7 @@ export default function Skills() {
       </div>
 
       {/* Tools & Technologies */}
+      {/* eslint-disable-next-line react/jsx-no-comment-textnodes -- visible "//" is intentional stylized text, not a stray JS comment */}
       <h3 className="font-mono text-sm text-accent mb-4">// Tools & Technologies</h3>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {tools.map((t) => {

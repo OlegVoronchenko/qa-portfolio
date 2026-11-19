@@ -24,7 +24,7 @@ Forbidden in src/ JSX/TSX files:
 - Company names as text
 
 Allowed locations:
-- profile.default.json (the actual data source)
+- profile.json (the canonical data source)
 - CV_TEMPLATE.md (the template)
 - ARCHITECTURE.md (documentation)
 - Generated files (parsed_profile.json, test_report.json)
@@ -57,7 +57,6 @@ FORBIDDEN_PATTERNS = [
 ]
 
 SKIP_PATTERNS = [
-    'profile.default.json',
     'profile.json',
     'CV_TEMPLATE.md',
     'ARCHITECTURE.md',
@@ -128,7 +127,7 @@ def main():
         print()
 
     print(f"{'='*60}")
-    print("Fix: move these values to src/data/profile.default.json")
+    print("Fix: move these values to src/data/profile.json")
     print("and read them via useProfile() hook in your component.")
     print(f"{'='*60}\n")
     sys.exit(1)

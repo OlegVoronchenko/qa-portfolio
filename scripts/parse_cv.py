@@ -31,9 +31,13 @@ needed. Works offline and in any CI environment.
 
 FALLBACK BEHAVIOR
 -----------------
-If parsing fails or any section returns empty, the script
-falls back to defaults defined in profile.default.json.
-The site never crashes due to missing CV data.
+If parsing fails or any section returns empty, the script falls
+back to whatever is already in the canonical src/data/profile.json
+(read before it gets overwritten) — never a separate template file.
+profile.json is the single source of truth, so a partial CV parse
+can only ever fall back to real, previously-approved content, not a
+second file that could silently drift out of sync with it. The site
+never crashes due to missing CV data.
 """
 
 import json
@@ -44,7 +48,9 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 OUTPUT_PATH = PROJECT_ROOT / "src" / "data" / "profile.json"
 BACKUP_PATH = PROJECT_ROOT / "cv" / "parsed_profile.json"
-DEFAULT_PATH = PROJECT_ROOT / "src" / "data" / "profile.default.json"
+# Fallback baseline is the canonical file itself, read before this
+# script overwrites it — not a separate profile.default.json.
+DEFAULT_PATH = OUTPUT_PATH
 
 KNOWN_SKILLS = {
     "automation": [

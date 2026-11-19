@@ -86,4 +86,4 @@ XPath             <- FORBIDDEN
 - [ ] All tests pass locally
 - [ ] No new hardcoded strings in React components
 - [ ] New tests have docstrings and marks
-- [ ] `profile.default.json` updated if new data fields added
+- [ ] `src/data/profile.json` updated directly if new data fields are added (it is the single canonical source — see `scripts/validate_profile.py`)
