@@ -9,12 +9,13 @@ Portfolio QA project — full requirements coverage.
 | ID | Title | Category | Priority | Tests |
 |----|-------|----------|----------|-------|
 | [REQ-001](REQ-001-smoke.md) | Page Load & Core Rendering | Smoke | Critical | TC-001-1 … TC-001-5 |
-| [REQ-002](REQ-002-navigation.md) | Navigation Links | Navigation | High | TC-002-1 … TC-002-5 |
+| [REQ-002](REQ-002-navigation.md) | Navigation Links | Navigation | High | TC-002-1 … TC-002-6 |
 | [REQ-003](REQ-003-content.md) | Page Content & Data Rendering | Content | High | TC-003-1 … TC-003-9 |
 | [REQ-004](REQ-004-responsive.md) | Responsive Layout (Mobile) | Responsive | High | TC-004-1 … TC-004-2 |
 | [REQ-005](REQ-005-performance.md) | Page Load Performance | Performance | Medium | TC-005-1 |
 | [REQ-006](REQ-006-accessibility.md) | Accessibility (WCAG 2.1 AA) | Accessibility | High | TC-006-1 … TC-006-2 |
 | [REQ-007](REQ-007-deployment.md) | Production Deployment Verification | Deployment | Critical | TC-007-1 … TC-007-3 |
+| [REQ-008](REQ-008-how-i-think.md) | How I Think | How I Think | High | TC-008-1 … TC-008-7 |
 
 ---
 
@@ -32,6 +33,7 @@ Portfolio QA project — full requirements coverage.
 | TC-002-3 | `test_nav_link_is_visible_with_correct_href[Projects-#projects]` | REQ-002 | AC-002-5, AC-002-6 |
 | TC-002-4 | `test_nav_link_is_visible_with_correct_href[Contact-#contact]` | REQ-002 | AC-002-7, AC-002-8 |
 | TC-002-5 | `test_nav_link_is_visible_with_correct_href[Experience-#experience]` | REQ-002 | AC-002-9, AC-002-10 |
+| TC-002-6 | `test_nav_link_is_visible_with_correct_href[Thinking-#how-i-think]` | REQ-002 | AC-002-11, AC-002-12 |
 | TC-003-1 | `test_skills_section_contains_core_stack[Python]` | REQ-003 | AC-003-1 |
 | TC-003-2 | `test_skills_section_contains_core_stack[Playwright (familiarity)]` | REQ-003 | AC-003-2 |
 | TC-003-3 | `test_skills_section_contains_core_stack[pytest]` | REQ-003 | AC-003-3 |
@@ -49,6 +51,13 @@ Portfolio QA project — full requirements coverage.
 | TC-007-1 | `test_assets_load_on_github_pages` | REQ-007 | AC-007-1, AC-007-2, AC-007-3 |
 | TC-007-2 | `test_base_path_is_correct` | REQ-007 | AC-007-4 |
 | TC-007-3 | `test_no_console_errors_on_production` | REQ-007 | AC-007-5 |
+| TC-008-1 | `test_how_i_think_section_is_visible` | REQ-008 | AC-008-1 |
+| TC-008-2 | `test_how_i_think_shows_exactly_three_cards` | REQ-008 | AC-008-2 |
+| TC-008-3 | `test_how_i_think_card_shows_correct_category_and_title[0]` | REQ-008 | AC-008-3 |
+| TC-008-4 | `test_how_i_think_card_shows_correct_category_and_title[1]` | REQ-008 | AC-008-3 |
+| TC-008-5 | `test_how_i_think_card_shows_correct_category_and_title[2]` | REQ-008 | AC-008-3 |
+| TC-008-6 | `test_how_i_think_card_starts_collapsed` | REQ-008 | AC-008-4 |
+| TC-008-7 | `test_how_i_think_card_expands_on_activation` | REQ-008 | AC-008-5 |
 
 ---
 
@@ -57,10 +66,11 @@ Portfolio QA project — full requirements coverage.
 | Category | Requirements | Acceptance Criteria | Tests | Coverage |
 |----------|-------------|--------------------|----|---------|
 | Smoke | 1 | 8 | 5 | 100% |
-| Navigation | 1 | 10 | 5 | 100% |
+| Navigation | 1 | 12 | 6 | 100% |
 | Content | 1 | 11 | 9 | 100% |
 | Responsive | 1 | 2 | 2 | 100% |
 | Performance | 1 | 1 | 1 | 100% |
 | Accessibility | 1 | 4 | 2 | 100% |
 | Deployment | 1 | 5 | 3 | 100% |
-| **Total** | **7** | **41** | **27** | **100%** |
+| How I Think | 1 | 5 | 7 | 100% |
+| **Total** | **8** | **48** | **35** | **100%** |

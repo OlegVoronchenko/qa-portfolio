@@ -90,6 +90,11 @@ COVERAGE_MAP = {
     "test_experience_section_shows_all_roles": ["UI", "Content", "Career Timeline"],
     "test_experience_entry_can_expand_additional_achievements": ["UI", "Accessibility", "Interaction"],
     "test_cv_download_link_matches_manifest": ["UI", "Content", "Build Artifact"],
+    "test_how_i_think_section_is_visible": ["UI", "Content", "Engineering Judgment"],
+    "test_how_i_think_shows_exactly_three_cards": ["UI", "Content", "Engineering Judgment"],
+    "test_how_i_think_card_shows_correct_category_and_title": ["UI", "Content", "Engineering Judgment"],
+    "test_how_i_think_card_starts_collapsed": ["UI", "Accessibility", "Interaction"],
+    "test_how_i_think_card_expands_on_activation": ["UI", "Accessibility", "Interaction"],
     "test_projects_section_has_expected_cards": ["UI", "Content", "Count"],
     "test_contact_section_has_required_channels": ["UI", "Content", "Contact"],
     "test_test_results_section_renders": ["UI", "API", "Data Fetch"],
@@ -372,6 +377,27 @@ STEPS_MAP = {
             },
         ],
     },
+    "test_nav_link_is_visible_with_correct_href[Thinking-#how-i-think]": {
+        "tc_id": "TC-002-6",
+        "req_id": "REQ-002",
+        "ac_ids": ["AC-002-11", "AC-002-12"],
+        "description": "Thinking link must be visible in navbar and point to #how-i-think",
+        "mark": "navigation",
+        "steps": [
+            {
+                "description": "Locate nav link 'Thinking'",
+                "code": "link = portfolio.nav_link(label)",
+            },
+            {
+                "description": "Assert 'Thinking' link is visible",
+                "code": "assert link.is_visible(), Msg.NAV_LINK_NOT_VISIBLE.format(name=label)",
+            },
+            {
+                "description": "Assert 'Thinking' href equals '#how-i-think'",
+                "code": "actual_href = link.get_attribute(\"href\")\nassert actual_href == href, Msg.NAV_LINK_WRONG_HREF.format(\n    name=label, expected=href, actual=actual_href,\n)",
+            },
+        ],
+    },
     "test_experience_section_shows_all_roles": {
         "tc_id": "TC-003-7",
         "req_id": "REQ-003",
@@ -436,6 +462,157 @@ STEPS_MAP = {
             {
                 "description": "Assert link absence or visibility/href/download matches the manifest",
                 "code": "assert link.count() == 0  # or href/download match manifest['url']/'filename'",
+            },
+        ],
+    },
+    "test_how_i_think_section_is_visible": {
+        "tc_id": "TC-008-1",
+        "req_id": "REQ-008",
+        "ac_ids": ["AC-008-1"],
+        "description": "The How I Think section must be present and visible",
+        "mark": "content",
+        "steps": [
+            {
+                "description": "Locate the How I Think section",
+                "code": "section = portfolio.how_i_think_section",
+            },
+            {
+                "description": "Assert the section is visible",
+                "code": "assert section.is_visible()",
+            },
+        ],
+    },
+    "test_how_i_think_shows_exactly_three_cards": {
+        "tc_id": "TC-008-2",
+        "req_id": "REQ-008",
+        "ac_ids": ["AC-008-2"],
+        "description": "How I Think must render exactly 3 article cards from howIThink.js",
+        "mark": "content",
+        "steps": [
+            {
+                "description": "Count How I Think cards with role='article'",
+                "code": "count = portfolio.count_how_i_think_cards()",
+            },
+            {
+                "description": "Capture screenshot of How I Think section",
+                "code": "portfolio.take_screenshot('assert_how_i_think_cards')",
+            },
+            {
+                "description": "Assert card count matches expected",
+                "code": "assert count == COUNTS.HOW_I_THINK_CARDS, Msg.WRONG_HOW_I_THINK_COUNT.format(\n    expected=COUNTS.HOW_I_THINK_CARDS, actual=count,\n)",
+            },
+        ],
+    },
+    "test_how_i_think_card_shows_correct_category_and_title[0]": {
+        "tc_id": "TC-008-3",
+        "req_id": "REQ-008",
+        "ac_ids": ["AC-008-3"],
+        "description": "How I Think card 0 must show its correct category and title",
+        "mark": "content",
+        "steps": [
+            {
+                "description": "Locate card 0's title heading",
+                "code": "heading = portfolio.how_i_think_card_heading(index)",
+            },
+            {
+                "description": "Assert card 0 title matches expected",
+                "code": "assert heading.inner_text() == expected_title",
+            },
+            {
+                "description": "Assert card 0 category matches expected",
+                "code": "assert portfolio.how_i_think_card_category_text(index, expected_category).is_visible()",
+            },
+        ],
+    },
+    "test_how_i_think_card_shows_correct_category_and_title[1]": {
+        "tc_id": "TC-008-4",
+        "req_id": "REQ-008",
+        "ac_ids": ["AC-008-3"],
+        "description": "How I Think card 1 must show its correct category and title",
+        "mark": "content",
+        "steps": [
+            {
+                "description": "Locate card 1's title heading",
+                "code": "heading = portfolio.how_i_think_card_heading(index)",
+            },
+            {
+                "description": "Assert card 1 title matches expected",
+                "code": "assert heading.inner_text() == expected_title",
+            },
+            {
+                "description": "Assert card 1 category matches expected",
+                "code": "assert portfolio.how_i_think_card_category_text(index, expected_category).is_visible()",
+            },
+        ],
+    },
+    "test_how_i_think_card_shows_correct_category_and_title[2]": {
+        "tc_id": "TC-008-5",
+        "req_id": "REQ-008",
+        "ac_ids": ["AC-008-3"],
+        "description": "How I Think card 2 must show its correct category and title",
+        "mark": "content",
+        "steps": [
+            {
+                "description": "Locate card 2's title heading",
+                "code": "heading = portfolio.how_i_think_card_heading(index)",
+            },
+            {
+                "description": "Assert card 2 title matches expected",
+                "code": "assert heading.inner_text() == expected_title",
+            },
+            {
+                "description": "Assert card 2 category matches expected",
+                "code": "assert portfolio.how_i_think_card_category_text(index, expected_category).is_visible()",
+            },
+        ],
+    },
+    "test_how_i_think_card_starts_collapsed": {
+        "tc_id": "TC-008-6",
+        "req_id": "REQ-008",
+        "ac_ids": ["AC-008-4"],
+        "description": "A How I Think card must start collapsed (aria-expanded=false, detail content hidden)",
+        "mark": "content",
+        "steps": [
+            {
+                "description": "Locate the first card's toggle control",
+                "code": "button = portfolio.how_i_think_card_toggle_button(0)",
+            },
+            {
+                "description": "Assert aria-expanded is 'false'",
+                "code": "assert button.get_attribute(\"aria-expanded\") == \"false\"",
+            },
+            {
+                "description": "Assert expanded detail content is not visible",
+                "code": "assert not portfolio.how_i_think_card_expanded_content(0).is_visible()",
+            },
+        ],
+    },
+    "test_how_i_think_card_expands_on_activation": {
+        "tc_id": "TC-008-7",
+        "req_id": "REQ-008",
+        "ac_ids": ["AC-008-5"],
+        "description": "Activating a How I Think card's control must expand it in place without affecting the other cards",
+        "mark": "content",
+        "steps": [
+            {
+                "description": "Locate the first card's toggle control",
+                "code": "button = portfolio.how_i_think_card_toggle_button(0)",
+            },
+            {
+                "description": "Click to expand",
+                "code": "button.click()",
+            },
+            {
+                "description": "Assert aria-expanded is now 'true'",
+                "code": "assert button.get_attribute(\"aria-expanded\") == \"true\"",
+            },
+            {
+                "description": "Assert expanded detail content is now visible",
+                "code": "assert portfolio.how_i_think_card_expanded_content(0).is_visible()",
+            },
+            {
+                "description": "Assert the other two cards remain collapsed",
+                "code": "assert portfolio.how_i_think_card_toggle_button(1).get_attribute(\"aria-expanded\") == \"false\"\nassert portfolio.how_i_think_card_toggle_button(2).get_attribute(\"aria-expanded\") == \"false\"",
             },
         ],
     },

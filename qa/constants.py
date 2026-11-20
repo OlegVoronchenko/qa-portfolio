@@ -46,6 +46,7 @@ class Sections:
     HERO: str = "#hero"
     ABOUT: str = "#about"
     EXPERIENCE: str = "#experience"
+    HOW_I_THINK: str = "#how-i-think"
     SKILLS: str = "#skills"
     PROJECTS: str = "#projects"
     TEST_RESULTS: str = "#test-results"
@@ -56,12 +57,14 @@ class Sections:
 class NavLinks:
     ABOUT: str = "About"
     EXPERIENCE: str = "Experience"
+    THINKING: str = "Thinking"
     SKILLS: str = "Skills"
     PROJECTS: str = "Projects"
     CONTACT: str = "Contact"
     ALL_WITH_HREFS: Tuple[tuple, ...] = (
         ("About", "#about"),
         ("Experience", "#experience"),
+        ("Thinking", "#how-i-think"),
         ("Skills", "#skills"),
         ("Projects", "#projects"),
         ("Contact", "#contact"),
@@ -84,6 +87,20 @@ class ExpectedCounts:
     CONTACT_LINKS: int = 4
     H1_HEADINGS: int = 1
     EXPERIENCE_ENTRIES: int = 5
+    HOW_I_THINK_CARDS: int = 3
+
+
+@dataclass(frozen=True)
+class HowIThinkContent:
+    # (category, title) pairs, in order, mirroring
+    # src/data/howIThink.js's HOW_I_THINK_ARTICLES exactly. Kept as a
+    # small, manually-synced constant — same convention as CoreSkills
+    # above — rather than parsing the JS data module from Python.
+    ARTICLES: Tuple[Tuple[str, str], ...] = (
+        ("AUTOMATION ARCHITECTURE", "Why More Tests Can Mean Less Confidence"),
+        ("ENGINEERING LEADERSHIP", "The Mathematics of Release Risk"),
+        ("AI-ASSISTED ENGINEERING", "The Verification Paradox of AI"),
+    )
 
 
 @dataclass(frozen=True)
@@ -116,3 +133,4 @@ SKILLS = CoreSkills()
 COUNTS = ExpectedCounts()
 PERF = PerformanceBudget()
 DEPLOYMENT = DeploymentConfig()
+HOW_I_THINK = HowIThinkContent()

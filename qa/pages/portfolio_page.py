@@ -242,6 +242,10 @@ class PortfolioPage:
         return self._page.locator(SECTIONS.EXPERIENCE)
 
     @property
+    def how_i_think_section(self) -> Locator:
+        return self._page.locator(SECTIONS.HOW_I_THINK)
+
+    @property
     def skills_section(self) -> Locator:
         return self._page.locator(SECTIONS.SKILLS)
 
@@ -281,6 +285,31 @@ class PortfolioPage:
         return self.experience_section.locator("button")
 
     @property
+    def how_i_think_cards(self) -> Locator:
+        return self.how_i_think_section.get_by_role("article")
+
+    def how_i_think_card(self, index: int) -> Locator:
+        return self.how_i_think_cards.nth(index)
+
+    def how_i_think_card_heading(self, index: int) -> Locator:
+        """The card's title — a real <h3>, so role-based like everything
+        else in this POM rather than a data-testid lookup."""
+        return self.how_i_think_card(index).get_by_role("heading", level=3)
+
+    def how_i_think_card_category_text(self, index: int, category: str) -> Locator:
+        return self.how_i_think_card(index).get_by_text(category, exact=True)
+
+    def how_i_think_card_toggle_button(self, index: int) -> Locator:
+        """Position-stable: scoped to one card by index, not located by
+        accessible name — the button's name changes from 'Explore Idea'
+        to 'Collapse' after the first click (see
+        experience_toggle_buttons for the same pitfall elsewhere)."""
+        return self.how_i_think_card(index).get_by_role("button")
+
+    def how_i_think_card_expanded_content(self, index: int) -> Locator:
+        return self.how_i_think_card(index).locator('[data-testid="how-i-think-expanded"]')
+
+    @property
     def project_cards(self) -> Locator:
         return self.projects_section.get_by_role("article")
 
@@ -312,6 +341,9 @@ class PortfolioPage:
 
     def count_experience_entries(self) -> int:
         return self.experience_entries.count()
+
+    def count_how_i_think_cards(self) -> int:
+        return self.how_i_think_cards.count()
 
     def count_contact_links(self) -> int:
         return self.contact_links.count()

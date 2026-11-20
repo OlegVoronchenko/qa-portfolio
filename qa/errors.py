@@ -65,6 +65,13 @@ class Messages:
     SKILL_NOT_VISIBLE = "Skill '{name}' should be visible in the skills section"
     WRONG_PROJECT_COUNT = "Expected {expected} project cards, got: {actual}"
     WRONG_EXPERIENCE_COUNT = "Expected {expected} experience entries, got: {actual}"
+    WRONG_HOW_I_THINK_COUNT = "Expected {expected} How I Think cards, got: {actual}"
+    HOW_I_THINK_WRONG_CATEGORY = (
+        "How I Think card {index}: expected category '{expected}', got: '{actual}'"
+    )
+    HOW_I_THINK_WRONG_TITLE = (
+        "How I Think card {index}: expected title '{expected}', got: '{actual}'"
+    )
     WRONG_CONTACT_COUNT = "Expected {expected} contact channels, got: {actual}"
     TEST_RESULTS_NOT_VISIBLE = (
         "Test results section not visible on '{url}'. "

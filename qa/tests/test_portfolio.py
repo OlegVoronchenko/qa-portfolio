@@ -44,7 +44,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from config import CONFIG
 from conftest import step
-from constants import PAGE_TITLE, HERO, NAV, SKILLS, COUNTS, PERF
+from constants import PAGE_TITLE, HERO, NAV, SKILLS, COUNTS, PERF, HOW_I_THINK
 from errors import Messages as Msg
 from pages.portfolio_page import PortfolioPage
 
@@ -511,6 +511,135 @@ class TestContent:
                 path=f"screenshots/assert_test_results_{ts}.png",
                 full_page=False
             )
+
+    # REQ-008 | AC-008-1
+    @pytest.mark.content
+    def test_how_i_think_section_is_visible(self, portfolio: PortfolioPage):
+        """Verify the "How I Think" section is present and visible.
+
+        Failure means: the HowIThink component failed to render or
+        was removed from App.jsx.
+        """
+        with step("Locate the How I Think section"):
+            section = portfolio.how_i_think_section
+
+        with step("Assert the section is visible"):
+            assert section.is_visible(), (
+                "How I Think section (#how-i-think) is not visible on the page"
+            )
+
+    # REQ-008 | AC-008-2
+    @pytest.mark.content
+    def test_how_i_think_shows_exactly_three_cards(self, portfolio: PortfolioPage):
+        """Verify exactly 3 How I Think article cards render.
+
+        Counts elements with role='article' inside #how-i-think.
+        Expected: {COUNTS.HOW_I_THINK_CARDS} cards from howIThink.js.
+
+        Failure means: an article was added or removed from
+        src/data/howIThink.js, or the component changed markup.
+        """
+        with step("Count How I Think cards with role='article'"):
+            count = portfolio.count_how_i_think_cards()
+
+        with step("Capture screenshot of How I Think section"):
+            portfolio.take_screenshot("assert_how_i_think_cards")
+
+        with step(f"Assert {COUNTS.HOW_I_THINK_CARDS} cards (found {count})"):
+            assert count == COUNTS.HOW_I_THINK_CARDS, Msg.WRONG_HOW_I_THINK_COUNT.format(
+                expected=COUNTS.HOW_I_THINK_CARDS, actual=count,
+            )
+
+    # REQ-008 | AC-008-3
+    @pytest.mark.content
+    @pytest.mark.parametrize("index", range(len(HOW_I_THINK.ARTICLES)))
+    def test_how_i_think_card_shows_correct_category_and_title(
+        self, portfolio: PortfolioPage, index: int,
+    ):
+        """Verify a How I Think card shows its correct category and title.
+
+        Parametrized across all three articles defined in
+        qa/constants.py's HOW_I_THINK.ARTICLES, which mirrors
+        src/data/howIThink.js.
+
+        Failure means: the article order/content changed in
+        howIThink.js without updating the mirrored test constant,
+        or the component stopped rendering the category/title.
+        """
+        expected_category, expected_title = HOW_I_THINK.ARTICLES[index]
+
+        with step(f"Locate card {index}'s title heading"):
+            heading = portfolio.how_i_think_card_heading(index)
+
+        with step(f"Assert card {index} title is '{expected_title}'"):
+            assert heading.inner_text() == expected_title, Msg.HOW_I_THINK_WRONG_TITLE.format(
+                index=index, expected=expected_title, actual=heading.inner_text(),
+            )
+
+        with step(f"Assert card {index} category is '{expected_category}'"):
+            category_locator = portfolio.how_i_think_card_category_text(index, expected_category)
+            assert category_locator.is_visible(), Msg.HOW_I_THINK_WRONG_CATEGORY.format(
+                index=index, expected=expected_category, actual="(not found)",
+            )
+
+    # REQ-008 | AC-008-4
+    @pytest.mark.content
+    def test_how_i_think_card_starts_collapsed(self, portfolio: PortfolioPage):
+        """Verify a How I Think card starts collapsed.
+
+        Checks aria-expanded="false" on the toggle control and that
+        the expanded detail content is not visible.
+
+        Failure means: the card's initial expand state changed.
+        """
+        with step("Locate the first card's toggle control"):
+            button = portfolio.how_i_think_card_toggle_button(0)
+
+        with step("Assert aria-expanded is 'false'"):
+            assert button.get_attribute("aria-expanded") == "false", (
+                "How I Think card should start collapsed (aria-expanded=false)"
+            )
+
+        with step("Assert expanded detail content is not visible"):
+            content = portfolio.how_i_think_card_expanded_content(0)
+            assert not content.is_visible(), (
+                "How I Think card's expanded content should not be visible before activation"
+            )
+
+    # REQ-008 | AC-008-5
+    @pytest.mark.content
+    def test_how_i_think_card_expands_on_activation(self, portfolio: PortfolioPage):
+        """Verify activating "Explore Idea" expands the card in place.
+
+        Uses a position-stable locator (not accessible name) to hold
+        a reference to the SAME button across the click — its name
+        changes from "Explore Idea" to "Collapse" once expanded.
+
+        Failure means: the expand control lost its accessible state
+        wiring, or clicking it no longer reveals the full article.
+        """
+        with step("Locate the first card's toggle control"):
+            button = portfolio.how_i_think_card_toggle_button(0)
+
+        with step("Click to expand"):
+            button.click()
+
+        with step("Assert aria-expanded is now 'true'"):
+            assert button.get_attribute("aria-expanded") == "true", (
+                "How I Think card should report aria-expanded=true after activation"
+            )
+
+        with step("Assert expanded detail content is now visible"):
+            content = portfolio.how_i_think_card_expanded_content(0)
+            assert content.is_visible(), (
+                "How I Think card's expanded content should be visible after activation"
+            )
+
+        with step("Assert the other two cards remain collapsed"):
+            other_button_1 = portfolio.how_i_think_card_toggle_button(1)
+            other_button_2 = portfolio.how_i_think_card_toggle_button(2)
+            assert other_button_1.get_attribute("aria-expanded") == "false"
+            assert other_button_2.get_attribute("aria-expanded") == "false"
 
 
 # ── Responsive ──

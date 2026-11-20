@@ -8,10 +8,10 @@
 
 ## Requirement
 
-The navigation bar must contain five visible links — About,
-Experience, Skills, Projects, and Contact — each pointing to
-the correct anchor section on the same page via an `href`
-attribute.
+The navigation bar must contain six visible links — About,
+Experience, Thinking, Skills, Projects, and Contact — each
+pointing to the correct anchor section on the same page via an
+`href` attribute.
 
 ---
 
@@ -54,6 +54,16 @@ landmark must be visible on screen.
 The `href` attribute of the Experience link must equal
 `'#experience'` exactly.
 
+### AC-002-11 — "Thinking" link is visible in navbar
+A link with accessible name `'Thinking'` inside the `navigation`
+landmark must be visible on screen. This links to the "How I
+Think" section (REQ-008); the shortened label keeps the navbar
+uncrowded while the section itself keeps its full heading.
+
+### AC-002-12 — "Thinking" link href equals `#how-i-think`
+The `href` attribute of the Thinking link must equal
+`'#how-i-think'` exactly.
+
 ---
 
 ## Linked Tests
@@ -65,6 +75,7 @@ The `href` attribute of the Experience link must equal
 | TC-002-3 | `test_nav_link_is_visible_with_correct_href[Projects-#projects]` | AC-002-5, AC-002-6 |
 | TC-002-4 | `test_nav_link_is_visible_with_correct_href[Contact-#contact]` | AC-002-7, AC-002-8 |
 | TC-002-5 | `test_nav_link_is_visible_with_correct_href[Experience-#experience]` | AC-002-9, AC-002-10 |
+| TC-002-6 | `test_nav_link_is_visible_with_correct_href[Thinking-#how-i-think]` | AC-002-11, AC-002-12 |
 
 ---
 
