@@ -1,24 +1,35 @@
 /**
- * How I Think — Content Data
- * ===========================
+ * How I Think: Approved Article Content
+ * =======================================
  *
  * Three illustrative engineering essays demonstrating analytical
  * thinking and engineering judgment. These are generalized,
- * illustrative scenarios — not claims about specific employers,
- * clients, or historical projects. See each article's framing below
- * and docs/requirements/REQ-008-how-i-think.md for the editorial
- * constraints this content was written under.
+ * illustrative scenarios, not claims about specific employers,
+ * clients, or historical projects.
  *
- * Pure data only — no JSX, no rendering logic — so content can be
- * reviewed/edited independently of src/components/HowIThink.jsx.
- * `icon` is a string key resolved to a lucide-react component by the
- * consuming component, keeping this module framework-agnostic.
+ * The wording and reasoning below are the approved canonical content
+ * for this section. Only formatting, line breaks, semantic HTML, and
+ * presentation-specific labels (e.g. section id, icon key) should be
+ * adapted when rendering this data; the prose itself should not be
+ * rewritten. See scripts/validate_how_i_think_content.mjs, which
+ * checks for accidental replacement and a few deterministic content
+ * rules (no em/en dashes, no employer names, etc).
  *
- * Each article follows the same six-part structure: The Question,
- * The Intuition, The Hidden Problem, A Practical Model, The
- * Engineering Decision, The Takeaway. "A Practical Model" may include
- * a `comparison` — a compact two-sided illustrative thought
- * experiment, not a measured result.
+ * Pure data only, no JSX, so content can be reviewed independently
+ * of src/components/HowIThink.jsx. `icon` is a string key resolved to
+ * a lucide-react component by the consuming component.
+ *
+ * Each article is a short opening hook (no heading) followed by its
+ * own named sections, deliberately not a uniform template, since a
+ * repeated structure across all three would read as formulaic.
+ *
+ * A section's `blocks` is an ordered list of typed content pieces:
+ *   { type: 'p', text }              - a paragraph
+ *   { type: 'formula', text }        - a short highlighted formula line
+ *   { type: 'choices', items }       - a lettered list of options (prose)
+ *   { type: 'quote', text }          - a short quoted requirement/line
+ *   { type: 'code', label, language, snippet } - a code sample
+ *   { type: 'list', items }          - a plain bullet list
  */
 
 export const HOW_I_THINK_ARTICLES = [
@@ -27,56 +38,57 @@ export const HOW_I_THINK_ARTICLES = [
     category: 'AUTOMATION ARCHITECTURE',
     icon: 'Layers',
     title: 'Why More Tests Can Mean Less Confidence',
-    question: 'Can adding tests actually make an automation strategy less effective?',
-    insight: 'Confidence comes from the independence of evidence, not the size of the suite.',
+    excerpt: 'What if 8,000 of those tests are checking almost the same thing?',
+    description:
+      "A green dashboard tells us the tests passed. It doesn't tell us how much of the system we actually understand.",
+    opening: [
+      '10,000 tests passed. Zero failures. Beautiful dashboard.',
+      'Time to celebrate?',
+      'Maybe. But first, a question.',
+      'What if 8,000 of those tests are checking almost the same thing?',
+      "A green dashboard tells us that the tests passed. It doesn't tell us how much of the system we actually understand.",
+    ],
     sections: [
       {
-        heading: 'The Question',
-        body: [
-          'A team doubles its test count over a year. Releases still break in production. Did testing fail, or was the wrong thing measured?',
+        heading: "Let's try something",
+        blocks: [
+          { type: 'p', text: 'Imagine two test suites.' },
+          { type: 'p', text: 'Suite A: 1,000 tests.' },
+          { type: 'p', text: "Most exercise variations of a handful of workflows. They're reliable, fast enough, and almost always green." },
+          { type: 'p', text: 'Suite B: 200 tests.' },
+          { type: 'p', text: 'These cover fewer scenarios, but deliberately explore different failure modes: invalid inputs, API boundaries, state transitions, recovery behavior, and critical user journeys.' },
+          { type: 'p', text: 'Which suite would you trust?' },
+          { type: 'p', text: "Here's the catch: we don't have enough information to choose." },
+          { type: 'p', text: 'Suite A might contain essential regression checks. Suite B might miss an entire business workflow.' },
+          { type: 'p', text: 'The numbers alone tell us remarkably little.' },
         ],
       },
       {
-        heading: 'The Intuition',
-        body: [
-          'More tests feels like more safety. Each new test is another checkpoint, so a bigger suite should mean a release is checked more thoroughly than a smaller one.',
+        heading: 'The hidden problem',
+        blocks: [
+          { type: 'p', text: "Tests aren't necessarily independent pieces of evidence." },
+          { type: 'p', text: 'A hundred tests can share the same assumptions, test data, dependencies, and blind spots.' },
+          { type: 'p', text: 'If an important requirement was misunderstood, all hundred might pass while the product remains wrong.' },
+          { type: 'p', text: "That's why I like asking a slightly uncomfortable question:" },
+          { type: 'p', text: 'What could still be broken if every test passed?' },
+          { type: 'p', text: "It's often more revealing than looking at the pass rate." },
         ],
       },
       {
-        heading: 'The Hidden Problem',
-        body: [
-          'Test count is a weak proxy for confidence because tests are not independent. Many UI-heavy tests exercise the same underlying code paths through slightly different screens — when that shared path breaks, a dozen tests fail together and report one fact, not a dozen.',
-          'That is duplicated coverage, not duplicated evidence. It also has a real cost: redundant end-to-end tests are typically the slowest and most flaky, so a large correlated suite can quietly discourage the team from running it often — the opposite of its intended effect.',
+        heading: 'What changes in practice?',
+        blocks: [
+          { type: 'p', text: 'I would examine the risks behind the tests, not just their number.' },
+          { type: 'p', text: 'Which failures are we trying to detect? Where are the important boundaries? Are we testing behavior or merely repeating implementation assumptions?' },
+          { type: 'p', text: 'Some overlap is useful. Critical behavior may deserve multiple checks at different levels.' },
+          { type: 'p', text: 'But duplication should have a reason.' },
         ],
       },
       {
-        heading: 'A Practical Model',
-        body: [
-          'Picture two suites protecting the same checkout flow.',
-        ],
-        comparison: {
-          note: 'An illustrative thought experiment, not a claim that smaller is always better.',
-          left: {
-            label: 'Suite A — 200 tests',
-            body: 'Mostly end-to-end variations of the same checkout path across browsers and layouts. Highly correlated: one shared-service regression fails dozens of tests at once.',
-          },
-          right: {
-            label: 'Suite B — 40 tests',
-            body: 'Each targets a distinct failure mode — a payment timeout, a currency rounding edge case, a permissions boundary, a partial-write on crash. Failures are largely independent.',
-          },
-        },
-      },
-      {
-        heading: 'The Engineering Decision',
-        body: [
-          'Choose tests by the failure mode each one would uniquely reveal, not by how many can be added cheaply. In practice that means layering: fast, isolated tests for logic and boundaries; a deliberately small set of end-to-end tests for the journeys that actually matter; and periodically asking whether a failing test would tell you something a different failing test has not already told you.',
-          'This is not an argument against large suites — a large system with many genuinely distinct risk areas may legitimately need many tests. The point is that size should track distinct risk, not habit.',
-        ],
-      },
-      {
-        heading: 'The Takeaway',
-        body: [
-          'Confidence comes from the quality and independence of evidence, not merely its quantity. More tests do not inherently reduce confidence — but a suite that grows without asking what each new test would uniquely catch can accumulate cost and correlated noise faster than it accumulates real signal.',
+        heading: 'One last thought',
+        blocks: [
+          { type: 'p', text: 'Adding tests can improve confidence. It can also increase maintenance costs without telling us much more.' },
+          { type: 'p', text: "The interesting metric isn't how many tests we have." },
+          { type: 'p', text: 'It is how much useful evidence they provide.' },
         ],
       },
     ],
@@ -86,57 +98,63 @@ export const HOW_I_THINK_ARTICLES = [
     category: 'ENGINEERING LEADERSHIP',
     icon: 'Scale',
     title: 'The Mathematics of Release Risk',
-    question: 'How should a team decide what to test when time is limited?',
-    insight: 'A good release decision needs clarity about which uncertainty matters most, not zero uncertainty.',
+    excerpt: 'You have time for one more test. Which one gets your attention?',
+    description: "The most valuable test isn't always the one most likely to find a bug.",
+    opening: [
+      'The release is in an hour. You have time for one more test.',
+      'Two candidates remain.',
+      'Test A: A feature that occasionally displays the wrong icon.',
+      'Test B: A critical transaction that rarely fails, but could cause serious trouble if it does.',
+      'Which one gets your attention?',
+      'Most engineers would lean toward B.',
+      'Now imagine that B takes three hours to execute.',
+      'Things just got interesting.',
+    ],
     sections: [
       {
-        heading: 'The Question',
-        body: [
-          'Two weeks before a release, ten features are still only partially tested. Time allows thoroughly covering three. Which three, and on what basis?',
+        heading: 'Risk has more than one dimension',
+        blocks: [
+          { type: 'p', text: 'A familiar starting point is:' },
+          { type: 'formula', text: 'Risk ≈ Failure Likelihood × Impact' },
+          { type: 'p', text: 'Simple. Useful. Incomplete.' },
+          { type: 'p', text: 'We rarely know the real probability of failure. We make estimates based on recent changes, defect history, complexity, and whatever evidence we have.' },
+          { type: 'p', text: 'And even if we could estimate risk perfectly, we would still need to consider the cost and usefulness of each test.' },
+          { type: 'p', text: 'A test that takes five minutes and reveals a critical integration failure might be a great investment.' },
+          { type: 'p', text: 'A three-hour test that repeats evidence we already have might not be.' },
         ],
       },
       {
-        heading: 'The Intuition',
-        body: [
-          'The instinct is to keep testing until the team feels certain — as if enough hours of testing eventually produce a provably safe release.',
-        ],
-      },
-      {
-        heading: 'The Hidden Problem',
-        body: [
-          'Complete certainty is not available for any nontrivial system; the space of inputs, environments, and interactions is too large to exhaust, no matter how much time is spent. Treating every untested path as equally risky also wastes the limited time available, because failures differ enormously in both how likely they are and how much they would cost if they happened — a team that tests breadth-first, in the order features were built, is implicitly deciding that recency matters more than consequence.',
-        ],
-      },
-      {
-        heading: 'A Practical Model',
-        body: [
-          'A simple lens for prioritizing attention:',
-        ],
-        formula: 'Risk ≈ Probability of Failure × Impact',
-        formulaNote:
-          'A simplified decision aid for comparing priorities, not a precise or universally measurable calculation — probability and impact are usually estimated qualitatively, not computed.',
-        comparison: {
-          note: 'A small illustrative comparison of two competing priorities under the same deadline.',
-          left: {
-            label: 'A rarely used settings toggle',
-            body: 'A cosmetic display bug. Low probability of being hit, low impact if it is. Lower priority even though it is easy to test.',
+        heading: 'The decision nobody can make for us',
+        blocks: [
+          { type: 'p', text: "Let's change the scenario." },
+          { type: 'p', text: 'You can either:' },
+          {
+            type: 'choices',
+            items: [
+              'A. Run a broad regression suite that usually passes.',
+              'B. Investigate a recently changed integration that has limited coverage.',
+            ],
           },
-          right: {
-            label: 'A data-export feature',
-            body: 'An uncommon encoding edge case. Lower probability than the toggle bug, but the impact of silently corrupted exported data is severe — it deserves disproportionate attention.',
-          },
-        },
-      },
-      {
-        heading: 'The Engineering Decision',
-        body: [
-          'Treat limited testing time as an allocation problem: spend it where probability times impact is highest, and where the team is currently most uncertain — testing something already well understood adds little new information, while testing a genuinely uncertain, high-impact area adds a lot. This is also where leadership communication matters: naming the priority order out loud, and why, turns an implicit gamble into a decision the team can review and disagree with. Whatever remains untested should be stated plainly as residual risk, not implied away by a passing test run.',
+          { type: 'p', text: 'Neither choice is automatically correct.' },
+          { type: 'p', text: "The answer depends on what we know, what we don't know, and how much the result could influence the release decision." },
+          { type: 'p', text: 'This is where testing becomes more interesting than checking boxes.' },
+          { type: 'p', text: "We're deciding where additional information is worth the time it takes to obtain." },
         ],
       },
       {
-        heading: 'The Takeaway',
-        body: [
-          'A good release decision does not require zero uncertainty; it requires understanding which uncertainty matters most. Risk ≈ Probability × Impact is a useful way to compare priorities in conversation — it is not a complete or precise model of release risk, and real decisions still require judgment about impacts and probabilities that resist clean measurement.',
+        heading: "What I'd want before making the call",
+        blocks: [
+          { type: 'p', text: "I'd ask what could go wrong, how serious the consequences would be, and which available check could reduce the most important uncertainty." },
+          { type: 'p', text: "Then I'd make the remaining risks visible to the people responsible for the release." },
+          { type: 'p', text: "A test result can inform a decision. It shouldn't quietly make that decision on everyone's behalf." },
+        ],
+      },
+      {
+        heading: 'The surprising part',
+        blocks: [
+          { type: 'p', text: "The most valuable test isn't always the one most likely to find a bug." },
+          { type: 'p', text: "Sometimes it's the one whose result could change what the team decides to do next." },
+          { type: 'p', text: "That's where testing starts to look like engineering judgment." },
         ],
       },
     ],
@@ -146,54 +164,77 @@ export const HOW_I_THINK_ARTICLES = [
     category: 'AI-ASSISTED ENGINEERING',
     icon: 'Sparkles',
     title: 'The Verification Paradox of AI',
-    question: 'What happens when generating code becomes faster than verifying it?',
-    insight: 'When producing solutions becomes cheap, the ability to distinguish reliable ones becomes more valuable.',
+    excerpt: 'Who checked that they were testing the right thing?',
+    description: "The problem isn't that the tests failed. It's that the tests agreed with the mistake.",
+    opening: [
+      'The AI wrote the code. The AI wrote the tests. All tests passed.',
+      'Sounds efficient.',
+      "But here's a question: who checked that they were testing the right thing?",
+    ],
     sections: [
       {
-        heading: 'The Question',
-        body: [
-          'An AI assistant produces a working-looking function in seconds. Shipping it takes one more step: deciding whether "working-looking" is the same as "correct."',
-        ],
-      },
-      {
-        heading: 'The Intuition',
-        body: [
-          'Faster code generation reads as a straightforward win — if writing code takes less time, delivery should simply speed up.',
-        ],
-      },
-      {
-        heading: 'The Hidden Problem',
-        body: [
-          'Producing plausible code is not the same as establishing correctness. A generated function can be fluent, idiomatic, and confidently wrong in a way that is easy to miss on a quick read — AI changes the relative cost of implementation and review far more than it changes the cost of verification itself. When generation gets dramatically cheaper and verification does not, verification becomes the real bottleneck, and convincing-but-incorrect output becomes more likely to slip through specifically because it looks authoritative.',
-        ],
-      },
-      {
-        heading: 'A Practical Model',
-        body: [
-          'Two ways of using the same AI assistant on the same task.',
-        ],
-        comparison: {
-          note: 'An illustrative contrast between two workflows, not a general claim that one is always correct.',
-          left: {
-            label: 'Fast generation, weak validation',
-            body: 'Accept the output, skim it for obvious problems, ship. Review effort does not scale with how much code was generated.',
+        heading: 'A tiny example',
+        blocks: [
+          { type: 'p', text: 'Imagine asking an AI assistant to implement a discount rule:' },
+          { type: 'quote', text: 'Apply a 10% discount to orders over €100.' },
+          { type: 'p', text: 'The assistant writes the implementation:' },
+          {
+            type: 'code',
+            label: 'Generated implementation',
+            language: 'javascript',
+            snippet: 'function finalPrice(total) {\n  return total >= 100 ? total * 0.9 : total;\n}',
           },
-          right: {
-            label: 'AI-assisted iteration with verification gates',
-            body: 'Generate, then explicitly check against requirements, require tests for the new logic, and focus human review on the highest-risk parts rather than re-reading everything line by line.',
+          { type: 'p', text: 'Then it generates a test:' },
+          {
+            type: 'code',
+            label: 'Generated test',
+            language: 'javascript',
+            snippet: 'expect(finalPrice(100)).toBe(90);',
           },
-        },
-      },
-      {
-        heading: 'The Engineering Decision',
-        body: [
-          'Design the workflow so verification capacity does not lag generation capacity: keep requirements explicit enough to check against, maintain real test coverage for AI-assisted changes, use architecture and interfaces that limit the blast radius of a wrong suggestion, and reserve careful human attention for the decisions that are hardest to verify automatically. AI does not remove the need for tests, requirements, and review — it changes how that effort should be allocated.',
+          { type: 'p', text: 'The test passes.' },
+          { type: 'p', text: 'Everything looks fine.' },
+          { type: 'p', text: 'Except the requirement says over €100, not €100 or more.' },
+          { type: 'p', text: 'The implementation is wrong at the boundary.' },
+          { type: 'p', text: 'And the AI-generated test confidently confirms the same mistake.' },
         ],
       },
       {
-        heading: 'The Takeaway',
-        body: [
-          'When producing solutions becomes cheap, the ability to distinguish reliable solutions becomes more valuable. This does not mean AI-assisted development always increases total verification cost — for well-scoped tasks with good tests and tooling already in place, it can be faster and safer than before. The outcome depends on task complexity, the quality of the generated output, and whether review practices actually keep pace with generation speed.',
+        heading: 'The interesting problem',
+        blocks: [
+          { type: 'p', text: "This isn't really about AI being bad at coding." },
+          { type: 'p', text: 'Humans make similar mistakes.' },
+          { type: 'p', text: 'The difference is that AI can produce a convincing implementation, supporting tests, and a reassuring explanation in seconds.' },
+          { type: 'p', text: 'When all three share the same incorrect assumption, they can create a surprisingly persuasive illusion of correctness.' },
+          { type: 'p', text: "The problem isn't that the tests failed." },
+          { type: 'p', text: "It's that the tests agreed with the mistake." },
+        ],
+      },
+      {
+        heading: 'So what changes?',
+        blocks: [
+          { type: 'p', text: 'When I use AI-assisted development, I want verification to be independent of the assumptions that produced the solution.' },
+          { type: 'p', text: 'For example:' },
+          {
+            type: 'list',
+            items: [
+              'Define important behavior before implementation.',
+              'Check boundaries and negative cases.',
+              'Review generated tests against requirements.',
+              'Keep changes small enough to understand.',
+              'Use independent checks where the risk justifies them.',
+            ],
+          },
+          { type: 'p', text: 'AI can help with these activities too. The important part is not to confuse generated agreement with independent evidence.' },
+        ],
+      },
+      {
+        heading: 'The real bottleneck',
+        blocks: [
+          { type: 'p', text: 'Generating code is becoming easier.' },
+          { type: 'p', text: 'Understanding whether that code satisfies the intended behavior still takes engineering work.' },
+          { type: 'p', text: 'Sometimes AI reduces that work. Sometimes it creates new things to verify.' },
+          { type: 'p', text: "Either way, speed at the keyboard isn't the whole story." },
+          { type: 'p', text: "The interesting question isn't how fast we can generate a solution. It is how confidently we can verify it." },
         ],
       },
     ],

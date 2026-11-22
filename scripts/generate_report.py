@@ -95,6 +95,9 @@ COVERAGE_MAP = {
     "test_how_i_think_card_shows_correct_category_and_title": ["UI", "Content", "Engineering Judgment"],
     "test_how_i_think_card_starts_collapsed": ["UI", "Accessibility", "Interaction"],
     "test_how_i_think_card_expands_on_activation": ["UI", "Accessibility", "Interaction"],
+    "test_how_i_think_accordion_collapses_previous_card": ["UI", "Accessibility", "Interaction"],
+    "test_how_i_think_experiment_reveals_on_selection": ["UI", "Interaction", "Engineering Judgment"],
+    "test_how_i_think_ai_experiment_shows_corrected_code": ["UI", "Content", "Engineering Judgment"],
     "test_projects_section_has_expected_cards": ["UI", "Content", "Count"],
     "test_contact_section_has_required_channels": ["UI", "Content", "Contact"],
     "test_test_results_section_renders": ["UI", "API", "Data Fetch"],
@@ -613,6 +616,131 @@ STEPS_MAP = {
             {
                 "description": "Assert the other two cards remain collapsed",
                 "code": "assert portfolio.how_i_think_card_toggle_button(1).get_attribute(\"aria-expanded\") == \"false\"\nassert portfolio.how_i_think_card_toggle_button(2).get_attribute(\"aria-expanded\") == \"false\"",
+            },
+        ],
+    },
+    "test_how_i_think_accordion_collapses_previous_card": {
+        "tc_id": "TC-008-8",
+        "req_id": "REQ-008",
+        "ac_ids": ["AC-008-6"],
+        "description": "Expanding a second How I Think card must auto-collapse the first (single-open accordion)",
+        "mark": "content",
+        "steps": [
+            {
+                "description": "Expand the first card",
+                "code": "button_0 = portfolio.how_i_think_card_toggle_button(0)\nbutton_0.click()",
+            },
+            {
+                "description": "Expand the second card",
+                "code": "button_1 = portfolio.how_i_think_card_toggle_button(1)\nbutton_1.click()",
+            },
+            {
+                "description": "Assert the second card is now expanded",
+                "code": "assert button_1.get_attribute(\"aria-expanded\") == \"true\"",
+            },
+            {
+                "description": "Assert the first card auto-collapsed",
+                "code": "assert button_0.get_attribute(\"aria-expanded\") == \"false\"",
+            },
+        ],
+    },
+    "test_how_i_think_experiment_reveals_on_selection[0]": {
+        "tc_id": "TC-008-9",
+        "req_id": "REQ-008",
+        "ac_ids": ["AC-008-7"],
+        "description": "Selecting an answer in card 0's experiment must reveal its explanation panel",
+        "mark": "content",
+        "steps": [
+            {
+                "description": "Expand card 0",
+                "code": "portfolio.how_i_think_card_toggle_button(index).click()",
+            },
+            {
+                "description": "Assert the experiment reveal is hidden before selection",
+                "code": "assert not portfolio.how_i_think_experiment_reveal(index).is_visible()",
+            },
+            {
+                "description": "Select the first experiment option",
+                "code": "portfolio.how_i_think_experiment_options(index).first.click()",
+            },
+            {
+                "description": "Assert the experiment reveal is now visible",
+                "code": "assert portfolio.how_i_think_experiment_reveal(index).is_visible()",
+            },
+        ],
+    },
+    "test_how_i_think_experiment_reveals_on_selection[1]": {
+        "tc_id": "TC-008-10",
+        "req_id": "REQ-008",
+        "ac_ids": ["AC-008-7"],
+        "description": "Selecting an answer in card 1's experiment must reveal its explanation panel",
+        "mark": "content",
+        "steps": [
+            {
+                "description": "Expand card 1",
+                "code": "portfolio.how_i_think_card_toggle_button(index).click()",
+            },
+            {
+                "description": "Assert the experiment reveal is hidden before selection",
+                "code": "assert not portfolio.how_i_think_experiment_reveal(index).is_visible()",
+            },
+            {
+                "description": "Select the first experiment option",
+                "code": "portfolio.how_i_think_experiment_options(index).first.click()",
+            },
+            {
+                "description": "Assert the experiment reveal is now visible",
+                "code": "assert portfolio.how_i_think_experiment_reveal(index).is_visible()",
+            },
+        ],
+    },
+    "test_how_i_think_experiment_reveals_on_selection[2]": {
+        "tc_id": "TC-008-11",
+        "req_id": "REQ-008",
+        "ac_ids": ["AC-008-7"],
+        "description": "Selecting an answer in card 2's experiment must reveal its explanation panel",
+        "mark": "content",
+        "steps": [
+            {
+                "description": "Expand card 2",
+                "code": "portfolio.how_i_think_card_toggle_button(index).click()",
+            },
+            {
+                "description": "Assert the experiment reveal is hidden before selection",
+                "code": "assert not portfolio.how_i_think_experiment_reveal(index).is_visible()",
+            },
+            {
+                "description": "Select the first experiment option",
+                "code": "portfolio.how_i_think_experiment_options(index).first.click()",
+            },
+            {
+                "description": "Assert the experiment reveal is now visible",
+                "code": "assert portfolio.how_i_think_experiment_reveal(index).is_visible()",
+            },
+        ],
+    },
+    "test_how_i_think_ai_experiment_shows_corrected_code": {
+        "tc_id": "TC-008-12",
+        "req_id": "REQ-008",
+        "ac_ids": ["AC-008-8"],
+        "description": "Selecting the boundary-condition option in the AI-verification experiment must reveal the corrected code and boundary check",
+        "mark": "content",
+        "steps": [
+            {
+                "description": "Expand the AI-verification card",
+                "code": "portfolio.how_i_think_card_toggle_button(2).click()",
+            },
+            {
+                "description": "Select the 'boundary condition' option",
+                "code": "portfolio.how_i_think_experiment_options(2).filter(has_text=\"boundary\").first.click()",
+            },
+            {
+                "description": "Assert the reveal panel shows the corrected code",
+                "code": "assert reveal.get_by_text(\"total > 100\").is_visible()",
+            },
+            {
+                "description": "Assert the reveal panel shows the boundary check",
+                "code": "assert reveal.get_by_text(\"finalPrice(100)\").is_visible()",
             },
         ],
     },

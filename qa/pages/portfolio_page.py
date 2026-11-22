@@ -300,14 +300,27 @@ class PortfolioPage:
         return self.how_i_think_card(index).get_by_text(category, exact=True)
 
     def how_i_think_card_toggle_button(self, index: int) -> Locator:
-        """Position-stable: scoped to one card by index, not located by
-        accessible name — the button's name changes from 'Explore Idea'
-        to 'Collapse' after the first click (see
-        experience_toggle_buttons for the same pitfall elsewhere)."""
-        return self.how_i_think_card(index).get_by_role("button")
+        """Located by data-testid, not accessible name or role: the
+        button's name changes from 'Explore Idea' to 'Collapse' after
+        the first click (see experience_toggle_buttons for the same
+        pitfall elsewhere), AND once a card is expanded it also
+        contains several experiment option buttons, so a bare
+        get_by_role("button") scoped to the card resolves to multiple
+        elements."""
+        return self.how_i_think_card(index).get_by_test_id("how-i-think-toggle")
 
     def how_i_think_card_expanded_content(self, index: int) -> Locator:
         return self.how_i_think_card(index).locator('[data-testid="how-i-think-expanded"]')
+
+    def how_i_think_experiment_options(self, index: int) -> Locator:
+        """The interactive answer buttons inside one card's experiment,
+        scoped by index since each card may have its own experiment
+        open at once (accordion keeps at most one, but scoping stays
+        correct regardless)."""
+        return self.how_i_think_card(index).get_by_test_id("experiment-option")
+
+    def how_i_think_experiment_reveal(self, index: int) -> Locator:
+        return self.how_i_think_card(index).get_by_test_id("experiment-reveal")
 
     @property
     def project_cards(self) -> Locator:

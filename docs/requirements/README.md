@@ -15,7 +15,7 @@ Portfolio QA project — full requirements coverage.
 | [REQ-005](REQ-005-performance.md) | Page Load Performance | Performance | Medium | TC-005-1 |
 | [REQ-006](REQ-006-accessibility.md) | Accessibility (WCAG 2.1 AA) | Accessibility | High | TC-006-1 … TC-006-2 |
 | [REQ-007](REQ-007-deployment.md) | Production Deployment Verification | Deployment | Critical | TC-007-1 … TC-007-3 |
-| [REQ-008](REQ-008-how-i-think.md) | How I Think | How I Think | High | TC-008-1 … TC-008-7 |
+| [REQ-008](REQ-008-how-i-think.md) | How I Think | How I Think | High | TC-008-1 … TC-008-12 |
 
 ---
 
@@ -58,6 +58,11 @@ Portfolio QA project — full requirements coverage.
 | TC-008-5 | `test_how_i_think_card_shows_correct_category_and_title[2]` | REQ-008 | AC-008-3 |
 | TC-008-6 | `test_how_i_think_card_starts_collapsed` | REQ-008 | AC-008-4 |
 | TC-008-7 | `test_how_i_think_card_expands_on_activation` | REQ-008 | AC-008-5 |
+| TC-008-8 | `test_how_i_think_accordion_collapses_previous_card` | REQ-008 | AC-008-6 |
+| TC-008-9 | `test_how_i_think_experiment_reveals_on_selection[0]` | REQ-008 | AC-008-7 |
+| TC-008-10 | `test_how_i_think_experiment_reveals_on_selection[1]` | REQ-008 | AC-008-7 |
+| TC-008-11 | `test_how_i_think_experiment_reveals_on_selection[2]` | REQ-008 | AC-008-7 |
+| TC-008-12 | `test_how_i_think_ai_experiment_shows_corrected_code` | REQ-008 | AC-008-8 |
 
 ---
 
@@ -72,5 +77,5 @@ Portfolio QA project — full requirements coverage.
 | Performance | 1 | 1 | 1 | 100% |
 | Accessibility | 1 | 4 | 2 | 100% |
 | Deployment | 1 | 5 | 3 | 100% |
-| How I Think | 1 | 5 | 7 | 100% |
-| **Total** | **8** | **48** | **35** | **100%** |
+| How I Think | 1 | 8 | 12 | 100% |
+| **Total** | **8** | **51** | **40** | **100%** |

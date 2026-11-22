@@ -72,6 +72,14 @@ class Messages:
     HOW_I_THINK_WRONG_TITLE = (
         "How I Think card {index}: expected title '{expected}', got: '{actual}'"
     )
+    HOW_I_THINK_ACCORDION_DID_NOT_COLLAPSE = (
+        "How I Think card {index} should have collapsed (aria-expanded=false) "
+        "once a different card was expanded"
+    )
+    HOW_I_THINK_EXPERIMENT_REVEAL_NOT_VISIBLE = (
+        "How I Think card {index}'s experiment reveal panel should be visible "
+        "after selecting an answer option"
+    )
     WRONG_CONTACT_COUNT = "Expected {expected} contact channels, got: {actual}"
     TEST_RESULTS_NOT_VISIBLE = (
         "Test results section not visible on '{url}'. "

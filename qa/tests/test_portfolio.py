@@ -641,6 +641,115 @@ class TestContent:
             assert other_button_1.get_attribute("aria-expanded") == "false"
             assert other_button_2.get_attribute("aria-expanded") == "false"
 
+    # REQ-008 | AC-008-6
+    @pytest.mark.content
+    def test_how_i_think_accordion_collapses_previous_card(
+        self, portfolio: PortfolioPage,
+    ):
+        """Verify expanding a second card auto-collapses the first.
+
+        Distinct from test_how_i_think_card_expands_on_activation,
+        which only checks that cards NOT YET touched stay collapsed.
+        This test exercises the actual accordion transition: card 0
+        is opened first, then card 1 is opened, and card 0 must close.
+
+        Failure means: the single-open accordion state in
+        HowIThink.jsx broke, e.g. each card reverted to independent
+        local state.
+        """
+        with step("Expand the first card"):
+            button_0 = portfolio.how_i_think_card_toggle_button(0)
+            button_0.click()
+            assert button_0.get_attribute("aria-expanded") == "true"
+
+        with step("Expand the second card"):
+            button_1 = portfolio.how_i_think_card_toggle_button(1)
+            button_1.click()
+
+        with step("Assert the second card is now expanded"):
+            assert button_1.get_attribute("aria-expanded") == "true"
+
+        with step("Assert the first card auto-collapsed"):
+            assert button_0.get_attribute("aria-expanded") == "false", (
+                Msg.HOW_I_THINK_ACCORDION_DID_NOT_COLLAPSE.format(index=0)
+            )
+
+    # REQ-008 | AC-008-7
+    @pytest.mark.content
+    @pytest.mark.parametrize("index", range(len(HOW_I_THINK.ARTICLES)))
+    def test_how_i_think_experiment_reveals_on_selection(
+        self, portfolio: PortfolioPage, index: int,
+    ):
+        """Verify selecting an experiment answer reveals the explanation.
+
+        Covers all three interactive experiments (coverage, release
+        risk, AI verification) generically: each exposes answer
+        buttons with data-testid="experiment-option" and a reveal
+        panel with data-testid="experiment-reveal" that starts hidden.
+
+        Failure means: an experiment's local selection state stopped
+        wiring up to its reveal panel.
+        """
+        with step(f"Expand card {index}"):
+            portfolio.how_i_think_card_toggle_button(index).click()
+
+        with step(f"Assert card {index}'s experiment reveal is hidden before selection"):
+            reveal = portfolio.how_i_think_experiment_reveal(index)
+            assert not reveal.is_visible(), (
+                "Experiment reveal should not be visible before an option is selected"
+            )
+
+        with step(f"Select the first experiment option on card {index}"):
+            options = portfolio.how_i_think_experiment_options(index)
+            options.first.click()
+
+        with step(f"Assert card {index}'s experiment reveal is now visible"):
+            assert reveal.is_visible(), (
+                Msg.HOW_I_THINK_EXPERIMENT_REVEAL_NOT_VISIBLE.format(index=index)
+            )
+
+    # REQ-008 | AC-008-8
+    @pytest.mark.content
+    def test_how_i_think_ai_experiment_shows_corrected_code(
+        self, portfolio: PortfolioPage,
+    ):
+        """Verify the AI-verification experiment reveals corrected code.
+
+        Selecting "the boundary condition" option (the correct
+        answer) on the third card must reveal both the corrected
+        implementation (`total > 100`) and the boundary check
+        (`finalPrice(100)` stays undiscounted).
+
+        Failure means: the AI experiment's reveal content lost its
+        corrected code or boundary check, or the option order/wiring
+        in howIThinkExperiments.js changed without updating this test.
+        """
+        ai_card_index = 2
+
+        with step("Expand the AI-verification card"):
+            portfolio.how_i_think_card_toggle_button(ai_card_index).click()
+
+        with step("Select the 'boundary condition' option"):
+            options = portfolio.how_i_think_experiment_options(ai_card_index)
+            options.filter(has_text="boundary").first.click()
+
+        with step("Assert the reveal panel shows the corrected code"):
+            # Scoped to <pre> blocks specifically: the explanation
+            # prose above also mentions "total > 100" in a sentence,
+            # which would otherwise match twice and violate strict mode.
+            reveal = portfolio.how_i_think_experiment_reveal(ai_card_index)
+            code_blocks = reveal.locator("pre")
+            assert code_blocks.filter(has_text="total > 100").count() == 1, (
+                "AI-verification reveal should show one corrected "
+                "implementation code block using 'total > 100'"
+            )
+
+        with step("Assert the reveal panel shows the boundary check"):
+            assert code_blocks.filter(has_text="finalPrice(100)").count() == 1, (
+                "AI-verification reveal should show a boundary check "
+                "code block against exactly 100"
+            )
+
 
 # ── Responsive ──
 
