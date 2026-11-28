@@ -8,25 +8,27 @@
  * Lightweight, deterministic checks over the approved How I Think
  * content (src/data/howIThink.js, src/data/howIThinkExperiments.js).
  * This intentionally does NOT attempt to judge subjective qualities
- * like tone or "does this sound human" — those require editorial
- * review, not a script. What it does check is mechanical and
- * unambiguous:
+ * like tone, length, or "does this sound human" — those require
+ * editorial review, not a script, and a line-count or word-count
+ * check would be brittle against any legitimate future rewording.
+ * What it does check is mechanical and unambiguous:
  *
- *   1. No em dashes (—) or en dashes (–) anywhere in the content.
- *   2. No employer or client names.
- *   3. No literal unsupported first-person achievement-claim phrases.
- *   4. No generic AI-marketing cliches.
- *   5. A handful of exact, hard-to-accidentally-reproduce phrases
- *      from the approved articles are still present verbatim (a
- *      canary against the content being silently rewritten).
- *   6. Every article has its expected section headings.
- *   7. Every experiment has a non-empty reveal heading + explanation.
+ *   1. Exactly 3 scenarios, with the required titles present.
+ *   2. No em dashes (—) or en dashes (–) anywhere in the content.
+ *   3. No employer or client names.
+ *   4. No literal unsupported first-person achievement-claim phrases.
+ *   5. No generic AI-marketing cliches.
+ *   6. A handful of exact, hard-to-accidentally-reproduce phrases
+ *      from the approved copy are still present verbatim (a canary
+ *      against the content being silently rewritten).
+ *   7. Every scenario's reveal has a non-empty explanation.
+ *   8. The AI scenario specifically has a corrected-code sample.
  *
  * USAGE
  * -----
  *   node scripts/validate_how_i_think_content.mjs
  */
-import { HOW_I_THINK_ARTICLES } from '../src/data/howIThink.js'
+import { HOW_I_THINK_SCENARIOS } from '../src/data/howIThink.js'
 import { HOW_I_THINK_EXPERIMENTS } from '../src/data/howIThinkExperiments.js'
 
 const EMPLOYER_NAMES = ['globallogic', 'hitachi']
@@ -59,28 +61,28 @@ const AI_MARKETING_CLICHES = [
   'unparalleled',
 ]
 
-// A few exact, distinctive phrases from the approved text per article.
-// If any of these go missing, the content was likely rewritten rather
-// than just reformatted.
-const CANARY_PHRASES = {
-  'automation-architecture': [
-    'What if 8,000 of those tests are checking almost the same thing?',
-    'What could still be broken if every test passed?',
-  ],
-  'release-risk': [
-    'Risk ≈ Failure Likelihood × Impact',
-    "The most valuable test isn't always the one most likely to find a bug.",
-  ],
-  'ai-verification': [
-    'Apply a 10% discount to orders over €100.',
-    "It's that the tests agreed with the mistake.",
-  ],
-}
-
-const EXPECTED_SECTION_HEADINGS = {
-  'automation-architecture': ["Let's try something", 'The hidden problem', 'What changes in practice?', 'One last thought'],
-  'release-risk': ['Risk has more than one dimension', 'The decision nobody can make for us', "What I'd want before making the call", 'The surprising part'],
-  'ai-verification': ['A tiny example', 'The interesting problem', 'So what changes?', 'The real bottleneck'],
+const EXPECTED_SCENARIOS = {
+  'quality-strategy': {
+    title: "When Green Isn't Good Enough",
+    canaries: [
+      '10,000 tests passed. Everything looks great.',
+      "The test count doesn't settle it.",
+    ],
+  },
+  'engineering-decisions': {
+    title: 'One Hour. One Decision.',
+    canaries: [
+      "The release is in an hour. You can't test everything.",
+      'Sometimes the right call is to delay the release.',
+    ],
+  },
+  'ai-judgment': {
+    title: 'When AI Agrees With Itself',
+    canaries: [
+      'AI wrote the code. AI wrote the tests. All green.',
+      'The implementation and its test share the same incorrect assumption.',
+    ],
+  },
 }
 
 const violations = []
@@ -137,45 +139,52 @@ function checkAiMarketingCliches(label, strings) {
 }
 
 function main() {
-  if (HOW_I_THINK_ARTICLES.length !== 3) {
-    violations.push(`Expected exactly 3 articles, found ${HOW_I_THINK_ARTICLES.length}`)
+  if (HOW_I_THINK_SCENARIOS.length !== 3) {
+    violations.push(`Expected exactly 3 scenarios, found ${HOW_I_THINK_SCENARIOS.length}`)
   }
 
-  for (const article of HOW_I_THINK_ARTICLES) {
-    const label = `Article "${article.id}"`
-    const allStrings = collectStrings(article)
+  for (const scenario of HOW_I_THINK_SCENARIOS) {
+    const label = `Scenario "${scenario.id}"`
+    const expected = EXPECTED_SCENARIOS[scenario.id]
 
+    if (!expected) {
+      violations.push(`${label}: unexpected scenario id (not in the approved set)`)
+      continue
+    }
+
+    const allStrings = collectStrings(scenario)
     checkDashes(label, allStrings)
     checkEmployerNames(label, allStrings)
     checkAchievementClaims(label, allStrings)
     checkAiMarketingCliches(label, allStrings)
 
-    // Canary: exact approved phrases still present verbatim.
-    const joined = allStrings.join('\n')
-    const canaries = CANARY_PHRASES[article.id] || []
-    for (const phrase of canaries) {
+    if (scenario.title !== expected.title) {
+      violations.push(`${label}: expected title "${expected.title}", got "${scenario.title}"`)
+    }
+
+    if (!scenario.hook || scenario.hook.length === 0) {
+      violations.push(`${label}: missing collapsed hook text`)
+    }
+
+    if (!scenario.cta || !scenario.cta.trim()) {
+      violations.push(`${label}: missing CTA label`)
+    }
+
+    // Canary: exact approved phrases still present verbatim, across
+    // both the collapsed identity and the interactive content.
+    const experiment = HOW_I_THINK_EXPERIMENTS[scenario.id]
+    const joined = [...allStrings, ...collectStrings(experiment)].join('\n')
+    for (const phrase of expected.canaries) {
       if (!joined.includes(phrase)) {
         violations.push(`${label}: expected approved phrase not found verbatim (content may have been rewritten): "${phrase}"`)
       }
     }
-
-    // Missing article sections.
-    const expectedHeadings = EXPECTED_SECTION_HEADINGS[article.id] || []
-    const actualHeadings = (article.sections || []).map((s) => s.heading)
-    for (const heading of expectedHeadings) {
-      if (!actualHeadings.includes(heading)) {
-        violations.push(`${label}: missing expected section "${heading}"`)
-      }
-    }
-    if (!article.opening || article.opening.length === 0) {
-      violations.push(`${label}: missing opening hook`)
-    }
   }
 
   // Experiments.
-  for (const article of HOW_I_THINK_ARTICLES) {
-    const experiment = HOW_I_THINK_EXPERIMENTS[article.id]
-    const label = `Experiment for "${article.id}"`
+  for (const scenario of HOW_I_THINK_SCENARIOS) {
+    const experiment = HOW_I_THINK_EXPERIMENTS[scenario.id]
+    const label = `Experiment for "${scenario.id}"`
 
     if (!experiment) {
       violations.push(`${label}: no experiment defined`)
@@ -188,14 +197,27 @@ function main() {
     checkAchievementClaims(label, allStrings)
     checkAiMarketingCliches(label, allStrings)
 
-    if (!experiment.reveal || !experiment.reveal.heading) {
-      violations.push(`${label}: missing reveal heading`)
+    if (!experiment.prompt || !experiment.prompt.trim()) {
+      violations.push(`${label}: missing prompt`)
+    }
+    if (!Array.isArray(experiment.options) || experiment.options.length < 2) {
+      violations.push(`${label}: expected at least 2 options`)
     }
     if (!experiment.reveal || !Array.isArray(experiment.reveal.body) || experiment.reveal.body.length === 0) {
       violations.push(`${label}: missing reveal explanation (empty body)`)
     }
-    if (!Array.isArray(experiment.options) || experiment.options.length < 2) {
-      violations.push(`${label}: expected at least 2 options`)
+
+    // Only the AI scenario is a graded question with one objectively
+    // correct answer; the other two must NOT grade a choice.
+    if (scenario.id === 'ai-judgment') {
+      if (!experiment.correctOptionId) {
+        violations.push(`${label}: AI scenario must declare a correctOptionId`)
+      }
+      if (!experiment.reveal?.correctedCode?.snippet) {
+        violations.push(`${label}: AI scenario must include a corrected code sample`)
+      }
+    } else if (experiment.correctOptionId) {
+      violations.push(`${label}: this scenario is a judgment call and must not declare a correctOptionId`)
     }
   }
 
@@ -211,13 +233,14 @@ function main() {
   console.log(`\n${'='.repeat(60)}`)
   console.log('How I Think Content Validation — PASSED')
   console.log('='.repeat(60))
+  console.log('  ✓ Exactly 3 scenarios with the required titles')
   console.log('  ✓ No em/en dashes')
   console.log('  ✓ No employer/client names')
   console.log('  ✓ No unsupported achievement-claim patterns')
   console.log('  ✓ No generic AI-marketing cliches')
   console.log('  ✓ Approved canary phrases present verbatim')
-  console.log('  ✓ All expected sections present')
-  console.log('  ✓ All experiments have a reveal explanation')
+  console.log('  ✓ Every scenario has a non-empty reveal explanation')
+  console.log('  ✓ Only the AI scenario grades a correct answer')
   console.log('='.repeat(60) + '\n')
 }
 

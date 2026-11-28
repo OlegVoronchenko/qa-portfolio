@@ -92,14 +92,14 @@ class ExpectedCounts:
 
 @dataclass(frozen=True)
 class HowIThinkContent:
-    # (category, title) pairs, in order, mirroring
-    # src/data/howIThink.js's HOW_I_THINK_ARTICLES exactly. Kept as a
+    # (category, title, cta) triples, in order, mirroring
+    # src/data/howIThink.js's HOW_I_THINK_SCENARIOS exactly. Kept as a
     # small, manually-synced constant — same convention as CoreSkills
     # above — rather than parsing the JS data module from Python.
-    ARTICLES: Tuple[Tuple[str, str], ...] = (
-        ("AUTOMATION ARCHITECTURE", "Why More Tests Can Mean Less Confidence"),
-        ("ENGINEERING LEADERSHIP", "The Mathematics of Release Risk"),
-        ("AI-ASSISTED ENGINEERING", "The Verification Paradox of AI"),
+    SCENARIOS: Tuple[Tuple[str, str, str], ...] = (
+        ("QUALITY STRATEGY", "When Green Isn't Good Enough", "Look closer"),
+        ("ENGINEERING DECISIONS", "One Hour. One Decision.", "Make the call"),
+        ("AI & ENGINEERING JUDGMENT", "When AI Agrees With Itself", "Spot the catch"),
     )
 
 

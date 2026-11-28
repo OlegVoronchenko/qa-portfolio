@@ -300,11 +300,12 @@ class PortfolioPage:
         return self.how_i_think_card(index).get_by_text(category, exact=True)
 
     def how_i_think_card_toggle_button(self, index: int) -> Locator:
-        """Located by data-testid, not accessible name or role: the
-        button's name changes from 'Explore Idea' to 'Collapse' after
-        the first click (see experience_toggle_buttons for the same
-        pitfall elsewhere), AND once a card is expanded it also
-        contains several experiment option buttons, so a bare
+        """Located by data-testid, not accessible name or role: each
+        card has its own CTA label (e.g. 'Look closer', 'Make the
+        call') that also changes to 'Collapse' after the first click
+        (see experience_toggle_buttons for the same pitfall
+        elsewhere), AND once a card is expanded it also contains
+        several experiment option buttons, so a bare
         get_by_role("button") scoped to the card resolves to multiple
         elements."""
         return self.how_i_think_card(index).get_by_test_id("how-i-think-toggle")
@@ -321,6 +322,17 @@ class PortfolioPage:
 
     def how_i_think_experiment_reveal(self, index: int) -> Locator:
         return self.how_i_think_card(index).get_by_test_id("experiment-reveal")
+
+    def how_i_think_card_hook(self, index: int) -> Locator:
+        """The short two-line collapsed hook (not the old long-form
+        article prose, which no longer exists)."""
+        return self.how_i_think_card(index).get_by_test_id("how-i-think-hook")
+
+    def how_i_think_correct_indicators(self, index: int) -> Locator:
+        """The checkmark shown next to an objectively correct answer.
+        Only the AI scenario ever renders one of these; the other two
+        scenarios are judgment calls with no graded answer."""
+        return self.how_i_think_card(index).get_by_test_id("experiment-correct-indicator")
 
     @property
     def project_cards(self) -> Locator:

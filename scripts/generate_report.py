@@ -92,11 +92,13 @@ COVERAGE_MAP = {
     "test_cv_download_link_matches_manifest": ["UI", "Content", "Build Artifact"],
     "test_how_i_think_section_is_visible": ["UI", "Content", "Engineering Judgment"],
     "test_how_i_think_shows_exactly_three_cards": ["UI", "Content", "Engineering Judgment"],
-    "test_how_i_think_card_shows_correct_category_and_title": ["UI", "Content", "Engineering Judgment"],
+    "test_how_i_think_card_shows_correct_category_title_and_cta": ["UI", "Content", "Engineering Judgment"],
     "test_how_i_think_card_starts_collapsed": ["UI", "Accessibility", "Interaction"],
     "test_how_i_think_card_expands_on_activation": ["UI", "Accessibility", "Interaction"],
     "test_how_i_think_accordion_collapses_previous_card": ["UI", "Accessibility", "Interaction"],
+    "test_how_i_think_no_long_form_article_content": ["UI", "Content", "Engineering Judgment"],
     "test_how_i_think_experiment_reveals_on_selection": ["UI", "Interaction", "Engineering Judgment"],
+    "test_how_i_think_release_risk_scenario_has_no_correct_answer_marking": ["UI", "Interaction", "Engineering Judgment"],
     "test_how_i_think_ai_experiment_shows_corrected_code": ["UI", "Content", "Engineering Judgment"],
     "test_projects_section_has_expected_cards": ["UI", "Content", "Count"],
     "test_contact_section_has_required_channels": ["UI", "Content", "Contact"],
@@ -489,7 +491,7 @@ STEPS_MAP = {
         "tc_id": "TC-008-2",
         "req_id": "REQ-008",
         "ac_ids": ["AC-008-2"],
-        "description": "How I Think must render exactly 3 article cards from howIThink.js",
+        "description": "How I Think must render exactly 3 scenario cards from howIThink.js",
         "mark": "content",
         "steps": [
             {
@@ -506,11 +508,11 @@ STEPS_MAP = {
             },
         ],
     },
-    "test_how_i_think_card_shows_correct_category_and_title[0]": {
+    "test_how_i_think_card_shows_correct_category_title_and_cta[0]": {
         "tc_id": "TC-008-3",
         "req_id": "REQ-008",
         "ac_ids": ["AC-008-3"],
-        "description": "How I Think card 0 must show its correct category and title",
+        "description": "How I Think card 0 must show its correct category, title, and CTA",
         "mark": "content",
         "steps": [
             {
@@ -525,13 +527,17 @@ STEPS_MAP = {
                 "description": "Assert card 0 category matches expected",
                 "code": "assert portfolio.how_i_think_card_category_text(index, expected_category).is_visible()",
             },
+            {
+                "description": "Assert card 0's collapsed CTA matches expected",
+                "code": "assert portfolio.how_i_think_card_toggle_button(index).inner_text().strip() == expected_cta",
+            },
         ],
     },
-    "test_how_i_think_card_shows_correct_category_and_title[1]": {
+    "test_how_i_think_card_shows_correct_category_title_and_cta[1]": {
         "tc_id": "TC-008-4",
         "req_id": "REQ-008",
         "ac_ids": ["AC-008-3"],
-        "description": "How I Think card 1 must show its correct category and title",
+        "description": "How I Think card 1 must show its correct category, title, and CTA",
         "mark": "content",
         "steps": [
             {
@@ -546,13 +552,17 @@ STEPS_MAP = {
                 "description": "Assert card 1 category matches expected",
                 "code": "assert portfolio.how_i_think_card_category_text(index, expected_category).is_visible()",
             },
+            {
+                "description": "Assert card 1's collapsed CTA matches expected",
+                "code": "assert portfolio.how_i_think_card_toggle_button(index).inner_text().strip() == expected_cta",
+            },
         ],
     },
-    "test_how_i_think_card_shows_correct_category_and_title[2]": {
+    "test_how_i_think_card_shows_correct_category_title_and_cta[2]": {
         "tc_id": "TC-008-5",
         "req_id": "REQ-008",
         "ac_ids": ["AC-008-3"],
-        "description": "How I Think card 2 must show its correct category and title",
+        "description": "How I Think card 2 must show its correct category, title, and CTA",
         "mark": "content",
         "steps": [
             {
@@ -566,6 +576,10 @@ STEPS_MAP = {
             {
                 "description": "Assert card 2 category matches expected",
                 "code": "assert portfolio.how_i_think_card_category_text(index, expected_category).is_visible()",
+            },
+            {
+                "description": "Assert card 2's collapsed CTA matches expected",
+                "code": "assert portfolio.how_i_think_card_toggle_button(index).inner_text().strip() == expected_cta",
             },
         ],
     },
@@ -594,7 +608,7 @@ STEPS_MAP = {
         "tc_id": "TC-008-7",
         "req_id": "REQ-008",
         "ac_ids": ["AC-008-5"],
-        "description": "Activating a How I Think card's control must expand it in place without affecting the other cards",
+        "description": "Activating a How I Think card's CTA must expand it and show the scenario immediately, without affecting the other cards",
         "mark": "content",
         "steps": [
             {
@@ -612,6 +626,10 @@ STEPS_MAP = {
             {
                 "description": "Assert expanded detail content is now visible",
                 "code": "assert portfolio.how_i_think_card_expanded_content(0).is_visible()",
+            },
+            {
+                "description": "Assert the scenario's answer options are visible immediately",
+                "code": "assert portfolio.how_i_think_experiment_options(0).first.is_visible()",
             },
             {
                 "description": "Assert the other two cards remain collapsed",
@@ -644,11 +662,28 @@ STEPS_MAP = {
             },
         ],
     },
-    "test_how_i_think_experiment_reveals_on_selection[0]": {
+    "test_how_i_think_no_long_form_article_content": {
         "tc_id": "TC-008-9",
         "req_id": "REQ-008",
         "ac_ids": ["AC-008-7"],
-        "description": "Selecting an answer in card 0's experiment must reveal its explanation panel",
+        "description": "The section must not render the previous iteration's long-form article headings",
+        "mark": "content",
+        "steps": [
+            {
+                "description": "Expand all three cards",
+                "code": "for index in range(COUNTS.HOW_I_THINK_CARDS):\n    portfolio.how_i_think_card_toggle_button(index).click()",
+            },
+            {
+                "description": "Assert none of the old long-form section headings are present",
+                "code": "assert portfolio.how_i_think_section.get_by_text(heading, exact=False).count() == 0",
+            },
+        ],
+    },
+    "test_how_i_think_experiment_reveals_on_selection[0]": {
+        "tc_id": "TC-008-10",
+        "req_id": "REQ-008",
+        "ac_ids": ["AC-008-8"],
+        "description": "Selecting an answer in card 0's scenario must reveal its explanation panel",
         "mark": "content",
         "steps": [
             {
@@ -670,10 +705,10 @@ STEPS_MAP = {
         ],
     },
     "test_how_i_think_experiment_reveals_on_selection[1]": {
-        "tc_id": "TC-008-10",
+        "tc_id": "TC-008-11",
         "req_id": "REQ-008",
-        "ac_ids": ["AC-008-7"],
-        "description": "Selecting an answer in card 1's experiment must reveal its explanation panel",
+        "ac_ids": ["AC-008-8"],
+        "description": "Selecting an answer in card 1's scenario must reveal its explanation panel",
         "mark": "content",
         "steps": [
             {
@@ -695,10 +730,10 @@ STEPS_MAP = {
         ],
     },
     "test_how_i_think_experiment_reveals_on_selection[2]": {
-        "tc_id": "TC-008-11",
+        "tc_id": "TC-008-12",
         "req_id": "REQ-008",
-        "ac_ids": ["AC-008-7"],
-        "description": "Selecting an answer in card 2's experiment must reveal its explanation panel",
+        "ac_ids": ["AC-008-8"],
+        "description": "Selecting an answer in card 2's scenario (AI) must reveal its explanation panel, not before",
         "mark": "content",
         "steps": [
             {
@@ -719,15 +754,32 @@ STEPS_MAP = {
             },
         ],
     },
-    "test_how_i_think_ai_experiment_shows_corrected_code": {
-        "tc_id": "TC-008-12",
+    "test_how_i_think_release_risk_scenario_has_no_correct_answer_marking": {
+        "tc_id": "TC-008-13",
         "req_id": "REQ-008",
-        "ac_ids": ["AC-008-8"],
-        "description": "Selecting the boundary-condition option in the AI-verification experiment must reveal the corrected code and boundary check",
+        "ac_ids": ["AC-008-9"],
+        "description": "The release-risk scenario must never mark any option as objectively correct",
         "mark": "content",
         "steps": [
             {
-                "description": "Expand the AI-verification card",
+                "description": "Expand the release-risk card",
+                "code": "portfolio.how_i_think_card_toggle_button(1).click()",
+            },
+            {
+                "description": "Select each option in turn and assert no correct-answer indicator appears",
+                "code": "for i in range(options.count()):\n    options.nth(i).click()\n    assert portfolio.how_i_think_correct_indicators(1).count() == 0",
+            },
+        ],
+    },
+    "test_how_i_think_ai_experiment_shows_corrected_code": {
+        "tc_id": "TC-008-14",
+        "req_id": "REQ-008",
+        "ac_ids": ["AC-008-10"],
+        "description": "Selecting the boundary-condition option in the AI scenario must mark it correct and reveal the corrected code",
+        "mark": "content",
+        "steps": [
+            {
+                "description": "Expand the AI-judgment card",
                 "code": "portfolio.how_i_think_card_toggle_button(2).click()",
             },
             {
@@ -735,12 +787,12 @@ STEPS_MAP = {
                 "code": "portfolio.how_i_think_experiment_options(2).filter(has_text=\"boundary\").first.click()",
             },
             {
-                "description": "Assert the reveal panel shows the corrected code",
-                "code": "assert reveal.get_by_text(\"total > 100\").is_visible()",
+                "description": "Assert a correct-answer indicator appears on that option",
+                "code": "assert portfolio.how_i_think_correct_indicators(2).count() == 1",
             },
             {
-                "description": "Assert the reveal panel shows the boundary check",
-                "code": "assert reveal.get_by_text(\"finalPrice(100)\").is_visible()",
+                "description": "Assert the reveal panel shows the corrected code",
+                "code": "assert reveal.locator(\"pre\").filter(has_text=\"total > 100\").count() == 1",
             },
         ],
     },

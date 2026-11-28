@@ -531,12 +531,12 @@ class TestContent:
     # REQ-008 | AC-008-2
     @pytest.mark.content
     def test_how_i_think_shows_exactly_three_cards(self, portfolio: PortfolioPage):
-        """Verify exactly 3 How I Think article cards render.
+        """Verify exactly 3 How I Think scenario cards render.
 
         Counts elements with role='article' inside #how-i-think.
         Expected: {COUNTS.HOW_I_THINK_CARDS} cards from howIThink.js.
 
-        Failure means: an article was added or removed from
+        Failure means: a scenario was added or removed from
         src/data/howIThink.js, or the component changed markup.
         """
         with step("Count How I Think cards with role='article'"):
@@ -552,21 +552,22 @@ class TestContent:
 
     # REQ-008 | AC-008-3
     @pytest.mark.content
-    @pytest.mark.parametrize("index", range(len(HOW_I_THINK.ARTICLES)))
-    def test_how_i_think_card_shows_correct_category_and_title(
+    @pytest.mark.parametrize("index", range(len(HOW_I_THINK.SCENARIOS)))
+    def test_how_i_think_card_shows_correct_category_title_and_cta(
         self, portfolio: PortfolioPage, index: int,
     ):
-        """Verify a How I Think card shows its correct category and title.
+        """Verify a How I Think card shows its correct category, title,
+        and CTA label while collapsed.
 
-        Parametrized across all three articles defined in
-        qa/constants.py's HOW_I_THINK.ARTICLES, which mirrors
+        Parametrized across all three scenarios defined in
+        qa/constants.py's HOW_I_THINK.SCENARIOS, which mirrors
         src/data/howIThink.js.
 
-        Failure means: the article order/content changed in
+        Failure means: the scenario order/content changed in
         howIThink.js without updating the mirrored test constant,
-        or the component stopped rendering the category/title.
+        or the component stopped rendering the category/title/CTA.
         """
-        expected_category, expected_title = HOW_I_THINK.ARTICLES[index]
+        expected_category, expected_title, expected_cta = HOW_I_THINK.SCENARIOS[index]
 
         with step(f"Locate card {index}'s title heading"):
             heading = portfolio.how_i_think_card_heading(index)
@@ -580,6 +581,12 @@ class TestContent:
             category_locator = portfolio.how_i_think_card_category_text(index, expected_category)
             assert category_locator.is_visible(), Msg.HOW_I_THINK_WRONG_CATEGORY.format(
                 index=index, expected=expected_category, actual="(not found)",
+            )
+
+        with step(f"Assert card {index}'s collapsed CTA reads '{expected_cta}'"):
+            cta_text = portfolio.how_i_think_card_toggle_button(index).inner_text()
+            assert cta_text.strip() == expected_cta, (
+                f"How I Think card {index}: expected CTA '{expected_cta}', got: '{cta_text}'"
             )
 
     # REQ-008 | AC-008-4
@@ -609,14 +616,16 @@ class TestContent:
     # REQ-008 | AC-008-5
     @pytest.mark.content
     def test_how_i_think_card_expands_on_activation(self, portfolio: PortfolioPage):
-        """Verify activating "Explore Idea" expands the card in place.
+        """Verify activating a card's CTA expands it and shows the
+        scenario immediately, with no extra click required.
 
         Uses a position-stable locator (not accessible name) to hold
         a reference to the SAME button across the click — its name
-        changes from "Explore Idea" to "Collapse" once expanded.
+        changes from the scenario's CTA (e.g. "Look closer") to
+        "Collapse" once expanded.
 
         Failure means: the expand control lost its accessible state
-        wiring, or clicking it no longer reveals the full article.
+        wiring, or clicking it no longer reveals the scenario.
         """
         with step("Locate the first card's toggle control"):
             button = portfolio.how_i_think_card_toggle_button(0)
@@ -633,6 +642,13 @@ class TestContent:
             content = portfolio.how_i_think_card_expanded_content(0)
             assert content.is_visible(), (
                 "How I Think card's expanded content should be visible after activation"
+            )
+
+        with step("Assert the scenario's answer options are visible immediately"):
+            options = portfolio.how_i_think_experiment_options(0)
+            assert options.first.is_visible(), (
+                "The scenario's options should appear as soon as the card "
+                "expands, with no extra interaction required"
             )
 
         with step("Assert the other two cards remain collapsed"):
@@ -676,18 +692,50 @@ class TestContent:
 
     # REQ-008 | AC-008-7
     @pytest.mark.content
-    @pytest.mark.parametrize("index", range(len(HOW_I_THINK.ARTICLES)))
+    def test_how_i_think_no_long_form_article_content(self, portfolio: PortfolioPage):
+        """Verify the old long-form article structure is gone.
+
+        A previous iteration of this section rendered full essays
+        with named subsections. This asserts a few of those obsolete
+        headings are absent, guarding against that long-form content
+        being reintroduced instead of the current compact scenarios.
+
+        Failure means: long-form article prose was reintroduced into
+        src/data/howIThink.js or a component.
+        """
+        obsolete_headings = (
+            "Let's try something",
+            "The decision nobody can make for us",
+            "A tiny example",
+        )
+
+        with step("Expand all three cards"):
+            for index in range(COUNTS.HOW_I_THINK_CARDS):
+                portfolio.how_i_think_card_toggle_button(index).click()
+
+        with step("Assert none of the old long-form section headings are present"):
+            for heading in obsolete_headings:
+                count = portfolio.how_i_think_section.get_by_text(heading, exact=False).count()
+                assert count == 0, (
+                    f"Found obsolete long-form heading '{heading}' — the "
+                    "section should only show the current compact scenarios"
+                )
+
+    # REQ-008 | AC-008-8
+    @pytest.mark.content
+    @pytest.mark.parametrize("index", range(len(HOW_I_THINK.SCENARIOS)))
     def test_how_i_think_experiment_reveals_on_selection(
         self, portfolio: PortfolioPage, index: int,
     ):
-        """Verify selecting an experiment answer reveals the explanation.
+        """Verify selecting a scenario answer reveals the explanation.
 
-        Covers all three interactive experiments (coverage, release
-        risk, AI verification) generically: each exposes answer
-        buttons with data-testid="experiment-option" and a reveal
-        panel with data-testid="experiment-reveal" that starts hidden.
+        Covers all three interactive scenarios generically: each
+        exposes answer buttons with data-testid="experiment-option"
+        and a reveal panel with data-testid="experiment-reveal" that
+        starts hidden — including the AI scenario, which must not
+        reveal its answer before a selection is made.
 
-        Failure means: an experiment's local selection state stopped
+        Failure means: a scenario's local selection state stopped
         wiring up to its reveal panel.
         """
         with step(f"Expand card {index}"):
@@ -708,46 +756,81 @@ class TestContent:
                 Msg.HOW_I_THINK_EXPERIMENT_REVEAL_NOT_VISIBLE.format(index=index)
             )
 
-    # REQ-008 | AC-008-8
+    # REQ-008 | AC-008-9
+    @pytest.mark.content
+    def test_how_i_think_release_risk_scenario_has_no_correct_answer_marking(
+        self, portfolio: PortfolioPage,
+    ):
+        """Verify the release-risk scenario never marks an option as
+        objectively correct, regardless of which one is picked.
+
+        This is a judgment call with legitimate trade-offs, not a
+        graded quiz question — unlike the AI scenario, which does
+        have one objectively correct answer.
+
+        Failure means: a correctness indicator was added to this
+        scenario's options, implying one choice is universally right.
+        """
+        release_risk_index = 1
+
+        with step("Expand the release-risk card"):
+            portfolio.how_i_think_card_toggle_button(release_risk_index).click()
+
+        options = portfolio.how_i_think_experiment_options(release_risk_index)
+        option_count = options.count()
+
+        for i in range(option_count):
+            with step(f"Select option {i} and assert no correct-answer indicator appears"):
+                options.nth(i).click()
+                indicators = portfolio.how_i_think_correct_indicators(release_risk_index)
+                assert indicators.count() == 0, (
+                    "The release-risk scenario should never mark an option "
+                    "as objectively correct"
+                )
+
+    # REQ-008 | AC-008-10
     @pytest.mark.content
     def test_how_i_think_ai_experiment_shows_corrected_code(
         self, portfolio: PortfolioPage,
     ):
-        """Verify the AI-verification experiment reveals corrected code.
+        """Verify the AI scenario reveals the corrected boundary and
+        marks it as the correct answer.
 
-        Selecting "the boundary condition" option (the correct
-        answer) on the third card must reveal both the corrected
-        implementation (`total > 100`) and the boundary check
-        (`finalPrice(100)` stays undiscounted).
+        Selecting "the boundary condition" option (the one objectively
+        correct answer among the three scenarios) must reveal the
+        corrected condition (`total > 100`) and show a correctness
+        indicator next to that option.
 
-        Failure means: the AI experiment's reveal content lost its
-        corrected code or boundary check, or the option order/wiring
-        in howIThinkExperiments.js changed without updating this test.
+        Failure means: the AI scenario's reveal content lost its
+        corrected code or correctness indicator, or the option
+        order/wiring in howIThinkExperiments.js changed without
+        updating this test.
         """
         ai_card_index = 2
 
-        with step("Expand the AI-verification card"):
+        with step("Expand the AI-judgment card"):
             portfolio.how_i_think_card_toggle_button(ai_card_index).click()
 
         with step("Select the 'boundary condition' option"):
             options = portfolio.how_i_think_experiment_options(ai_card_index)
             options.filter(has_text="boundary").first.click()
 
+        with step("Assert a correct-answer indicator appears on that option"):
+            indicators = portfolio.how_i_think_correct_indicators(ai_card_index)
+            assert indicators.count() == 1, (
+                "The AI scenario should mark the boundary-condition option "
+                "as correct once selected"
+            )
+
         with step("Assert the reveal panel shows the corrected code"):
             # Scoped to <pre> blocks specifically: the explanation
-            # prose above also mentions "total > 100" in a sentence,
-            # which would otherwise match twice and violate strict mode.
+            # prose above also mentions "> 100" in a sentence, which
+            # would otherwise match twice and violate strict mode.
             reveal = portfolio.how_i_think_experiment_reveal(ai_card_index)
             code_blocks = reveal.locator("pre")
             assert code_blocks.filter(has_text="total > 100").count() == 1, (
-                "AI-verification reveal should show one corrected "
-                "implementation code block using 'total > 100'"
-            )
-
-        with step("Assert the reveal panel shows the boundary check"):
-            assert code_blocks.filter(has_text="finalPrice(100)").count() == 1, (
-                "AI-verification reveal should show a boundary check "
-                "code block against exactly 100"
+                "AI scenario reveal should show one corrected code block "
+                "using 'total > 100'"
             )
 
 
